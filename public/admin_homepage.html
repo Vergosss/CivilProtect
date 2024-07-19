@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8">
+<link rel = "stylesheet" href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-search@3.0.2/dist/leaflet-search.min.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-search/3.0.2/leaflet-search.min.js"></script>
+<title>Welcome</title>
+</head>
+<body>
+
+<script>
+
+let map = L.map('map'); //ftaxno mono ton xarti. Den exo ta tiles, prostithentai meta
+
+let tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+   });//vazo ta tiles tou OSM
+tiles.addTo(map);//prostheto ta tiles tou OSM ston xarti
+map.setView([38.24,21.73],16);//orizo tis syntetagmenes tou shmeiou sto opoio tha kentrarei o xarths kai to zoom level
+//
+let base = L.marker([38.24,21.73],{draggable:true});
+base.bindPopup('This is a popup');// 'syndeo' ton marker me to popup
+base.addTo(map);//prostheto ton marker ston xarth
+//
+var starting_lat,starting_long;
+point.addEventListener('dragend', (event) => {
+//dragend otan teliosei to drag kai pesei o marker sth thesh emfanizei parathyro epivevaiosis
+if(confirm('Confirm Changes?')){//an patiso OK-epivevaiosi tote stelno ta trexonta cords sth vash lanontas update ta cords tou pinaka
+  let lat = point.getLatLng().lat;
+  let long = point.getLatLng().lng;
+  console.log(lat,long);
+  //
+fetch('/change_base/',{
+  method:'POST',
+  headers: { 'Content-Type':'application/json' },
+  body: JSON.stringify({
+    latitude: lat,
+    longitude: long
+  })
+})
+.then(res=>{return res.json();})
+.then(json=>{console.log(json);})
+.catch(error=>{console.log('Error :' + error);});
+//
+
+
+point.bindPopup('Lat: ' + lat + ', Long: ' + long);
+console.log('Lat: ' + lat + ', Long: ' + long);
+}
+else{
+  //an akyroso thn allagh patontas cancel oi syntetagmenes tou marker einai oi proigoumenes
+  //meso ths setLatLng tis ksanallazo gia na parei o marker tis arxikes prin tin allagh
+  point.setLatLng([starting_lat, starting_long]);
+
+}
+
+});
+//
+point.addEventListener('dragstart',event=>{
+// otan KSEKINAO na travao ton marker pare tis syntetagmenes tou(tis arxikes tou diladi)
+starting_lat = point.getLatLng().lat;
+starting_long = point.getLatLng().lng;
+console.log(starting_lat,starting_long);
+});
+
+</script>
+
+
+
+</body>
+
+
+
+
+
+</html>

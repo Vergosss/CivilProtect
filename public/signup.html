@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Sign up</title>
+        <link rel="stylesheet" href="/public/signup_style.css">
+        <link rel = "stylesheet" href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-search@3.0.2/dist/leaflet-search.min.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-search/3.0.2/leaflet-search.min.js"></script>
+    </head>
+    <body>  
+
+        <div class="signup">
+        <!-- sto action benei to idio pragma me to app.post(path) -->
+        <form action="/signup/" method="post">
+
+            Username: <input id="username" type="text" name="username" value=""/> 
+            Password: <input id="password" type="password" name="password" value=""/>
+            First name: <input id="firstname" type="text" name="firstname" value=""/>
+            Last name: <input id="lastname" type="text" name="lastname" value=""/>
+            Telephone: <input id="telephone" type="tel" name="telephone" value=""/>
+            <input id="latitude" name="latitude" type="hidden" value="" />
+            <input id="longitude" name="longitude" type="hidden" value="" />
+            <input type="submit" value="Sign up"/>
+        
+        </form>
+        </div>
+
+        <div id="map" class="map" style="width: 800px; height : 200px"></div>
+<script>
+let map = L.map('map');
+let tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+   });//vazo ta tiles tou OSM
+tiles.addTo(map);//prostheto ta tiles tou OSM ston xarti
+map.setView([38.24,21.73],16);//orizo tis syntetagmenes tou shmeiou sto opoio tha kentrarei o xarths kai to zoom level
+//ftiaxno enan marker
+let marker = L.marker([38.24,21.73],{draggable:true});
+marker.bindPopup('This is a popup');// 'syndeo' ton marker me to popup
+marker.addTo(map);//prostheto ton marker ston xarth
+//console.log(marker.getLatLng().lat,marker.getLatLng().lng);
+
+//event lsitener gia na updataroun ta cords tou marker kathe fora pou ton travao kai alazei thesh
+marker.addEventListener('dragend', (event) => {
+let lat = marker.getLatLng().lat;
+let long = marker.getLatLng().lng;
+document.querySelector("#latitude").value = lat;
+document.querySelector("#longitude").value = long;
+marker.bindPopup('Lat: ' + lat + ', Long: ' + long);
+console.log('Lat: ' + lat + ', Long: ' + long);
+});
+
+</script>
+
+    </body>

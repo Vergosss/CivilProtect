@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset=utf-8>
+    <link rel = "stylesheet" href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-search@3.0.2/dist/leaflet-search.min.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-search/3.0.2/leaflet-search.min.js"></script>
+    <title>This is the homepage</title>
+</head>
+<body>
+
+<div id="map" style="width: 900px; height : 580px"></div>
+
+<p>
+  <b>This is the homepage. You have been redirected here after login.</b>
+
+</p>
+<a href="/logout"><button>Log out</button></a>
+
+<h2>Search Citizens</h2>
+<input type="text" id="search" placeholder="Find Citizen...">
+<div id="citizens"></div>
+
+<!----------Form gia na kano upload to json ton proionton---------------->
+<form action="/upload_products/" method="post" enctype="multipart/form-data">
+  <label for="upload">Upload products:</label>
+  <input type="file" id="upload" name="upload"/>
+  <input type="submit" id="submit" value="Upload products"/>
+</form> 
+
+<script>
+let map = L.map('map'); //ftaxno mono ton xarti. Den exo ta tiles, prostithentai meta
+
+let tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+   });//vazo ta tiles tou OSM
+tiles.addTo(map);//prostheto ta tiles tou OSM ston xarti
+map.setView([38.24,21.73],16);//orizo tis syntetagmenes tou shmeiou sto opoio tha kentrarei o xarths kai to zoom level
+//
+let point = L.marker([38.24,21.73],{draggable:true});
+point.bindPopup('This is a popup');// 'syndeo' ton marker me to popup
+point.addTo(map);//prostheto ton marker ston xarth
+//console.log(marker.getLatLng().lat,marker.getLatLng().lng);
+
+/*************************************/
+var starting_lat,starting_long;
+point.addEventListener('dragend', (event) => {
+//dragend otan teliosei to drag kai pesei o marker sth thesh emfanizei parathyro epivevaiosis
+if(confirm('Confirm Changes?')){//an patiso OK-epivevaiosi tote stelno ta trexonta cords sth vash lanontas update ta cords tou pinaka
+  let lat = point.getLatLng().lat;
+  let long = point.getLatLng().lng;
+  console.log(lat,long);
+  //
+fetch('/change_base/',{
+  method:'POST',
+  headers: { 'Content-Type':'application/json' },
+  body: JSON.stringify({
+    latitude: lat,
+    longitude: long
+  })
+})
+.then(res=>{return res.json();})
+.then(json=>{console.log(json);})
+.catch(error=>{console.log('Error :' + error);});
+//
+
+
+point.bindPopup('Lat: ' + lat + ', Long: ' + long);
+console.log('Lat: ' + lat + ', Long: ' + long);
+console.log('Distance from previous location: ',map.distance([starting_lat,starting_long],[lat,long])/1000);
+}
+else{
+  //an akyroso thn allagh patontas cancel oi syntetagmenes tou marker einai oi proigoumenes
+  //meso ths setLatLng tis ksanallazo gia na parei o marker tis arxikes prin tin allagh
+  point.setLatLng([starting_lat, starting_long]);
+
+}
+
+});
+//
+point.addEventListener('dragstart',event=>{
+// otan KSEKINAO na travao ton marker pare tis syntetagmenes tou(tis arxikes tou diladi)
+starting_lat = point.getLatLng().lat;
+starting_long = point.getLatLng().lng;
+console.log(starting_lat,starting_long);
+});
+
+//
+/**************************************/
+//
+ let cords = {};//an th valo mesa sto then petaei typerror undefined. Exeis tis syntetagmenes ton politon
+ let citizens = [];//omoios me to apo pano. perilamvanei ta usernames ton politon
+ let marker = null;//arxikopoihsh apo pano(ektos synartiseon) tou marker pou tha dimiourgeitai ek neou gia kathe cord
+ //gi ayto th kano global
+ fetch('/coordinates/')//asygxrona kane fetch ta coordinates
+  .then(res=>{return res.json();})//an petyxei to fetch steile thn apantisi tou server se json
+  .then(json=>{//an petyxei to apo pano(epistrofi ths apantisis se json) trekse thn fetchCords
+    cords = json;
+    fetchCords();
+
+})
+  .catch(error=>{console.error('Error: ' + error);});
+//an apotyxei opoiodhpote apo ta parapano typose to error pou petaxtike
+/**************************/
+fetch('/citizens/')
+.then (res=>{return res.json();})
+.then(json=>{//omoio se logikh me to apo pano
+citizens = json;
+//douleia me tous polites
+showCitizens();
+})
+.catch(error=>{console.log('Error: ' + error);});
+//
+const input = document.querySelector("#search");
+const div = document.querySelector("#citizens"); //me thn querySelector epilego to searchbar kai thn
+//perioxh(div) pou tha xoresoun oi citizens(to apotelesma tou autocomplete)
+
+//
+function showCitizens(){
+  /*
+for(let i =0;i<citizens.length;i++){
+console.log(citizens[i]['username']);
+}
+*/
+const matches = findMatches(this.value);
+//h map paei se kathe stixio tou array 1-1 kai trexei se kathe stixio 1-1 th synartisi orisma
+matches.map(citizen=>{
+div.innerHTML = "";
+let p = document.createElement("p");
+let span = document.createElement("span");
+span.innerHTML = citizen.username;
+p.appendChild(span);
+div.appendChild(p);
+p.addEventListener('click',()=>{
+input.value = span.innerHTML;
+
+});
+
+});
+
+
+}
+/****************/
+//then()-->to promise vrisketai sthn katastash fullfilled, catch()-->to promise vrisketai sth katastash rejected
+function fetchCords(){
+let length = cords.length;
+
+for(let i=0;i<length; i++){
+  console.log(cords[i]['ST_X(cords)'] + ',' + cords[i]['ST_Y(cords)'] );
+  marker = L.marker([cords[i]['ST_X(cords)'],cords[i]['ST_Y(cords)']]);
+  marker.addTo(map);//diaperna to response tou server pou einai json kai typonei ta cords ton citizen
+  //console.log(i);
+}
+}
+/**************/
+function findMatches(search){
+if(!search) search = null;
+return citizens.filter(citizen=>{//h filter filtrarei ta stixia tou citizens diladi epistrefei tous citizens pou ikanopoioun th synarthsh-orisma
+const regex = new RegExp(search,'gi');//ftiaxno ena object regexp me orismata th leksh pou psaxno kai 'gi'. dhladh o,ti tairiazei me th leksh pou pliktrologo
+return citizen.username.match(regex);//epestrepse matches ths lekshs anazitisis(kanonikis kefrasis) me ta username ton politon
+});
+}
+
+//const  = document.querySelector("#search");
+input.addEventListener("keyup",showCitizens);//enas event listener otan pliktrologiso kai AFISO to pliktro trexei h showCitizens
+
+ </script> 
+ 
+</body>
+
+</html>
