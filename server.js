@@ -191,7 +191,16 @@ res.send(req.file);
 //console.log(req.file);
 });
 //
+app.get('/get_base',(req,res)=>{
 
+connection.query('SELECT ST_X(cords),ST_Y(cords) FROM Base',(error,results)=>{
+
+if(error) throw error;
+res.send(results);
+
+});
+});
+//
 app.post('/change_base/',(req,res)=>{
 
 let latitude = req.body.latitude;
@@ -210,12 +219,18 @@ console.log('Base cords didnt change');
 });
 
 });
-
+//
+/*
+app.use((req, res, next) => {
+	res.header('Access-Control-Allow-Origin', '*');
+	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+	next();
+  });//gia na lyso to provlima tou CORS
+*/
+  //
 
 //
-
-
-module.exports = app;
+module.exports = app;//an thelo na kano import se allo JS arxeio ton parapano kodika
 app.listen(port,() => {
     console.log(`Example app listening on port ${port}!`);
   });

@@ -7,10 +7,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-search@3.0.2/dist/leaflet-search.min.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-search/3.0.2/leaflet-search.min.js"></script>
-<title>Welcome</title>
+<title>Welcome Admin!</title>
 </head>
 <body>
 
+  <div id="map" style="width: 900px; height : 580px"></div>
+
+<!---->
 <script>
 
 let map = L.map('map'); //ftaxno mono ton xarti. Den exo ta tiles, prostithentai meta
@@ -25,12 +28,25 @@ let base = L.marker([38.24,21.73],{draggable:true});
 base.bindPopup('This is a popup');// 'syndeo' ton marker me to popup
 base.addTo(map);//prostheto ton marker ston xarth
 //
+/**** os admin vlepo th vash****/
+fetch('/get_base/')
+.then(res=>{return res.json();})
+.then(data=>{
+base.setLatLng([data[0]['ST_X(cords)'],data[0]['ST_Y(cords)']]);
+base.bindPopup('Base');
+base.addTo(map);
+})
+.catch(error=>{console.log('Error: ',error);})
+
+/*******/
+//
+
 var starting_lat,starting_long;
-point.addEventListener('dragend', (event) => {
+base.addEventListener('dragend', (event) => {
 //dragend otan teliosei to drag kai pesei o marker sth thesh emfanizei parathyro epivevaiosis
 if(confirm('Confirm Changes?')){//an patiso OK-epivevaiosi tote stelno ta trexonta cords sth vash lanontas update ta cords tou pinaka
-  let lat = point.getLatLng().lat;
-  let long = point.getLatLng().lng;
+  let lat = base.getLatLng().lat;
+  let long = base.getLatLng().lng;
   console.log(lat,long);
   //
 fetch('/change_base/',{
@@ -47,24 +63,30 @@ fetch('/change_base/',{
 //
 
 
-point.bindPopup('Lat: ' + lat + ', Long: ' + long);
+base.bindPopup('Lat: ' + lat + ', Long: ' + long);
 console.log('Lat: ' + lat + ', Long: ' + long);
 }
 else{
   //an akyroso thn allagh patontas cancel oi syntetagmenes tou marker einai oi proigoumenes
   //meso ths setLatLng tis ksanallazo gia na parei o marker tis arxikes prin tin allagh
-  point.setLatLng([starting_lat, starting_long]);
+  base.setLatLng([starting_lat, starting_long]);
 
 }
 
 });
 //
-point.addEventListener('dragstart',event=>{
+base.addEventListener('dragstart',event=>{
 // otan KSEKINAO na travao ton marker pare tis syntetagmenes tou(tis arxikes tou diladi)
-starting_lat = point.getLatLng().lat;
-starting_long = point.getLatLng().lng;
+starting_lat = base.getLatLng().lat;
+starting_long = base.getLatLng().lng;
 console.log(starting_lat,starting_long);
 });
+/****************/
+
+fetch('https://cors-anywhere.herokuapp.com/'+'http://usidas.ceid.upatras.gr/web/2023/export.php')
+.then(res=>{return res.json();})
+.then(data=>{console.log(data.items);})
+.catch(error=>{console.log('Error : ',error);})
 
 </script>
 
