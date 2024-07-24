@@ -240,6 +240,16 @@ console.log('Base cords didnt change');
 
 });
 //
+app.get('/get_vehicle/',(req,res)=>{
+
+connection.query('SELECT ST_X(cords),ST_Y(cords) FROM User WHERE role="Rescuer" AND username=?',[req.session.username],(error,results)=>{
+if(error) throw error;
+res.send(results);
+
+});
+
+});
+//
 /*
 app.use((req, res, next) => {
 	res.header('Access-Control-Allow-Origin', '*');

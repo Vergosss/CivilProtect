@@ -23,7 +23,26 @@ let tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
    });//vazo ta tiles tou OSM
 tiles.addTo(map);//prostheto ta tiles tou OSM ston xarti
 map.setView([38.24,21.73],16);//orizo tis syntetagmenes tou shmeiou sto opoio tha kentrarei o xarths kai to zoom level
-
+var greenIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+//
+var redIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+//
+let base = L.marker([38.24,21.73],{draggable:false,icon:greenIcon});
+/**********arxikopoihseis****/
 /****Mono fetch giati o diasostis vlepei th vash den thn allazei*/
 fetch('/get_base/')
 .then(res=>{return res.json();})
@@ -34,11 +53,40 @@ base.addTo(map);
 })
 .catch(error=>{console.log('Error: ',error);})
 /********/
-/*****Thelo fetch kai ta cords aytounou mono(vlepei th thesh tou) *********/
+/*****Thelo fetch kai ta cords aytounou mono(vlepei th thesh tou kai mono o diasostis oxi allous diasostes) *********/
+let vehicle = L.marker([38.24,21.73],{draggable:true,icon:redIcon});
 fetch('/get_vehicle/')
 .then(res=>{return res.json();})
-.then(data=>{})
+.then(data=>{
+vehicle.setLatLng([data[0]['ST_X(cords)'],data[0]['ST_Y(cords)']]);
+vehicle.bindPopup('Your vehicle');
+vehicle.addTo(map);
+})
 .catch(error=>{console.log('Error: ',error);})
+/*******Allagh ton cords tou (oximatos) diasosti me click kai drag*****/
+
+vehicle.addEventListener('dragend',event => {
+//get the cords after dragend
+let lat = vehicle.getLatLng().lat;
+let long = vehicle.getLatLng().lng;
+fetch('/update_vehicle/',{
+    method:'POST',
+    headers: { 'Content-Type':'application/json' },
+    body: JSON.stringify({
+        latitude: lat,
+        longitude: long
+    })
+})
+.then(res=>{return res.json();})
+.then(data=>{console.log(data);})
+.catch(error=>{console.log('Error: ',error);})
+
+
+});
+
+
+
+
 </script>
 
 
