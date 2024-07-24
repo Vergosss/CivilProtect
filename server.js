@@ -250,6 +250,24 @@ res.send(results);
 
 });
 //
+
+app.get('/update_vehicle/',(req,res)=>{
+let latitude = req.body.latitude;
+let longitude = req.body.longitude;
+let username = req.session.username;
+connection.query('UPDATE User SET cords=POINT(?,?) WHERE role="Rescuer" AND username=?',[latitude,longitude,username],(error,results)=>{
+
+if(error) throw error;
+if(results.affectedRows>0){
+	console.log('Changed Vehicle position successfully!');
+}
+else{
+	console.log('Failed to change vehicle\'s position!');
+	
+}
+});
+
+});
 /*
 app.use((req, res, next) => {
 	res.header('Access-Control-Allow-Origin', '*');
