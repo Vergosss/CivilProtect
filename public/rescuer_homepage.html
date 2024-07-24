@@ -34,6 +34,11 @@ base.addTo(map);
 })
 .catch(error=>{console.log('Error: ',error);})
 /********/
+/*****Thelo fetch kai ta cords aytounou mono(vlepei th thesh tou) *********/
+fetch('/get_vehicle/')
+.then(res=>{return res.json();})
+.then(data=>{})
+.catch(error=>{console.log('Error: ',error);})
 </script>
 
 

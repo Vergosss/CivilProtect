@@ -39,13 +39,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());//xoris ayto den kodikopoiountan ta dedomena kai gyrnage undefined cords sto backend
 //
 //route gia thn homepage
-app.get('/',(req,res)=>{
+app.get(['/','/login'],(req,res)=>{
 
 res.sendFile(__dirname + '/public/login.html');
 
 });
 
-
+var role = null;
 //route gia to post ton dedomenon tis formas
 app.post('/login',(req,res)=>{
 
@@ -54,7 +54,7 @@ let password = req.body.password;
 //res.send(`Username: ${username} Password: ${password}`);
 //kai ta typono meso tou response ths send
 
-	connection.query('SELECT * FROM Citizen WHERE username=?',[username],(error,results,fields)=>{
+	connection.query('SELECT * FROM User WHERE username=?',[username],(error,results,fields)=>{
 		if(error) throw error;
 		if(results.length > 0)//an vrike ton xristi tote beno kano login
 		{
@@ -65,6 +65,9 @@ let password = req.body.password;
 		req.session.username = username;
 		//req.session.user = 1;
 		console.log('Successfully logged in');
+		//+
+		
+		role = results[0].role;
 		res.redirect('/home');//afou syndethikame epityxos anakateythine stin homepage
 		}
 		else{// an apotyxei to compare
@@ -91,15 +94,31 @@ app.get('/home',(req,res)=>{
 	//res.send('Welcome');
 	console.log(req.session);
 	//console.log(req.session.user);
-	if(req.session.username){
-	res.sendFile(__dirname + '/public/homepage.html');
+	console.log('Role: ',role);
+	if(req.session.username && role == 'Admin')
+	{
+	res.sendFile(__dirname + '/public/admin_homepage.html');
 	}
+	else if(req.session.username && role == 'Rescuer')
+	{
+	
+	res.sendFile(__dirname + '/public/rescuer_homepage.html');
+	}
+	else if(req.session.username && role == 'Citizen')
+	{
+	console.log('Role:',role);
+	res.sendFile(__dirname + '/public/citizen_homepage.html');//
+	}
+
 	else{
 	res.redirect('/');
 	}
 	
 });
+//
 
+
+//
 app.get('/logout',(req,res)=>{
 if(req.session.username){
 	console.log('Goodbye!');
@@ -110,6 +129,7 @@ if(req.session.username){
 }
 else{
 	console.log('Not logged in!');
+	res.end();
 }
 
 });
@@ -136,7 +156,7 @@ app.post('/signup',(req,res)=>{
 	bcrypt.hash(reg_password,10,(error,hash)=>{
 	if(error) throw error;
 	//h hash periexei ton hasharismeno kodiko
-	connection.query('INSERT INTO Citizen(username,password,first_name,last_name,telephone,cords) VALUES (?,?,?,?,?,POINT(?,?))',[reg_username,hash,reg_first_name,reg_last_name,reg_telephone,reg_latitude,reg_longitude],(error,result)=>{
+	connection.query('INSERT INTO User(username,password,first_name,last_name,telephone,cords,role) VALUES (?,?,?,?,?,POINT(?,?),"Citizen")',[reg_username,hash,reg_first_name,reg_last_name,reg_telephone,reg_latitude,reg_longitude],(error,result)=>{
 	
 		if(error) throw error;
 		if(result.affectedRows>0){
@@ -156,7 +176,7 @@ app.post('/signup',(req,res)=>{
 //
 app.get('/coordinates/', (req,res)=>{
 
-	 connection.query('SELECT ST_X(cords),ST_Y(cords) FROM Citizen',(error,results,fields)=>{
+	 connection.query('SELECT ST_X(cords),ST_Y(cords) FROM User WHERE role="Citizen"',(error,results,fields)=>{
 		if(error) throw error;
 		//console.log(results[0]['ST_X(cords)']);
 		//res.json(results);
@@ -165,7 +185,7 @@ app.get('/coordinates/', (req,res)=>{
 });
 
 app.get('/citizens/',(req,res)=>{
-	connection.query('SELECT username FROM Citizen',(error,results)=>{
+	connection.query('SELECT username FROM User WHERE role="Citizen"',(error,results)=>{
 	if(error) throw error;
 	res.send(results);
 

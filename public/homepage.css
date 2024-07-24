@@ -1,0 +1,9 @@
+.flex-container{
+
+    display:flex;
+    flex-direction: row;
+}
+.panel{
+    margin: 50px;
+
+}
