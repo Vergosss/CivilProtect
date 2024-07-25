@@ -26,7 +26,14 @@
     </form>
   </div>
 </div>
+
 <!---->
+<!----------Form gia na kano upload to json ton proionton---------------->
+<form action="/upload_products/" method="post" enctype="multipart/form-data">
+  <label for="upload">Upload products:</label>
+  <input type="file" id="upload" name="upload"/>
+  <input type="submit" id="submit" value="Upload products"/>
+</form> 
 <script>
 
 let map = L.map('map'); //ftaxno mono ton xarti. Den exo ta tiles, prostithentai meta
@@ -47,18 +54,26 @@ fetch('/get_base/')
 .then(data=>{
 base.setLatLng([data[0]['ST_X(cords)'],data[0]['ST_Y(cords)']]);
 base.bindPopup('Base');
-base.addTo(map);
+//base.addTo(map);
 })
 .catch(error=>{console.log('Error: ',error);})
 
-/*******os Admin epishs vlepo tous diasostes/oximata****/
+/*******os Admin epishs vlepo olous tous diasostes/oximata****/
+let vehicles = L.layerGroup();
+let v = null;
 fetch('/get_vehicles/')
 .then(res=>{return res.json();})
-.then(cords=>{})
+.then(cords=>{
+for(let i=0;i<cords.length;i++){
+  v = L.marker([cords[i]['ST_X(cords)'],cords[i]['ST_Y(cords)']]);
+  vehicles.addLayer(v);
+}
+vehicles.addTo(map);
+})
 .catch(error=>{console.log('Error: ',error);})
 
 
-/*******/
+/****Epivevaiosh gia allagh ths topothesias ths vashs***/
 //
 
 var starting_lat,starting_long;

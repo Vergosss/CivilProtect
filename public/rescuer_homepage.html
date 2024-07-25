@@ -42,6 +42,7 @@ var redIcon = new L.Icon({
 });
 //
 let base = L.marker([38.24,21.73],{draggable:false,icon:greenIcon});
+base.addTo(map);
 /**********arxikopoihseis****/
 /****Mono fetch giati o diasostis vlepei th vash den thn allazei*/
 fetch('/get_base/')
@@ -55,6 +56,7 @@ base.addTo(map);
 /********/
 /*****Thelo fetch kai ta cords aytounou mono(vlepei th thesh tou kai mono o diasostis oxi allous diasostes) *********/
 let vehicle = L.marker([38.24,21.73],{draggable:true,icon:redIcon});
+vehicle.addTo(map);
 fetch('/get_vehicle/')
 .then(res=>{return res.json();})
 .then(data=>{

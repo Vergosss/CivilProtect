@@ -174,6 +174,15 @@ app.post('/signup',(req,res)=>{
 	
 	});
 //
+const fs = require('fs');
+//
+app.get('/test/', (req,res)=>{
+let data =  fs.readFile('/uploads/upload-1721913498358.json','utf-8');
+data = JSON.parse(data);
+const {code,message,categories,...items} = data;
+console.log(items);
+});
+//
 app.get('/coordinates/', (req,res)=>{
 
 	 connection.query('SELECT ST_X(cords),ST_Y(cords) FROM User WHERE role="Citizen"',(error,results,fields)=>{
@@ -211,7 +220,7 @@ res.send(req.file);
 //console.log(req.file);
 });
 //
-app.get('/get_base',(req,res)=>{
+app.get('/get_base/',(req,res)=>{
 
 connection.query('SELECT ST_X(cords),ST_Y(cords) FROM Base',(error,results)=>{
 
@@ -250,7 +259,16 @@ res.send(results);
 
 });
 //
+app.get('/get_vehicles/',(req,res)=>{
 
+connection.query('SELECT ST_X(cords),ST_Y(cords) FROM User WHERE role="Rescuer"',(error,results)=>{
+if(error) throw error;
+res.send(results);
+
+});
+
+});
+//
 app.get('/update_vehicle/',(req,res)=>{
 let latitude = req.body.latitude;
 let longitude = req.body.longitude;
