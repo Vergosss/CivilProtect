@@ -1,11 +1,11 @@
 
 const express = require("express");//import express module
-const mysql = require("mysql");
+const mysql = require("mysql2");
 const session = require('express-session');//module gia ta sessions
 const bcrypt = require("bcrypt");
 //
 //const path = require('path');
-
+console.log(process.version);
 const multer = require("multer");
 const connection = mysql.createConnection({
 	host     : 'localhost',
@@ -191,7 +191,9 @@ fs.readFile(__dirname + '/uploads/upload-1721913498358.json','utf-8',(error,data
 	//afairo to details kathe eggrafhs-json object-stixiou tou array meso ths map
 	//to items  epistrefei {items:[...]} to items.items episrefei [...]
 	//console.log(final_items);
-	// /*
+connection.query('TRUNCATE TABLE Item',(error,results)=>{
+	if(error) throw error;
+});
 	for(let item of final_items){
 		connection.query('INSERT INTO Item VALUES(?,?,?)',[item.id,item.name,item.category],(error,results)=>{
 			if(error) throw error;
@@ -205,7 +207,12 @@ fs.readFile(__dirname + '/uploads/upload-1721913498358.json','utf-8',(error,data
 		
 	}
 
-// */
+ 
+//Katharizo to table prota gia na mhn ksanaeisaxthoun ta proionta
+connection.query('TRUNCATE TABLE Category',(error,results)=>{
+	if(error) throw error;
+
+});
 console.log(categories);
 	for(let category of categories){
 		connection.query('INSERT INTO Category VALUES(?,?)',[category.id,category['category_name']],(error,results)=>{
