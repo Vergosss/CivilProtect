@@ -16,7 +16,8 @@
   <div id="map" style="width: 900px; height : 580px"></div>
   <div class="panel">
     <h2>
-      All Tasks
+      Categories
+      <select name="categories" id="categories"></select>
     </h2>
   </div>
 </div>
@@ -92,7 +93,21 @@ showCitizens();
 const input = document.querySelector("#search");
 const div = document.querySelector("#citizens"); //me thn querySelector epilego to searchbar kai thn
 //perioxh(div) pou tha xoresoun oi citizens(to apotelesma tou autocomplete)
+/********fetch tis katigories ton proionton gia na fortothoun se ena dropdown menu***/
+fetch('/get_categories/')
+.then(res=>res.json())
+.then(categories=>{
+var list = document.querySelector('#categories');
 
+for(let cat of categories){
+var option = document.createElement('option');
+option.innerHTML = cat['category_name'];
+option.value = cat['category_name'];
+list.appendChild(option);//prosthese kathe option sto select menu
+}
+
+})
+.catch(error=>{console.log('Error: ',error);})
 //
 function showCitizens(){
   /*

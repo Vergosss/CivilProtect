@@ -228,6 +228,15 @@ console.log(categories);
 });
 
 });
+
+
+//
+app.get('/get_categories/',(req,res)=>{
+	connection.query('SELECT category_name FROM Category',(error,results)=>{
+		if(error) throw error;
+		res.send(results);
+	});
+});
 //
 app.get('/coordinates/', (req,res)=>{
 
