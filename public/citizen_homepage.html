@@ -18,6 +18,8 @@
     <h2>
       Categories
       <select name="categories" id="categories"></select>
+      <select name="items" id="items"></select>
+      <button type= "button" name="request" id="request">Submit request</button>
     </h2>
   </div>
 </div>
@@ -105,10 +107,47 @@ option.innerHTML = cat['category_name'];
 option.value = cat['category_name'];
 list.appendChild(option);//prosthese kathe option sto select menu
 }
-
 })
 .catch(error=>{console.log('Error: ',error);})
 //
+/********fetch ta idia ta proionta gia na fortothoun se ena dropdown menu**/
+fetch('/get_items')
+.then(res=>res.json())
+.then(items=>{
+  var item_list = document.querySelector('#items');
+  for(let item of items){
+    var option = document.createElement('option');
+    option.innerHTML = item['name'];
+    option.value = item['name'];
+    item_list.appendChild(option);
+  }
+  
+})
+.catch(error=>{console.log('Error: ',error);})
+//
+/******Dimiourgia aithmatos apo ton polith******/
+const request_button = document.querySelector("#request");
+request_button.addEventListener('click',event=>{
+  var requested_item = document.querySelector("#items").value;
+  fetch('/request/',{
+  method:'POST',
+  headers: { 'Content-Type':'application/json' },
+  body: JSON.stringify({
+    item: requested_item
+  })
+
+})
+.then(res=>res.json())
+.then(data=>{
+
+})
+.catch(error=>{console.log('Error: ',error);})
+
+});
+
+
+
+/*********/
 function showCitizens(){
   /*
 for(let i =0;i<citizens.length;i++){

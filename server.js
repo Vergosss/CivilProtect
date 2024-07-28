@@ -228,8 +228,40 @@ console.log(categories);
 });
 
 });
+//
+app.get('/get_items/',(req,res)=>{
 
+	connection.query('SELECT name FROM Item',(error,results)=>{
 
+		if(error) throw error;
+		res.send(results);
+	})
+});
+//
+app.post('/request/',(req,res)=>{
+	let item = req.body.item;
+	var citizen_first_name,citizen_last_name,citizen_telephone;
+	//
+	connection.query('SELECT first_name,last_name,telephone FROM User Where username=? and role="Citizen"',[req.session.username],(error,results)=>{
+		if(error) throw error;
+		citizen_first_name = results[0].first_name;
+		citizen_last_name = results[0].last_name;
+		citizen_telephone = results[0].telephone;
+		//
+//anagastika to deytero query sto proto epeidh logw async JS prepei na oloklirothei prota to proto query(na exo tis plirofories)
+		connection.query('INSERT INTO Request(citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity) VALUES(?,?,?,NOW(),?,1)',[citizen_first_name,citizen_last_name,citizen_telephone,item],(error,results)=>{
+			if(error) throw error;
+			if(results.affectedRows>0){
+				console.log('Request submitted successfully!');
+			}
+			else{
+				console.log('Request failed');
+			}
+		});
+		
+	});
+	
+});
 //
 app.get('/get_categories/',(req,res)=>{
 	connection.query('SELECT category_name FROM Category',(error,results)=>{
