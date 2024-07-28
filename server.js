@@ -280,6 +280,17 @@ app.get('/coordinates/', (req,res)=>{
 		});
 });
 
+//
+app.get('/get_coordinates/',(req,res)=>{
+
+connection.query('SELECT ST_X(cords),ST_Y(cords) FROM User WHERE username=?',[req.session.username],(error,results)=>{
+if(error) throw error;
+res.send(results);
+
+});
+
+});
+//
 app.get('/citizens/',(req,res)=>{
 	connection.query('SELECT username FROM User WHERE role="Citizen"',(error,results)=>{
 	if(error) throw error;

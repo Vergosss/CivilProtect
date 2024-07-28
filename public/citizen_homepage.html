@@ -65,7 +65,7 @@ base.addTo(map);
 })
 .catch(error=>{console.log('Error: ',error);})
 /****************/
-
+/*
  let cords = {};//an th valo mesa sto then petaei typerror undefined. Exeis tis syntetagmenes ton politon
  let citizens = [];//omoios me to apo pano. perilamvanei ta usernames ton politon
  let marker = null;//arxikopoihsh apo pano(ektos synartiseon) tou marker pou tha dimiourgeitai ek neou gia kathe cord
@@ -79,6 +79,7 @@ base.addTo(map);
 })
   .catch(error=>{console.error('Error: ' + error);});
 //an apotyxei opoiodhpote apo ta parapano typose to error pou petaxtike
+/*
 /*****os admin vlepo th vash****/
 
 
@@ -125,15 +126,31 @@ fetch('/get_items')
 })
 .catch(error=>{console.log('Error: ',error);})
 //
+/******perno ta cords tou polith gia xrhsh metepeita**/
+var lat,long; 
+fetch('/get_coordinates/')
+.then(res=>res.json())
+.then(cords=>{
+  lat = cords[0]['ST_X(cords)'];
+  long = cords[0]['ST_Y(cords)'];
+  //console.log(cords[0]['ST_X(cords)'],cords[0]['ST_Y(cords)']);
+})
+.catch(error=>{console.log('Error: ',error);})  
+  
+ //console.log(lat,long);
+ /*****/
 /******Dimiourgia aithmatos apo ton polith******/
 const request_button = document.querySelector("#request");
+
 request_button.addEventListener('click',event=>{
   var requested_item = document.querySelector("#items").value;
   fetch('/request/',{
   method:'POST',
   headers: { 'Content-Type':'application/json' },
   body: JSON.stringify({
-    item: requested_item
+    item: requested_item,
+    //lat: lat,
+    //long: long 
   })
 
 })
@@ -142,6 +159,10 @@ request_button.addEventListener('click',event=>{
 
 })
 .catch(error=>{console.log('Error: ',error);})
+//
+let request_marker = L.marker([lat,long],{draggable:false});
+request_marker.bindPopup('request');
+request_marker.addTo(map);
 
 });
 
@@ -174,6 +195,7 @@ input.value = span.innerHTML;
 }
 /****************/
 //then()-->to promise vrisketai sthn katastash fullfilled, catch()-->to promise vrisketai sth katastash rejected
+/*
 function fetchCords(){
 let length = cords.length;
 
@@ -184,6 +206,7 @@ for(let i=0;i<length; i++){
   //console.log(i);
 }
 }
+*/
 /**************/
 function findMatches(search){
 if(!search) search = null;
