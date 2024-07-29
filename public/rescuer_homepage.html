@@ -83,9 +83,17 @@ fetch('/update_vehicle/',{
 .then(data=>{console.log(data);})
 .catch(error=>{console.log('Error: ',error);})
 
-
 });
-
+/*******Fetch ta requests kai offers pou den eksipiretountai apo allo oxhma***/base
+fetch('/get_requests/')
+.then(res=>res.json())
+.then(requests=>{
+  for(let request of requests){
+    
+  }
+})
+.catch(error=>{console.log('Error: ',error);})
+/*********/
 
 
 

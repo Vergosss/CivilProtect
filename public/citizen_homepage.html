@@ -128,20 +128,22 @@ fetch('/get_items')
 //
 /******perno ta cords tou polith gia xrhsh metepeita**/
 var lat,long; 
+var request_marker; 
 fetch('/get_coordinates/')
 .then(res=>res.json())
 .then(cords=>{
   lat = cords[0]['ST_X(cords)'];
   long = cords[0]['ST_Y(cords)'];
   //console.log(cords[0]['ST_X(cords)'],cords[0]['ST_Y(cords)']);
+  request_marker = L.marker([lat,long],{draggable:false});
 })
-.catch(error=>{console.log('Error: ',error);})  
-  
+.catch(error=>{console.log('Error: ',error);})
+//console.log(lat,long);  
+//let request_marker = L.marker([lat,long],{draggable:false});
  //console.log(lat,long);
  /*****/
 /******Dimiourgia aithmatos apo ton polith******/
 const request_button = document.querySelector("#request");
-
 request_button.addEventListener('click',event=>{
   var requested_item = document.querySelector("#items").value;
   fetch('/request/',{
@@ -156,13 +158,20 @@ request_button.addEventListener('click',event=>{
 })
 .then(res=>res.json())
 .then(data=>{
-
+//afou kano insert to request sth vash
+//tote enimerose ton marker
+if(!map.hasLayer(request_marker)){
+  //fetcharo to request to aithma
+  request_marker.bindPopup('First request');
+  request_marker.addTo(map);
+}
+else{
+  request_marker.bindPopup('Second');
+}
 })
 .catch(error=>{console.log('Error: ',error);})
 //
-let request_marker = L.marker([lat,long],{draggable:false});
-request_marker.bindPopup('request');
-request_marker.addTo(map);
+
 
 });
 
@@ -218,7 +227,7 @@ return citizen.username.match(regex);//epestrepse matches ths lekshs anazitisis(
 
 //const  = document.querySelector("#search");
 input.addEventListener("keyup",showCitizens);//enas event listener otan pliktrologiso kai AFISO to pliktro trexei h showCitizens
-/********************/
+/********klhsh sto url to json************/
 fetch('https://cors-anywhere.herokuapp.com/'+'http://usidas.ceid.upatras.gr/web/2023/export.php')
 .then(res=>{return res.json();})
 .then(data=>{console.log(data.items);})

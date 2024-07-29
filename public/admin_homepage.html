@@ -64,8 +64,9 @@ let v = null;
 fetch('/get_vehicles/')
 .then(res=>{return res.json();})
 .then(cords=>{
-for(let i=0;i<cords.length;i++){
-  v = L.marker([cords[i]['ST_X(cords)'],cords[i]['ST_Y(cords)']]);
+
+for(let cord of cords){
+  v= L.marker([cord['ST_X(cords)'],cord['ST_Y(cords)']]);
   vehicles.addLayer(v);
 }
 vehicles.addTo(map);

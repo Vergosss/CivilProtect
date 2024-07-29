@@ -135,6 +135,7 @@ else{
 });
 //
 
+//
 app.get('/signup',(req,res)=>{
 	res.sendFile(__dirname + '/public/signup.html');  
 	});
@@ -253,9 +254,13 @@ app.post('/request/',(req,res)=>{
 			if(error) throw error;
 			if(results.affectedRows>0){
 				console.log('Request submitted successfully!');
+				//res.end();
+				res.json({Success:"!"});
 			}
 			else{
 				console.log('Request failed');
+				//res.end();
+				res.json({Failure:"!"});
 			}
 		});
 		
@@ -384,6 +389,16 @@ else{
 });
 
 });
+//
+app.get('/get_requests/',(req,res)=>{
+
+	connection.query('SELECT * FROM Request WHERE lifted=false OR vehicle_username=?',[req.session.username],(error,results)=>{
+		if(error) throw error;
+		res.send(results);
+ 	});
+});
+
+
 /*
 app.use((req, res, next) => {
 	res.header('Access-Control-Allow-Origin', '*');
