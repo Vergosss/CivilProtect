@@ -88,9 +88,21 @@ fetch('/update_vehicle/',{
 fetch('/get_requests/')
 .then(res=>res.json())
 .then(requests=>{
+  let first_name,last_name,telephone,entry_date,item,quantity,request_marker;
+  let requests_group = L.layerGroup();
   for(let request of requests){
-    
+    first_name = request['citizen_first_name'];
+    last_name = request['citizen_last_name'];
+    telephone = request['citizen_telephone'];
+    entry_date = request['entry_date'];
+    item = request['item'];
+    quantity = request['quantity'];
+    request_marker = L.marker([,],{draggable:false});
+    request_marker.bindPopup('Name:',first_name,'\nLast name: ',last_name,"\nTelephone: ",telephone,"\nDate of entry: ",entry_date,"");
+    requests_group.addLayer(request_marker);
+
   }
+  requests_group.addTo(map);
 })
 .catch(error=>{console.log('Error: ',error);})
 /*********/
