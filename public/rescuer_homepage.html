@@ -87,9 +87,9 @@ fetch('/update_vehicle/',{
 /*******Fetch ta requests kai offers pou den eksipiretountai apo allo oxhma***/base
 fetch('/get_requests/')
 .then(res=>res.json())
-.then(requests=>{
+.then(requests=>{//mono afou paro ta requests, oloklironetai to fetch tous
   let first_name,last_name,telephone,entry_date,item,quantity,request_marker;
-  let requests_group = L.layerGroup();
+  let requests_group = L.layerGroup();//vazo se ena group ta requests
   for(let request of requests){
     first_name = request['citizen_first_name'];
     last_name = request['citizen_last_name'];
@@ -98,9 +98,9 @@ fetch('/get_requests/')
     item = request['item'];
     quantity = request['quantity'];
     request_marker = L.marker([,],{draggable:false});
-    request_marker.bindPopup('Name:',first_name,'\nLast name: ',last_name,"\nTelephone: ",telephone,"\nDate of entry: ",entry_date,"");
+    request_marker.bindPopup('Name:',first_name,'\nLast name: ',last_name,"\nTelephone: ",telephone,"\nDate of entry: ",entry_date,"\nItem: ",item,"\nQuantity: ",quantity);
     requests_group.addLayer(request_marker);
-
+    //o marker tou request logika tha exei ena koubi pou tha leei lift(to analamvanei o diasostis)
   }
   requests_group.addTo(map);
 })

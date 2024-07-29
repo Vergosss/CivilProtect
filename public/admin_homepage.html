@@ -67,12 +67,12 @@ fetch('/get_vehicles/')
 
 for(let cord of cords){
   v= L.marker([cord['ST_X(cords)'],cord['ST_Y(cords)']]);
-  vehicles.addLayer(v);
+  vehicles.addLayer(v);//ekkremei to username tou oximatos
 }
 vehicles.addTo(map);
 })
 .catch(error=>{console.log('Error: ',error);})
-
+/*******/
 
 /****Epivevaiosh gia allagh ths topothesias ths vashs***/
 //
