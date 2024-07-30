@@ -8,6 +8,33 @@
 
 }
 .register-rescuer{
-
+    width: 200px;
     margin: 50px;
+    height: 400px;
+}
+.register-rescuer form{
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-top: 20px;
+}
+.register-rescuer form input[type="password"], .register-rescuer form input[type="text"], .register-rescuer form input[type="tel"] {
+    width: 100px;
+    height: 50px;
+    border: 1px solid #dee0e4;
+    margin-bottom: 20px;
+    padding: 0 15px;
+}
+
+.register-rescuer form input[type="submit"] {
+    width: 100%;
+    padding: 15px;
+   margin-top: 20px;
+    background-color: #3274d6;
+    border: 0;
+    cursor: pointer;
+    font-weight: bold;
+    color: #ffffff;
+    transition: background-color 0.2s;
 }

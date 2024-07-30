@@ -175,6 +175,39 @@ app.post('/signup',(req,res)=>{
 	
 	});
 //
+app.post('/register_rescuer/',(req,res)=>{
+
+	let reg_username = req.body.username;
+	let reg_password = req.body.password;   
+	let reg_first_name = req.body.firstname;
+	let reg_last_name = req.body.lastname;
+	let reg_telephone = req.body.telephone;
+	console.log('cords:',req.body.latitude,req.body.longitude);
+	console.log(reg_password);
+	let reg_latitude = req.body.latitude;
+	let reg_longitude = req.body.longitude;
+	//
+	bcrypt.hash(reg_password,10,(error,hash)=>{
+		if(error) throw error;
+		//h hash periexei ton hasharismeno kodiko
+		connection.query('INSERT INTO User(username,password,first_name,last_name,telephone,cords,role) VALUES (?,?,?,?,?,POINT(?,?),"Rescuer")',[reg_username,hash,reg_first_name,reg_last_name,reg_telephone,reg_latitude,reg_longitude],(error,result)=>{
+		
+			if(error) throw error;
+			if(result.affectedRows>0){
+			res.send('Successfully registered!');
+			}
+			else{
+			res.send('User already in database');
+			}
+			
+			});
+		
+		});
+
+});
+
+
+//
 const fs = require('fs');
 //
 app.get('/test/', (req,res)=>{
