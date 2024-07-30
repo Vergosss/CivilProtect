@@ -397,8 +397,15 @@ app.get('/get_requests/',(req,res)=>{
 		res.send(results);
  	});
 });
+//
+app.get('/receive_requests/',(req,res)=>{
+	connection.query('SELECT entry_date,item,quantity FROM Request WHERE citizen_first_name="giorgos"',(error,results)=>{
 
-
+		if(error) throw error;
+		res.send(results);
+	});
+});
+//
 /*
 app.use((req, res, next) => {
 	res.header('Access-Control-Allow-Origin', '*');

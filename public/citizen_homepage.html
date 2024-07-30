@@ -21,6 +21,14 @@
       <select name="items" id="items"></select>
       <button type= "button" name="request" id="request">Submit request</button>
     </h2>
+    <table id="requests">
+      <tr>
+      <th>Entry Date</th>
+      <th>Item</th>
+      <th>Quantity</th>
+    </tr>
+    </table>
+    <button type="button" name="reload" id="reload">Reload</button>
   </div>
 </div>
 <!--------------------->
@@ -175,7 +183,24 @@ else{
 
 });
 /*******Provoli ton aitimaton tou xristi(san istoriko)**/
+fetch('/receive_requests/')
+.then(res=>res.json())
+.then(requests=>{
+let tr,td;
+const table = document.querySelector("#requests");
+for(request of requests){
+tr = document.createElement('tr');
+for(req in request){
+  td = document.createElement('td');
+  td.innerHTML = request[req];
+  tr.appendChild(td);
+}
+table.appendChild(tr);
+}
 
+
+})
+.catch(error=>{console.log('Error: ',error);})
 
 /*********/
 function showCitizens(){
