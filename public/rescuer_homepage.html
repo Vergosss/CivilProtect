@@ -14,6 +14,8 @@
 <body>
 
 <div id="map" style="width: 900px; height : 580px"></div>
+<a href="/logout"><button>Log out</button></a>
+
 <script>
 
 let map = L.map('map'); //ftaxno mono ton xarti. Den exo ta tiles, prostithentai meta
@@ -88,7 +90,7 @@ fetch('/update_vehicle/',{
 fetch('/get_requests/')
 .then(res=>res.json())
 .then(requests=>{//mono afou paro ta requests, oloklironetai to fetch tous
-  let first_name,last_name,telephone,entry_date,item,quantity,request_marker;
+  let first_name,last_name,telephone,entry_date,item,quantity,request_marker,lat,long;
   let requests_group = L.layerGroup();//vazo se ena group ta requests
   for(let request of requests){
     first_name = request['citizen_first_name'];
@@ -97,8 +99,10 @@ fetch('/get_requests/')
     entry_date = request['entry_date'];
     item = request['item'];
     quantity = request['quantity'];
-    request_marker = L.marker([,],{draggable:false});
-    request_marker.bindPopup('Name:',first_name,'\nLast name: ',last_name,"\nTelephone: ",telephone,"\nDate of entry: ",entry_date,"\nItem: ",item,"\nQuantity: ",quantity);
+    lat = request['ST_X(cords)'];
+    long = request['ST_Y(cords)'];
+    request_marker = L.marker([lat,long],{draggable:false});
+    request_marker.bindPopup(`Name : ${first_name},${last_name}<br>Telephone: ${telephone}<br>Entry: ${entry_date}<br>Item: ${item}<br>Quantity: ${quantity}`);
     requests_group.addLayer(request_marker);
     //o marker tou request logika tha exei ena koubi pou tha leei lift(to analamvanei o diasostis)
   }
