@@ -408,7 +408,7 @@ res.send(results);
 
 });
 //
-app.get('/update_vehicle/',(req,res)=>{
+app.post('/update_vehicle/',(req,res)=>{
 let latitude = req.body.latitude;
 let longitude = req.body.longitude;
 let username = req.session.username;

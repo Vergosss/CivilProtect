@@ -92,6 +92,7 @@ fetch('/get_requests/')
 .then(requests=>{//mono afou paro ta requests, oloklironetai to fetch tous
   let first_name,last_name,telephone,entry_date,item,quantity,request_marker,lat,long;
   let requests_group = L.layerGroup();//vazo se ena group ta requests
+  let undertake_button;
   for(let request of requests){
     first_name = request['citizen_first_name'];
     last_name = request['citizen_last_name'];
@@ -102,7 +103,13 @@ fetch('/get_requests/')
     lat = request['ST_X(cords)'];
     long = request['ST_Y(cords)'];
     request_marker = L.marker([lat,long],{draggable:false});
-    request_marker.bindPopup(`Name : ${first_name},${last_name}<br>Telephone: ${telephone}<br>Entry: ${entry_date}<br>Item: ${item}<br>Quantity: ${quantity}`);
+    const button = document.createElement('button');
+    button.innerHTML = 'Undertake Task';
+    request_marker.bindPopup(`Name : ${first_name},${last_name}<br>Telephone: ${telephone}<br>Entry: ${entry_date}<br>Item: ${item}<br>Quantity: ${quantity}<br><div id="undertake_button"></div>`);
+    request_marker.on('popupopen',()=>{
+    const undertake_button = document.querySelector("#undertake_button");
+    undertake_button.appendChild(button);
+    });
     requests_group.addLayer(request_marker);
     //o marker tou request logika tha exei ena koubi pou tha leei lift(to analamvanei o diasostis)
   }

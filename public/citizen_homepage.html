@@ -192,7 +192,7 @@ for(request of requests){
 tr = document.createElement('tr');
 for(req in request){
   td = document.createElement('td');
-  td.innerHTML = request[req];
+  td.innerHTML = String(request[req]);
   tr.appendChild(td);
 }
 table.appendChild(tr);
