@@ -86,14 +86,24 @@ fetch('/update_vehicle/',{
 .catch(error=>{console.log('Error: ',error);})
 
 });
-/*******Fetch ta requests kai offers pou den eksipiretountai apo allo oxhma***/base
+/*******Fetch ta requests kai offers pou den eksipiretountai apo allo oxhma***/
 fetch('/get_requests/')
 .then(res=>res.json())
 .then(requests=>{//mono afou paro ta requests, oloklironetai to fetch tous
-  let first_name,last_name,telephone,entry_date,item,quantity,request_marker,lat,long;
+  
+show_requests(requests);
+    //o marker tou request logika tha exei ena koubi pou tha leei lift(to analamvanei o diasostis)
+  
+})
+.catch(error=>{console.log('Error: ',error);})
+/*********/
+
+function show_requests(requests){
+  let first_name,last_name,telephone,entry_date,item,quantity,request_marker,lat,long,lifted;
   let requests_group = L.layerGroup();//vazo se ena group ta requests
   let undertake_button;
   for(let request of requests){
+    let username = request['username']
     first_name = request['citizen_first_name'];
     last_name = request['citizen_last_name'];
     telephone = request['citizen_telephone'];
@@ -102,24 +112,54 @@ fetch('/get_requests/')
     quantity = request['quantity'];
     lat = request['ST_X(cords)'];
     long = request['ST_Y(cords)'];
-    request_marker = L.marker([lat,long],{draggable:false});
+    lifted = request['lifted'];
+//variables
+    request_marker = L.marker([lat,long],{draggable:false,lifted:lifted});
     const button = document.createElement('button');
     button.innerHTML = 'Undertake Task';
     request_marker.bindPopup(`Name : ${first_name},${last_name}<br>Telephone: ${telephone}<br>Entry: ${entry_date}<br>Item: ${item}<br>Quantity: ${quantity}<br><div id="undertake_button"></div>`);
-    request_marker.on('popupopen',()=>{
+    //otan anigei o marker(to popup tou)
+    request_marker.on('popupopen',function (){
     const undertake_button = document.querySelector("#undertake_button");
     undertake_button.appendChild(button);
+    //marker work
+    console.log(this.options.lifted);
+    if(this.options.lifted == 1){
+    button.disabled = true;
+    }
+    //to koubi prepei na menei energopoihmeno gia oso exei analifthei apo ton rescuer
+    else{ 
+      //console.log(lifted);
+      button.addEventListener('click',event=>{
+      //kodikas gia analavi task
+      button.disabled = true;
+      create_task(username);
+    });
+  }
+   
     });
     requests_group.addLayer(request_marker);
-    //o marker tou request logika tha exei ena koubi pou tha leei lift(to analamvanei o diasostis)
+
   }
   requests_group.addTo(map);
+
+}
+function create_task(username){
+
+fetch('/create_task/',{
+    method:'POST',
+    headers: { 'Content-Type':'application/json' },
+    body: JSON.stringify({
+      username:username
+    })
+})
+.then(res=>res.json())
+.then(data=>{
+
 })
 .catch(error=>{console.log('Error: ',error);})
-/*********/
 
-
-
+}
 </script>
 
 

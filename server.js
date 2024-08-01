@@ -286,7 +286,7 @@ app.post('/request/',(req,res)=>{
 		let longitude = results[0]['ST_Y(cords)'];
 		//
 //anagastika to deytero query sto proto epeidh logw async JS prepei na oloklirothei prota to proto query(na exo tis plirofories)
-		connection.query('INSERT INTO Request(citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,cords) VALUES(?,?,?,NOW(),?,1,POINT(?,?))',[citizen_first_name,citizen_last_name,citizen_telephone,item,latitude,longitude],(error,results)=>{
+		connection.query('INSERT INTO Request(citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,cords,username) VALUES(?,?,?,NOW(),?,1,POINT(?,?),?)',[citizen_first_name,citizen_last_name,citizen_telephone,item,latitude,longitude,req.session.username],(error,results)=>{
 			if(error) throw error;
 			if(results.affectedRows>0){
 				console.log('Request submitted successfully!');
@@ -428,7 +428,7 @@ else{
 //
 app.get('/get_requests/',(req,res)=>{
 
-	connection.query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,ST_X(cords),ST_Y(cords) FROM Request WHERE lifted=false OR vehicle_username=?',[req.session.username],(error,results)=>{
+	connection.query('SELECT username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,ST_X(cords),ST_Y(cords),lifted FROM Request WHERE lifted=false OR vehicle_username=?',[req.session.username],(error,results)=>{
 		if(error) throw error;
 		res.send(results);
  	});
@@ -440,6 +440,21 @@ app.get('/receive_requests/',(req,res)=>{
 		if(error) throw error;
 		res.send(results);
 	});
+});
+//
+app.post('/create_task/',(req,res)=>{
+let username = req.body.username;
+connection.query('UPDATE Request SET lifted=true,vehicle_username=?,withdrawal_date=NOW() WHERE username=?',[req.session.username,username],(error,results)=>{
+if(error) throw error;
+if(results.affectedRows>0){
+	console.log('Success!');
+}
+else{
+	console.log('Error!');
+}
+
+});
+
 });
 //
 /*
