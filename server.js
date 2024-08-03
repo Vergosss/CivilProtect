@@ -454,7 +454,20 @@ else{
 }
 
 });
+//boro na ta trexo taytoxrona
+/*
+connection.query('INSERT INTO Task(username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity) VALUES (?,?,?,?,NOW(),?,1) ',[],(error,results)=>{
+	if(error) throw error;
+	if(results.affectedRows>0){
+		console.log('Success!');
+	}
+	else{
+		console.log('Error!');
+	}
 
+
+});
+*/
 });
 //
 /*

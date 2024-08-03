@@ -43,6 +43,15 @@ var redIcon = new L.Icon({
   shadowSize: [41, 41]
 });
 //
+var yellowIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+//
 let base = L.marker([38.24,21.73],{draggable:false,icon:greenIcon});
 base.addTo(map);
 /**********arxikopoihseis****/
@@ -115,9 +124,17 @@ function show_requests(requests){
     lifted = request['lifted'];
 //variables
     request_marker = L.marker([lat,long],{draggable:false,lifted:lifted});
+    if(lifted == true){
+      request_marker.setIcon(yellowIcon);
+      let cords = [[request_marker.getLatLng().lat,request_marker.getLatLng().lng],[vehicle.getLatLng().lat,vehicle.getLatLng().lng]];
+      let line = L.polyline(cords,{color:'green'});
+      line.addTo(map);
+    } 
+
     const button = document.createElement('button');
     button.innerHTML = 'Undertake Task';
     request_marker.bindPopup(`Name : ${first_name},${last_name}<br>Telephone: ${telephone}<br>Entry: ${entry_date}<br>Item: ${item}<br>Quantity: ${quantity}<br><div id="undertake_button"></div>`);
+    
     //otan anigei o marker(to popup tou)
     request_marker.on('popupopen',function (){
     const undertake_button = document.querySelector("#undertake_button");
@@ -133,6 +150,10 @@ function show_requests(requests){
       button.addEventListener('click',event=>{
       //kodikas gia analavi task
       button.disabled = true;
+      this.setIcon(yellowIcon);
+      let cords = [[this.getLatLng().lat,this.getLatLng().lng],[vehicle.getLatLng().lat,vehicle.getLatLng().lng]];
+      let line = L.polyline(cords,{color:'green'});
+      line.addTo(map);
       create_task(username);
     });
   }
