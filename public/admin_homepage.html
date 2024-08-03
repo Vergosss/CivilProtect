@@ -165,6 +165,15 @@ fetch('https://cors-anywhere.herokuapp.com/'+'http://usidas.ceid.upatras.gr/web/
 .then(data=>{console.log(data.items);})
 .catch(error=>{console.log('Error : ',error);})
 */
+fetch('/fetch_requests/')
+.then(res=>res.json())
+.then(requests=>{
+
+//
+
+})
+.catch(error=>{console.log('Error: ',error);})
+
 </script>
 
 

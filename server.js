@@ -434,6 +434,15 @@ app.get('/get_requests/',(req,res)=>{
  	});
 });
 //
+app.get('/fetch_requests/',(req,res)=>{
+
+	connection.query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,withdrawal_date,vehicle_username,ST_X(cords),ST_Y(cords) FROM Request',(error,results)=>{
+		if(error) throw error;
+		res.send(results);
+	});
+});
+//
+//
 app.get('/receive_requests/',(req,res)=>{
 	connection.query('SELECT entry_date,item,quantity FROM Request WHERE citizen_first_name="giorgos"',(error,results)=>{
 
