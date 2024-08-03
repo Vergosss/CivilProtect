@@ -400,7 +400,7 @@ res.send(results);
 //
 app.get('/get_vehicles/',(req,res)=>{
 
-connection.query('SELECT ST_X(cords),ST_Y(cords) FROM User WHERE role="Rescuer"',(error,results)=>{
+connection.query('SELECT username,ST_X(cords),ST_Y(cords) FROM User WHERE role="Rescuer"',(error,results)=>{
 if(error) throw error;
 res.send(results);
 
