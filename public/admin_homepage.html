@@ -70,6 +70,15 @@ var blackIcon = new L.Icon({
   popupAnchor: [1, -34],
   shadowSize: [41, 41]
 });
+//
+var yellowIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
 /*******gia na kano eggrafi ton rescuer***/
 let rescuer_marker = L.marker([38.24,21.73],{draggable:true,icon:blackIcon});
 rescuer_marker.bindPopup('Register');
@@ -168,11 +177,43 @@ fetch('https://cors-anywhere.herokuapp.com/'+'http://usidas.ceid.upatras.gr/web/
 fetch('/fetch_requests/')
 .then(res=>res.json())
 .then(requests=>{
-
+display_requests(requests);
 //
 
 })
 .catch(error=>{console.log('Error: ',error);})
+/********/
+function display_requests(requests){
+let first_name,last_name,telephone,entry_date,item,quantity,withdrawal_date,vehicle_username,lat,long;
+let request_marker,lifted;
+for(let request of requests){
+  first_name = request['citizen_first_name'];
+  last_name = request['citizen_last_name'];
+  telephone = request['citizen_telephone'];
+  entry_date = request['entry_date'];
+  item = request['item'];
+  quantity = request['quantity'];
+  withdrawal_date = request['withdrawal_date'];
+  vehicle_username = request['vehicle_username'];
+  lat = request['ST_X(cords)'];
+  long = request['ST_Y(cords)'];
+  lifted = request['lifted'];
+  request_marker = L.marker([lat,long],{draggable:false});
+  //variables
+  let popup = `User name: ${first_name},${last_name}<br>Telephone: ${telephone}<br>Entry date: ${entry_date}<br>Item: ${item}<br>Quantity: ${quantity}<br>`;
+  if(lifted == true){
+    request_marker.setIcon(yellowIcon);
+    request_marker.bindPopup(popup + `Withdrawal_date: ${withdrawal_date}<br>Vehicle: ${vehicle_username}`);
+    request_marker.addTo(map);
+  }
+  else{
+    request_marker.bindPopup(popup);
+    request_marker.addTo(map);
+  }
+}
+
+}
+
 
 </script>
 
