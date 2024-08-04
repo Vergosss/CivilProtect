@@ -34,6 +34,9 @@
   <input type="file" id="upload" name="upload"/>
   <input type="submit" id="submit" value="Upload products"/>
 </form> 
+<button id="itemsbutton">Fetch Items</button>
+<a href="/logout"><button>Log out</button></a>
+
 <script>
 
 let map = L.map('map'); //ftaxno mono ton xarti. Den exo ta tiles, prostithentai meta
@@ -115,7 +118,7 @@ fetch('/get_vehicles/')
 .then(cords=>{
 
 for(let cord of cords){
-  v= L.marker([cord['ST_X(cords)'],cord['ST_Y(cords)']],{draggable:false,icon:redIcon});
+  v= L.marker([cord['ST_X(cords)'],cord['ST_Y(cords)']],{draggable:false,icon:redIcon,name:cord['username']});
   v.bindPopup(`${cord['username']}`);
   vehicles.addLayer(v);//ekkremei to username tou oximatos
 }
@@ -169,21 +172,18 @@ console.log(starting_lat,starting_long);
 });
 /****************/
 /*
-fetch('https://cors-anywhere.herokuapp.com/'+'http://usidas.ceid.upatras.gr/web/2023/export.php')
-.then(res=>{return res.json();})
-.then(data=>{console.log(data.items);})
-.catch(error=>{console.log('Error : ',error);})
+
 */
 fetch('/fetch_requests/')
 .then(res=>res.json())
 .then(requests=>{
-display_requests(requests);
+display_requests(requests,get_vehicle);
 //
 
 })
 .catch(error=>{console.log('Error: ',error);})
 /********/
-function display_requests(requests){
+function display_requests(requests,get_vehicle){
 let first_name,last_name,telephone,entry_date,item,quantity,withdrawal_date,vehicle_username,lat,long;
 let request_marker,lifted;
 for(let request of requests){
@@ -202,18 +202,44 @@ for(let request of requests){
   //variables
   let popup = `User name: ${first_name},${last_name}<br>Telephone: ${telephone}<br>Entry date: ${entry_date}<br>Item: ${item}<br>Quantity: ${quantity}<br>`;
   if(lifted == true){
-    request_marker.setIcon(yellowIcon);
+    //an to aithma exei analifthei apo kapoion diasosti
+    request_marker.setIcon(yellowIcon);//kanto kitrino
     request_marker.bindPopup(popup + `Withdrawal_date: ${withdrawal_date}<br>Vehicle: ${vehicle_username}`);
-    request_marker.addTo(map);
+    request_marker.addTo(map);//vale sto popup thn extra pliroforia kai valto sto map
+    let cords = [[lat,long],[get_vehicle(vehicle_username).lat,get_vehicle(vehicle_username).lng]];
+    let line = L.polyline(cords,{color:'green'});
+    line.addTo(map);//sundese to aithma pou exei analifthei me ton diasosti tou
   }
   else{
-    request_marker.bindPopup(popup);
-    request_marker.addTo(map);
+    request_marker.bindPopup(popup);//vale sto popup mono th vasikh pliroforia
+    request_marker.addTo(map);//prosthese to sto map
   }
 }
 
 }
+/**********/
+function get_vehicle(vehicle_username){
+  //pairno ta cords tou oximatos me aytes tis syntetagmenes
+let cords;
+vehicles.eachLayer(marker=>{
+if(marker.options.name == vehicle_username){
+  cords = marker.getLatLng();
+}
+});
+return cords;
+}
 
+
+/*******************/
+//an patithei to koubi kano fetch ta proionta me amesh klhsh sto url 
+const itemsbutton = document.querySelector("#itemsbutton");
+itemsbutton.addEventListener('click',event=>{
+//lyno to cors me th xrhsh enos proxy server
+fetch('https://cors-anywhere.herokuapp.com/'+'http://usidas.ceid.upatras.gr/web/2023/export.php')
+.then(res=>{return res.json();})
+.then(data=>{console.log(data.items);})
+.catch(error=>{console.log('Error : ',error);})
+});
 
 </script>
 
