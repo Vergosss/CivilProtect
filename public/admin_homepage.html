@@ -46,6 +46,11 @@ let tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
    });//vazo ta tiles tou OSM
 tiles.addTo(map);//prostheto ta tiles tou OSM ston xarti
 map.setView([38.24,21.73],16);//orizo tis syntetagmenes tou shmeiou sto opoio tha kentrarei o xarths kai to zoom level
+//filtra ston xarti
+var filter = L.control.layers();
+filter.addTo(map);
+
+
 //
 var redIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
@@ -86,7 +91,10 @@ var yellowIcon = new L.Icon({
 let rescuer_marker = L.marker([38.24,21.73],{draggable:true,icon:blackIcon});
 rescuer_marker.bindPopup('Register');
 rescuer_marker.addTo(map);
-//
+register_group = L.layerGroup();
+register_group.addLayer(rescuer_marker);
+filter.addOverlay(register_group,'Register');
+//gia na ton vgazo ton register marker gia na mhn xalaei to map aisthitika
 rescuer_marker.addEventListener('dragend',event=>{
 let lat = rescuer_marker.getLatLng().lat;
 let long = rescuer_marker.getLatLng().lng;
@@ -123,6 +131,7 @@ for(let cord of cords){
   vehicles.addLayer(v);//ekkremei to username tou oximatos
 }
 vehicles.addTo(map);
+filter.addOverlay(vehicles,"Vehicles");
 })
 .catch(error=>{console.log('Error: ',error);})
 /*******/
@@ -182,6 +191,10 @@ display_requests(requests,get_vehicle);
 
 })
 .catch(error=>{console.log('Error: ',error);})
+//
+var lifted_requests = L.layerGroup();
+var unlifted_requests = L.layerGroup();
+var lines = L.layerGroup();
 /********/
 function display_requests(requests,get_vehicle){
 let first_name,last_name,telephone,entry_date,item,quantity,withdrawal_date,vehicle_username,lat,long;
@@ -205,17 +218,25 @@ for(let request of requests){
     //an to aithma exei analifthei apo kapoion diasosti
     request_marker.setIcon(yellowIcon);//kanto kitrino
     request_marker.bindPopup(popup + `Withdrawal_date: ${withdrawal_date}<br>Vehicle: ${vehicle_username}`);
-    request_marker.addTo(map);//vale sto popup thn extra pliroforia kai valto sto map
+    //request_marker.addTo(map);//vale sto popup thn extra pliroforia kai valto sto map
+    lifted_requests.addLayer(request_marker);
     let cords = [[lat,long],[get_vehicle(vehicle_username).lat,get_vehicle(vehicle_username).lng]];
     let line = L.polyline(cords,{color:'green'});
-    line.addTo(map);//sundese to aithma pou exei analifthei me ton diasosti tou
+    //line.addTo(map);//sundese to aithma pou exei analifthei me ton diasosti tou
+    lines.addLayer(line);
   }
   else{
     request_marker.bindPopup(popup);//vale sto popup mono th vasikh pliroforia
-    request_marker.addTo(map);//prosthese to sto map
+    //request_marker.addTo(map);//prosthese to sto map
+    unlifted_requests.addLayer(request_marker);
   }
 }
-
+lifted_requests.addTo(map);
+unlifted_requests.addTo(map);
+lines.addTo(map);
+filter.addOverlay(lifted_requests,'Lifted Requests');
+filter.addOverlay(unlifted_requests,'Free Requests');
+filter.addOverlay(lines,'Connections');
 }
 /**********/
 function get_vehicle(vehicle_username){
