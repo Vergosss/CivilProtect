@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-search@3.0.2/dist/leaflet-search.min.css" />
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-search/3.0.2/leaflet-search.min.js"></script>
-
+        <link rel="icon" type="image/x-icon" href="/public/favicon.ico">
     <title>Welcome Rescuer!</title>
 </head>
 
@@ -15,7 +15,7 @@
 
 <div id="map" style="width: 900px; height : 580px"></div>
 <a href="/logout"><button>Log out</button></a>
-
+<button id="fortosi">Load Items into Vehicle</button>
 <script>
 
 let map = L.map('map'); //ftaxno mono ton xarti. Den exo ta tiles, prostithentai meta
@@ -77,11 +77,23 @@ vehicle.addTo(map);
 })
 .catch(error=>{console.log('Error: ',error);})
 /*******Allagh ton cords tou (oximatos) diasosti me click kai drag*****/
-
+document.querySelector("#fortosi").disabled = true;
+//
 vehicle.addEventListener('dragend',event => {
 //get the cords after dragend
 let lat = vehicle.getLatLng().lat;
 let long = vehicle.getLatLng().lng;
+const fortosi = document.querySelector("#fortosi");
+//an o rescuer einai entos 100 metron apo th vash
+if(map.distance([lat,long],[base.getLatLng().lat,base.getLatLng().lng]) < 100){
+//energopoio thn fortosi/ekfortosi
+//console.log(map.distance([lat,long],[base.getLatLng().lat,base.getLatLng().lng]));
+fortosi.disabled =false;
+}
+else{
+  fortosi.disabled = true;
+}
+//update cords in database
 fetch('/update_vehicle/',{
     method:'POST',
     headers: { 'Content-Type':'application/json' },

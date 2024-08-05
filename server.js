@@ -417,9 +417,11 @@ connection.query('UPDATE User SET cords=POINT(?,?) WHERE role="Rescuer" AND user
 if(error) throw error;
 if(results.affectedRows>0){
 	console.log('Changed Vehicle position successfully!');
+	res.json({OK:"!"});
 }
 else{
 	console.log('Failed to change vehicle\'s position!');
+	res.json({Error:"!"});
 	
 }
 });
