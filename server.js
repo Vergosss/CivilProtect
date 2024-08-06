@@ -455,10 +455,10 @@ app.get('/receive_requests/',(req,res)=>{
 //
 app.post('/create_task/',(req,res)=>{
 let username = req.body.username;
-//let first_name = req.body.first_name;
-//let last_name = req.body.last_name;
-//let telephone = req.body.telephone;
-//let item = req.body.item;
+let first_name = req.body.first_name;
+let last_name = req.body.last_name;
+let telephone = req.body.telephone;
+let item = req.body.item;
 connection.query('UPDATE Request SET lifted=true,vehicle_username=?,withdrawal_date=NOW() WHERE username=?',[req.session.username,username],(error,results)=>{
 if(error) throw error;
 if(results.affectedRows>0){
@@ -470,7 +470,7 @@ else{
 
 });
 //boro na ta trexo taytoxrona
-/*
+
 connection.query('INSERT INTO Task(username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity) VALUES (?,?,?,?,NOW(),?,1) ',[username,first_name,last_name,telephone,item],(error,results)=>{
 	if(error) throw error;
 	if(results.affectedRows>0){
@@ -482,7 +482,7 @@ connection.query('INSERT INTO Task(username,citizen_first_name,citizen_last_name
 
 
 });
-*/
+
 });
 //
 /*
