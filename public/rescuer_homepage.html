@@ -8,12 +8,28 @@
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-search/3.0.2/leaflet-search.min.js"></script>
         <link rel="icon" type="image/x-icon" href="/public/favicon.ico">
+        <link rel="stylesheet" href="/public/homepage.css" type="text/css">
     <title>Welcome Rescuer!</title>
 </head>
 
 <body>
-
+<div class="flex-container">
 <div id="map" style="width: 900px; height : 580px"></div>
+<div class="panel">
+<h2>Tasks</h2>
+<table id="tasks">
+  <tr>
+  <th>First name</th>
+  <th>Last name</th>
+  <th>Telephone</th>
+  <th>Entry Date</th>
+  <th>Item</th>
+  <th>Quantity</th>
+  </tr>
+    </table>
+  </div>
+</div>
+<!------------------------------------------>
 <a href="/logout"><button>Log out</button></a>
 <button id="fortosi">Load Items into Vehicle</button>
 <script>
@@ -120,22 +136,23 @@ show_requests(requests);
 /*********/
 
 function show_requests(requests){
-  let first_name,last_name,telephone,entry_date,item,quantity,request_marker,lat,long,lifted;
+
   let requests_group = L.layerGroup();//vazo se ena group ta requests
-  let undertake_button;
   for(let request of requests){
+    let undertake_button;
+
     let username = request['username']
-    first_name = request['citizen_first_name'];
-    last_name = request['citizen_last_name'];
-    telephone = request['citizen_telephone'];
-    entry_date = request['entry_date'];
-    item = request['item'];
-    quantity = request['quantity'];
-    lat = request['ST_X(cords)'];
-    long = request['ST_Y(cords)'];
-    lifted = request['lifted'];
+    let first_name = request['citizen_first_name'];
+    let last_name = request['citizen_last_name'];
+    let telephone = request['citizen_telephone'];
+    let entry_date = request['entry_date'];
+    let item = request['item'];
+    let quantity = request['quantity'];
+    let lat = request['ST_X(cords)'];
+    let long = request['ST_Y(cords)'];
+    let lifted = request['lifted'];
 //variables
-    request_marker = L.marker([lat,long],{draggable:false,lifted:lifted});
+    let request_marker = L.marker([lat,long],{draggable:false,lifted:lifted});
     if(lifted == true){
       request_marker.setIcon(yellowIcon);
       let cords = [[request_marker.getLatLng().lat,request_marker.getLatLng().lng],[vehicle.getLatLng().lat,vehicle.getLatLng().lng]];
@@ -146,7 +163,7 @@ function show_requests(requests){
     const button = document.createElement('button');
     button.innerHTML = 'Undertake Task';
     request_marker.bindPopup(`Name : ${first_name},${last_name}<br>Telephone: ${telephone}<br>Entry: ${entry_date}<br>Item: ${item}<br>Quantity: ${quantity}<br><div id="undertake_button"></div>`);
-    
+
     //otan anigei o marker(to popup tou)
     request_marker.on('popupopen',function (){
     const undertake_button = document.querySelector("#undertake_button");
@@ -159,6 +176,7 @@ function show_requests(requests){
     //to koubi prepei na menei energopoihmeno gia oso exei analifthei apo ton rescuer
     else{ 
       //console.log(lifted);
+   
       button.addEventListener('click',event=>{
       //kodikas gia analavi task
       button.disabled = true;
@@ -166,8 +184,10 @@ function show_requests(requests){
       let cords = [[this.getLatLng().lat,this.getLatLng().lng],[vehicle.getLatLng().lat,vehicle.getLatLng().lng]];
       let line = L.polyline(cords,{color:'green'});
       line.addTo(map);
+      //create_task(username,first_name,last_name,telephone,item);
       create_task(username);
     });
+   
   }
    
     });
@@ -184,6 +204,10 @@ fetch('/create_task/',{
     headers: { 'Content-Type':'application/json' },
     body: JSON.stringify({
       username:username
+      //first_name:first_name,
+      //last_name:last_name,
+      //telephone:telephone,
+      //item:item
     })
 })
 .then(res=>res.json())
