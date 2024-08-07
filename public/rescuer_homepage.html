@@ -240,13 +240,13 @@ fetch('/get_tasks/')
   let tr,td;
   const table = document.querySelector("#tasks");
 for(task of tasks){
-  tr = document.createElement('tr');
+  tr = document.createElement('tr');//gia kathe object pou fetchara ftiaxno ena table row
 for(tsk in task){//diatrexo kathe kleidi-timh tou object
-  td = document.createElement('td');
+  td = document.createElement('td');//gia kathe pedio tou object dimiourgo ena table data element kai tou vazo timi thn timh tou ekastote pediou tou object
   td.innerHTML = String(task[tsk]);
-  tr.appendChild(td);
+  tr.appendChild(td);//vazo ayto to table data element sto row/grammh
 }
-table.appendChild(tr);
+table.appendChild(tr);//vale th grammh ayth ston pinaka
 
 }
 
