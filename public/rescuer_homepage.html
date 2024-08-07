@@ -233,6 +233,25 @@ fetch('/create_task/',{
 
 }
 /********fetchare ta tasks kai dikse ta se enan pinaka*****/
+fetch('/get_tasks/')
+.then(res=>res.json())
+.then(tasks=>{
+
+  let tr,td;
+  const table = document.querySelector("#tasks");
+for(task of tasks){
+  tr = document.createElement('tr');
+for(tsk in task){//diatrexo kathe kleidi-timh tou object
+  td = document.createElement('td');
+  td.innerHTML = String(task[tsk]);
+  tr.appendChild(td);
+}
+table.appendChild(tr);
+
+}
+
+})
+.catch(error=>{console.log('Error: ',error);})
 </script>
 
 

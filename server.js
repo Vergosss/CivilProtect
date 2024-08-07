@@ -493,7 +493,13 @@ app.use((req, res, next) => {
   });//gia na lyso to provlima tou CORS
 */
   //
+app.get('/get_tasks/',(req,res)=>{
+connection.query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity FROM Task',(error,results)=>{
+if(error) throw error;
+res.send(results);
 
+});
+});
 //
 module.exports = app;//an thelo na kano import se allo JS arxeio ton parapano kodika
 app.listen(port,() => {
