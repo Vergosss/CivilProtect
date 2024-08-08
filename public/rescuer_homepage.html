@@ -92,6 +92,12 @@ fetch('/get_vehicle/')
 vehicle.setLatLng([data[0]['ST_X(cords)'],data[0]['ST_Y(cords)']]);
 vehicle.bindPopup('Your vehicle');
 vehicle.addTo(map);
+//
+return fetch('/get_requests/');
+})
+.then(res=>res.json())
+.then(requests=>{//chainaro ta promises
+  show_requests(requests);
 })
 .catch(error=>{console.log('Error: ',error);})
 /*******Allagh ton cords tou (oximatos) diasosti me click kai drag*****/
@@ -105,7 +111,7 @@ const fortosi = document.querySelector("#fortosi");
 //an o rescuer einai entos 100 metron apo th vash
 if(map.distance([lat,long],[base.getLatLng().lat,base.getLatLng().lng]) < 100){
 //energopoio thn fortosi/ekfortosi
-//console.log(map.distance([lat,long],[base.getLatLng().lat,base.getLatLng().lng]));
+console.log(map.distance([lat,long],[base.getLatLng().lat,base.getLatLng().lng]));
 fortosi.disabled =false;
 }
 else{
@@ -126,19 +132,11 @@ fetch('/update_vehicle/',{
 
 });
 /*******Fetch ta requests kai offers pou den eksipiretountai apo allo oxhma***/
-fetch('/get_requests/')
-.then(res=>res.json())
-.then(requests=>{//mono afou paro ta requests, oloklironetai to fetch tous
-  
-show_requests(requests);
-    //o marker tou request logika tha exei ena koubi pou tha leei lift(to analamvanei o diasostis)
-  
-})
-.catch(error=>{console.log('Error: ',error);})
+
 /*********/
 
 function show_requests(requests){
-
+//xrhsimopoiei to vehicle thelei prosoxi-fix
   let requests_group = L.layerGroup();//vazo se ena group ta requests
   for(let request of requests){
     let undertake_button;
