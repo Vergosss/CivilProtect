@@ -167,7 +167,8 @@ function show_requests(requests){
       //
       let cords = [[request_marker.getLatLng().lat,request_marker.getLatLng().lng],[vehicle.getLatLng().lat,vehicle.getLatLng().lng]];
       let line = L.polyline(cords,{color:'green'});
-      line.addTo(map);
+      //line.addTo(map);
+      lines.addLayer(line);
     } 
     else{
       unlifted_requests.addLayer(request_marker);
@@ -224,8 +225,10 @@ function show_requests(requests){
   unlifted_requests.addTo(map);
   lifted_requests.addTo(map);//vazo ta layer groups ston xarth
   requests_group.addTo(map);
+  lines.addTo(map);
   filter.addOverlay(unlifted_requests,'Free Requests');
   filter.addOverlay(lifted_requests,'Taken Requests');
+  filter.addOverlay(lines,'Connections');
 }
 function create_task(username,first_name,last_name,telephone,item){
 
