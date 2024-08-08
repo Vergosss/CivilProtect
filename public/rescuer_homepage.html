@@ -69,6 +69,12 @@ var yellowIcon = new L.Icon({
   popupAnchor: [1, -34],
   shadowSize: [41, 41]
 });
+//Diloseis metavliton gia ta filters
+var  lifted_requests = L.layerGroup();
+var unlifted_requests = L.layerGroup();
+var lines = L.layerGroup();
+var filter = L.control.layers();
+filter.addTo(map);
 //
 let base = L.marker([38.24,21.73],{draggable:false,icon:greenIcon});
 base.addTo(map);
@@ -100,6 +106,7 @@ return fetch('/get_requests/');
   show_requests(requests);
 })
 .catch(error=>{console.log('Error: ',error);})
+//
 /*******Allagh ton cords tou (oximatos) diasosti me click kai drag*****/
 document.querySelector("#fortosi").disabled = true;
 //
@@ -155,11 +162,16 @@ function show_requests(requests){
     let request_marker = L.marker([lat,long],{draggable:false,lifted:lifted});
     if(lifted == true){
       request_marker.setIcon(yellowIcon);
+      //
+      lifted_requests.addLayer(request_marker);
+      //
       let cords = [[request_marker.getLatLng().lat,request_marker.getLatLng().lng],[vehicle.getLatLng().lat,vehicle.getLatLng().lng]];
       let line = L.polyline(cords,{color:'green'});
       line.addTo(map);
     } 
-
+    else{
+      unlifted_requests.addLayer(request_marker);
+    }
     
     request_marker.bindPopup(`Name : ${first_name},${last_name}<br>Telephone: ${telephone}<br>Entry: ${entry_date}<br>Item: ${item}<br>Quantity: ${quantity}<br><div id="undertake_button"></div>`);
 
@@ -209,8 +221,11 @@ function show_requests(requests){
     requests_group.addLayer(request_marker);
 
   }
+  unlifted_requests.addTo(map);
+  lifted_requests.addTo(map);//vazo ta layer groups ston xarth
   requests_group.addTo(map);
-
+  filter.addOverlay(unlifted_requests,'Free Requests');
+  filter.addOverlay(lifted_requests,'Taken Requests');
 }
 function create_task(username,first_name,last_name,telephone,item){
 
