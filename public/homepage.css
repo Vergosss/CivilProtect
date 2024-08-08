@@ -38,3 +38,9 @@
     color: #ffffff;
     transition: background-color 0.2s;
 }
+
+.table,tr,td{
+
+    border: 1px solid black;
+}
+/**to border einai ta oria ,to keli ,ta akra tou pinaka,perigrama*/

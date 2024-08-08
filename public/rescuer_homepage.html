@@ -25,6 +25,8 @@
   <th>Entry Date</th>
   <th>Item</th>
   <th>Quantity</th>
+  <th>Complete</th>
+  <th>Cancel</th>
   </tr>
     </table>
   </div>
@@ -246,8 +248,21 @@ for(tsk in task){//diatrexo kathe kleidi-timh tou object
   td.innerHTML = String(task[tsk]);
   tr.appendChild(td);//vazo ayto to table data element sto row/grammh
 }
+complete = document.createElement('td');
+complete.innerHTML = `<button class="completebutton">Complete</button>`;
+tr.appendChild(complete);
+cancel = document.createElement('td');
+cancel.innerHTML = `<button class="cancelbutton">Cancel</button>`;
+tr.appendChild(cancel);
 table.appendChild(tr);//vale th grammh ayth ston pinaka
 
+}
+//
+let complete_buttons = document.querySelectorAll(".completebutton");
+for(let btn of complete_buttons){
+  btn.addEventListener('click',function(){
+    console.log('CLicked!');
+  });
 }
 
 })

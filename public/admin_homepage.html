@@ -51,7 +51,7 @@ map.setView([38.24,21.73],16);//orizo tis syntetagmenes tou shmeiou sto opoio th
 //filtra ston xarti
 var filter = L.control.layers();
 filter.addTo(map);
-
+//
 
 //
 var redIcon = new L.Icon({
@@ -110,13 +110,16 @@ let base = L.marker([38.24,21.73],{draggable:true,icon:greenIcon});
 base.bindPopup('This is a popup');// 'syndeo' ton marker me to popup
 base.addTo(map);//prostheto ton marker ston xarth
 //
+var lifted_requests = L.layerGroup();
+var unlifted_requests = L.layerGroup();
+var lines = L.layerGroup();
 /**** os admin vlepo th vash****/
 fetch('/get_base/')
 .then(res=>{return res.json();})
 .then(data=>{
 base.setLatLng([data[0]['ST_X(cords)'],data[0]['ST_Y(cords)']]);
 base.bindPopup('Base');
-//base.addTo(map);
+base.addTo(map);
 })
 .catch(error=>{console.log('Error: ',error);})
 
@@ -129,11 +132,17 @@ fetch('/get_vehicles/')
 
 for(let cord of cords){
   v= L.marker([cord['ST_X(cords)'],cord['ST_Y(cords)']],{draggable:false,icon:redIcon,name:cord['username']});
-  v.bindPopup(`${cord['username']}`);
+  v.bindPopup(`Vehicle username: ${cord['username']}`);
   vehicles.addLayer(v);//ekkremei to username tou oximatos
 }
 vehicles.addTo(map);
 filter.addOverlay(vehicles,"Vehicles");
+//
+return fetch('/fetch_requests/');
+})
+.then(res=>res.json())
+.then(requests=>{
+  display_requests(requests,get_vehicle);
 })
 .catch(error=>{console.log('Error: ',error);})
 /*******/
@@ -185,18 +194,9 @@ console.log(starting_lat,starting_long);
 /*
 
 */
-fetch('/fetch_requests/')
-.then(res=>res.json())
-.then(requests=>{
-display_requests(requests,get_vehicle);
+
 //
 
-})
-.catch(error=>{console.log('Error: ',error);})
-//
-var lifted_requests = L.layerGroup();
-var unlifted_requests = L.layerGroup();
-var lines = L.layerGroup();
 /********/
 function display_requests(requests,get_vehicle){
 let first_name,last_name,telephone,entry_date,item,quantity,withdrawal_date,vehicle_username,lat,long;
