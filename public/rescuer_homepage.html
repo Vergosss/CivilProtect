@@ -278,6 +278,8 @@ let complete_buttons = document.querySelectorAll(".completebutton");
 for(let btn of complete_buttons){
   btn.addEventListener('click',function(){
     console.log('CLicked!');
+    const test = btn.parentNode.previousSibling.previousSibling;
+    console.log(test.innerHTML);//perno to patera tou koubiou pou einai 
   });
 }
 
