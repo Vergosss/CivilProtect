@@ -262,14 +262,24 @@ for(task of tasks){
 for(tsk in task){//diatrexo kathe kleidi-timh tou object
   td = document.createElement('td');//gia kathe pedio tou object dimiourgo ena table data element kai tou vazo timi thn timh tou ekastote pediou tou object
   td.innerHTML = String(task[tsk]);
+  if(tsk == 'task_id' || tsk == 'username'){
+    td.style.display = 'none';
+  }
   tr.appendChild(td);//vazo ayto to table data element sto row/grammh
+
 }
+//koubia
 complete = document.createElement('td');
 complete.innerHTML = `<button class="completebutton">Complete</button>`;
 tr.appendChild(complete);
 cancel = document.createElement('td');
 cancel.innerHTML = `<button class="cancelbutton">Cancel</button>`;
 tr.appendChild(cancel);
+//ftiaxno ta dyo zhtoumena koubia
+idcell = document.createElement('td');
+idcell.innerHTML ='bousgas';//ftiaxno ena keli pinaka-td- kai tou bazo ena koubi os keimeno kai ayto einai to paidi tou keliou
+idcell.style.display = 'none';//me to diplay none krataei to value,de fainetai, oute troei xoro sto pinaka
+tr.appendChild(idcell);
 table.appendChild(tr);//vale th grammh ayth ston pinaka
 
 }
@@ -278,7 +288,7 @@ let complete_buttons = document.querySelectorAll(".completebutton");
 for(let btn of complete_buttons){
   btn.addEventListener('click',function(){
     console.log('CLicked!');
-    const test = btn.parentNode.previousSibling.previousSibling;
+    const test = this.parentNode.previousSibling;//o parent tou koubiou einai o container tou diladi
     console.log(test.innerHTML);//perno to patera tou koubiou pou einai 
   });
 }

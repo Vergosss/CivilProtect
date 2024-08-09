@@ -494,7 +494,7 @@ app.use((req, res, next) => {
 */
   //
 app.get('/get_tasks/',(req,res)=>{
-connection.query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity FROM Task',(error,results)=>{
+connection.query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username FROM Task WHERE completed=false',(error,results)=>{
 if(error) throw error;
 res.send(results);
 
