@@ -492,6 +492,23 @@ app.use((req, res, next) => {
 	next();
   });//gia na lyso to provlima tou CORS
 */
+app.post('/complete_task/',(req,res)=>{
+let tid = req.body.tid;
+	connection.query('UPDATE Task SET completed = 1 WHERE task_id=?',[tid],(error,results)=>{
+	if(error) throw error;
+	if(results.affectedRows>0){
+		
+	console.log('Success!');
+		
+	}
+	else{
+	console.log('Failure!');
+	}
+
+	});
+
+
+});
   //
 app.get('/get_tasks/',(req,res)=>{
 connection.query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username FROM Task WHERE completed=false',(error,results)=>{
