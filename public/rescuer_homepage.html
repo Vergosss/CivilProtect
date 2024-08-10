@@ -282,14 +282,27 @@ table.appendChild(tr);
 let complete_buttons = document.querySelectorAll(".completebutton");
 for(let btn of complete_buttons){
   btn.addEventListener('click',function(){
-    console.log('CLicked!');
+    console.log('Clicked!');
     const id = this.parentNode.previousSibling.previousSibling;//o parent tou koubiou einai o container tou diladi
     console.log(id.innerHTML);//
     const tid = id.innerHTML;
     complete_task(tid);
   });
 }
-
+//
+let cancel_buttons = document.querySelectorAll(".cancelbutton");
+for(let btn of cancel_buttons){
+  btn.addEventListener('click',function(){
+    console.log('Clicked!');
+    const id = this.parentNode.previousSibling.previousSibling.previousSibling;
+    //console.log(id.innerHTML);
+    const tid = id.innerHTML;
+    //delete row
+    const row = this.parentNode.parentNode.rowIndex;//perno to id ths grammhs
+    table.deleteRow(row);
+    cancel_task(tid);
+  });
+}
 })
 .catch(error=>{console.log('Error: ',error);})
 /****function pou oloklironei-diekperaionei ena task***/
@@ -301,6 +314,20 @@ fetch('/complete_task/',{
     body: JSON.stringify({
         tid: tid
     })
+})
+.then(res=>res.json())
+.then(data=>{})
+.catch(error=>{console.log('Error: ',error);})
+
+}
+/****Gia thn akyrosh tou task***/
+function cancel_task(tid){
+fetch('/cancel_task/',{
+  method:'POST',
+  headers:{'Content-Type':'application/json'},
+  body:JSON.stringify({
+    tid:tid
+  })
 })
 .then(res=>res.json())
 .then(data=>{})

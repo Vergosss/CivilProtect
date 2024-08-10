@@ -517,6 +517,20 @@ res.send(results);
 
 });
 });
+
+//
+app.post('/cancel_task/',(req,res)=>{
+	let tid = req.body.tid;
+	connection.query('DELETE FROM Task WHERE task_id=?',[tid],(error,results)=>{
+		if(error) throw error;
+		if(results.affectedRows>0){
+			console.log('Success');
+		}
+		else{
+			console.log('Failure!');
+		}
+	});
+});
 //
 module.exports = app;//an thelo na kano import se allo JS arxeio ton parapano kodika
 app.listen(port,() => {
