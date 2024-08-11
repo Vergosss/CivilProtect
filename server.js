@@ -209,18 +209,17 @@ app.post('/register_rescuer/',(req,res)=>{
 
 
 //
-const fs = require('fs');
 //
 app.get('/test/', (req,res)=>{
 fs.readFile(__dirname + '/uploads/upload-1721913498358.json','utf-8',(error,data)=>{
 //asygxrona diavase to arxeio(exei callback)
 	if(error) throw error;
 	data = JSON.parse(data);//diavase ta dedomena os json
-	let {code,message,categories,...items} = data;//afairo apo to arxeio to code,message,categories gia na xeiristo mono ta proionta
+	//let {code,message,categories,...items} = data;//afairo apo to arxeio to code,message,categories gia na xeiristo mono ta proionta
 	//kai menoun mono ta items
 	//let {details,...rest} = items;
 	//console.log(items);
-	//console.log(data);
+	console.log(data);
 	//console.log(rest);
 	const final_items = items.items.map(({details,...rest})=>rest);//epestrepse to rest
 	//afairo to details kathe eggrafhs-json object-stixiou tou array meso ths map
@@ -244,22 +243,7 @@ connection.query('TRUNCATE TABLE Item',(error,results)=>{
 
  
 //Katharizo to table prota gia na mhn ksanaeisaxthoun ta proionta
-connection.query('TRUNCATE TABLE Category',(error,results)=>{
-	if(error) throw error;
 
-});
-console.log(categories);
-	for(let category of categories){
-		connection.query('INSERT INTO Category VALUES(?,?)',[category.id,category['category_name']],(error,results)=>{
-			if(error) throw error;
-			if(results.affectedRows>0){
-				console.log('Success!');
-			}
-			else{
-				console.log('Error!');
-			}
-		});
-	}
 });
 
 });
@@ -350,14 +334,80 @@ var storage = multer.diskStorage({
 	}
   });
   var upload = multer({ storage: storage });//to id tou file sto form
-//
-app.post('/upload_products/',upload.single('upload'),(req,res)=>{
-//console.log(req);
-	
-res.send(req.file);
+  const fs = require('fs');
 
-//console.log(req.file);
+//backend work for uploading-reading-inserting items/categories in DB
+app.post('/upload_products/',upload.single('upload'),(req,res)=>{
+console.log(req.file);
+const path = req.file.path;
+
+//epistrefei ena object me plirofories sxetikes me to ypovlithen arxeio
+//perno to path property pou einai to monopati pou vrisketai to arxeio
+//diavazo to arxeio enonontas to trexo directory + '/' + to path
+fs.readFile(__dirname + '/' + path,'utf-8',async (error,data)=>{
+	if(error) throw error;
+	data = JSON.parse(data);//diavase ta dedomena os JSON
+	console.log(data);
+	let {code,message,categories,...items} = data;//afairo apo to arxeio to code,message,categories gia na xeiristo mono ta proionta
+	try{
+	let [results] = await connection.promise().query('TRUNCATE TABLE Category');
+	for(let category of categories){
+	connection.query('INSERT INTO Category VALUES(?,?)',[category['id'],category['category_name']],(error,results)=>{
+		if(error) throw error;
+		if(results.affectedRows>0){
+			console.log('Success!');
+
+		}
+		else{
+			console.log('Failure!');
+		}
+	});
+	}
+	}
+	catch(error){
+		console.log('Error',error);
+	}
+
 });
+});
+/*
+
+
+fs.readFile(__dirname + '/' + path,'utf-8',(error,data)=>{
+	if(error) throw error;
+	data = JSON.parse(data);//diavase ta dedomena os JSON
+	console.log(data);
+	let {code,message,categories,...items} = data;//afairo apo to arxeio to code,message,categories gia na xeiristo mono ta proionta
+	connection.query('TRUNCATE TABLE Category',(error,results)=>{
+		if(error) throw error;
+		for(let category of categories){
+			connection.query('INSERT INTO Category VALUES(?,?)',[category['id'],category['category_name']],(error,results)=>{
+				if(error) throw error;
+				if(results.affectedRows>0){
+					console.log('Success!');
+				}
+				else{
+					console.log('Failure!');
+				}
+			});
+		}
+	});
+
+*/
+//GOLDEN EXAMPLE
+app.get('/testing/',async (req,res)=>{
+try{
+let id;
+ [id] = await connection.promise().query('SELECT id FROM Category where category_name="Books"');
+console.log(id[0].id);
+[results] = await connection.promise().query('SELECT * FROM Category WHERE id=?',[id[0].id]);
+console.log(results);
+}
+catch(error){
+console.log('Error: ',error);
+}
+});
+
 //
 app.get('/get_base/',(req,res)=>{
 
