@@ -203,7 +203,9 @@ function show_requests(requests){
       let cords = [[this.getLatLng().lat,this.getLatLng().lng],[vehicle.getLatLng().lat,vehicle.getLatLng().lng]];
       let line = L.polyline(cords,{color:'green'});
       line.addTo(map);
-      create_task(username,first_name,last_name,telephone,item);
+      /**********/
+      insert_record(first_name,last_name,telephone,entry_date,item,quantity,username);
+      //create_task(username,first_name,last_name,telephone,item);
       //create_task(username);
     });
    
@@ -211,12 +213,6 @@ function show_requests(requests){
    
     });
     //
-    request_marker.on('popupclose',()=>{
-     // button.replaceWith(button.cloneNode(true));
-      console.log('MEEEN');
-      //otan kleino to popup ousiastika afairo tous event listeners tous gia na mhn stakaristoun
-    });
-
 
     //
     requests_group.addLayer(request_marker);
@@ -230,6 +226,35 @@ function show_requests(requests){
   filter.addOverlay(lifted_requests,'Taken Requests');
   filter.addOverlay(lines,'Connections');
 }
+/************/
+function insert_record(citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,username){
+  const table = document.querySelector("#tasks");
+  const row = table.insertRow();
+  const c1 = row.insertCell(0);
+  const c2 = row.insertCell(1);
+  const c3 = row.insertCell(2);
+  const c4 = row.insertCell(3);
+  const c5 = row.insertCell(4);
+  const c6 = row.insertCell(5);
+  const c7 = row.insertCell(6);
+  const c8 = row.insertCell(7);
+  const c9 = row.insertCell(8);
+  const c10 = row.insertCell(9);
+  c1.innerHTML = citizen_first_name;
+  c2.innerHTML = citizen_last_name;
+  c3.innerHTML = citizen_telephone;
+  c4.innerHTML = entry_date;
+  c5.innerHTML = item;
+  c6.innerHTML = quantity;
+  c7.innerHTML = 1;
+  c8.innerHTML = username;
+  c7.style.display = 'none';
+  c8.style.display = 'none';
+  c9.innerHTML = '<button class="completebutton">Complete</button>'
+  c10.innerHTML = '<button class="cancelbutton">Cancel</button>'
+}
+
+/***********/
 function create_task(username,first_name,last_name,telephone,item){
 
 fetch('/create_task/',{
