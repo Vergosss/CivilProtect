@@ -480,7 +480,7 @@ else{
 //
 app.get('/get_requests/',(req,res)=>{
 
-	connection.query('SELECT username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,ST_X(cords),ST_Y(cords),lifted FROM Request WHERE lifted=false OR vehicle_username=?',[req.session.username],(error,results)=>{
+	connection.query('SELECT request_id,username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,ST_X(cords),ST_Y(cords),lifted FROM Request WHERE lifted=false OR vehicle_username=?',[req.session.username],(error,results)=>{
 		if(error) throw error;
 		res.send(results);
  	});
@@ -505,11 +505,12 @@ app.get('/receive_requests/',(req,res)=>{
 //
 app.post('/create_task/',(req,res)=>{
 let username = req.body.username;
+let task_id = req.body.request_id;
 let first_name = req.body.first_name;
 let last_name = req.body.last_name;
 let telephone = req.body.telephone;
 let item = req.body.item;
-connection.query('UPDATE Request SET lifted=true,vehicle_username=?,withdrawal_date=NOW() WHERE username=?',[req.session.username,username],(error,results)=>{
+connection.query('UPDATE Request SET lifted=true,vehicle_username=?,withdrawal_date=NOW() WHERE username=? AND request_id=?',[req.session.username,username,task_id],(error,results)=>{
 if(error) throw error;
 if(results.affectedRows>0){
 	console.log('Success!');
@@ -521,7 +522,7 @@ else{
 });
 //boro na ta trexo taytoxrona
 
-connection.query('INSERT INTO Task(username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity) VALUES (?,?,?,?,NOW(),?,1) ',[username,first_name,last_name,telephone,item],(error,results)=>{
+connection.query('INSERT INTO Task(task_id,username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity) VALUES (?,?,?,?,?,NOW(),?,1) ',[task_id,username,first_name,last_name,telephone,item],(error,results)=>{
 	if(error) throw error;
 	if(results.affectedRows>0){
 		console.log('Success!');
@@ -580,6 +581,16 @@ app.post('/cancel_task/',(req,res)=>{
 			console.log('Failure!');
 		}
 	});
+//
+connection.query('UPDATE Request SET lifted=0,vehicle_username=NULL where vehicle_username=? AND request_id=?',[req.session.username,tid],(error,results)=>{
+	if(error) throw error;
+	if(results.affectedRows>0){
+		console.log('OK');
+	}
+	else{
+		console.log('Error!');
+	}
+});
 });
 //
 module.exports = app;//an thelo na kano import se allo JS arxeio ton parapano kodika

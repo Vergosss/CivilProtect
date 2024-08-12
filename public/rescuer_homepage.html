@@ -147,8 +147,8 @@ function show_requests(requests){
   let requests_group = L.layerGroup();//vazo se ena group ta requests
   for(let request of requests){
     let undertake_button;
-
-    let username = request['username']
+    let request_id = request['request_id'];
+    let username = request['username'];
     let first_name = request['citizen_first_name'];
     let last_name = request['citizen_last_name'];
     let telephone = request['citizen_telephone'];
@@ -204,8 +204,8 @@ function show_requests(requests){
       let line = L.polyline(cords,{color:'green'});
       line.addTo(map);
       /**********/
-      insert_record(first_name,last_name,telephone,entry_date,item,quantity,username);
-      //create_task(username,first_name,last_name,telephone,item);
+      insert_record(first_name,last_name,telephone,entry_date,item,quantity,request_id,username);
+      create_task(username,request_id,first_name,last_name,telephone,item);
       //create_task(username);
     });
    
@@ -227,7 +227,7 @@ function show_requests(requests){
   filter.addOverlay(lines,'Connections');
 }
 /********Insert a record on the table****/
-function insert_record(citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,username){
+function insert_record(citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,tid,username){
   const table = document.querySelector("#tasks");
   const row = table.insertRow();
   const c1 = row.insertCell(0);
@@ -246,7 +246,7 @@ function insert_record(citizen_first_name,citizen_last_name,citizen_telephone,en
   c4.innerHTML = entry_date;
   c5.innerHTML = item;
   c6.innerHTML = quantity;
-  c7.innerHTML = 1;
+  c7.innerHTML = tid;
   c8.innerHTML = username;
   c7.style.display = 'none';
   c8.style.display = 'none';
@@ -262,7 +262,7 @@ function insert_record(citizen_first_name,citizen_last_name,citizen_telephone,en
   //event listeners
   completebutton.addEventListener('click',event=>{
     console.log('Clicked!');
-    //complete_task();
+    complete_task(tid);
   });
   //
   cancelbutton.addEventListener('click',function(){
@@ -270,7 +270,7 @@ function insert_record(citizen_first_name,citizen_last_name,citizen_telephone,en
     console.log('Clicked!');
     const row = this.parentNode.parentNode.rowIndex;
     table.deleteRow(row);
-    //cancel_task();
+    cancel_task(tid);
   });
   /**************************/
 
@@ -279,13 +279,14 @@ function insert_record(citizen_first_name,citizen_last_name,citizen_telephone,en
 }
 
 /*****Creating a task after clicking on the request/offer button******/
-function create_task(username,first_name,last_name,telephone,item){
+function create_task(username,request_id,first_name,last_name,telephone,item){
 
 fetch('/create_task/',{
     method:'POST',
     headers: { 'Content-Type':'application/json' },
     body: JSON.stringify({
       username:username,
+      request_id:request_id,
       first_name:first_name,
       last_name:last_name,
       telephone:telephone,
@@ -335,7 +336,7 @@ for(let btn of complete_buttons){
     const id = this.parentNode.previousSibling.previousSibling;//o parent tou koubiou einai o container tou diladi
     console.log(id.innerHTML);//
     const tid = id.innerHTML;
-    //complete_task(tid);
+    complete_task(tid);
   });
 }
 //event listeners
