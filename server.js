@@ -347,10 +347,20 @@ const path = req.file.path;
 fs.readFile(__dirname + '/' + path,'utf-8',async (error,data)=>{
 	if(error) throw error;
 	data = JSON.parse(data);//diavase ta dedomena os JSON
-	console.log(data);
+	//console.log(data);
 	let {code,message,categories,...items} = data;//afairo apo to arxeio to code,message,categories gia na xeiristo mono ta proionta
+	items = items.items;//afairo to {} sta akra-ara einai array objects tora
+	const arr = items.map(item=>item.details);
+	//console.log(arr);//details
+	const products = items.map(item=>{return {id:item.id,name: item.name,category:item.category};});
+	console.log(products);
+	//
 	try{
 	let [results] = await connection.promise().query('TRUNCATE TABLE Category');
+	[results] = await connection.promise().query('TRUNCATE TABLE Item');
+	[results] = await connection.promise().query('TRUNCATE TABLE item_details');
+	//clear the tables and wait till completion
+	/**Insert Categories */
 	for(let category of categories){
 	connection.query('INSERT INTO Category VALUES(?,?)',[category['id'],category['category_name']],(error,results)=>{
 		if(error) throw error;
@@ -362,6 +372,33 @@ fs.readFile(__dirname + '/' + path,'utf-8',async (error,data)=>{
 			console.log('Failure!');
 		}
 	});
+	}
+	/***Insert item details***** */
+	for(let item of items){
+		let id = item.id;
+		for(let detail of item.details){
+			connection.query('INSERT INTO item_details VALUES(?,?,?)',[id,detail['detail_name'],detail['detail_value']],(error,results)=>{
+				if(error) throw error;
+				if(results.affectedRows>0){
+					console.log('Successfull');
+				}
+				else{
+					console.log('Unsuccessfull');
+				}
+			});
+		}
+	}
+	/****Insert Items */
+	for(let product of products){
+		connection.query('INSERT INTO Item VALUES(?,?,?)',[product['id'],product['name'],product['category']],(error,results)=>{
+			if(error) throw error;
+			if(results.affectedRows>0){
+				console.log('OK');
+			}
+			else{
+				console.log('Fail');
+			}
+		});
 	}
 	}
 	catch(error){
