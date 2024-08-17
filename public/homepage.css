@@ -44,3 +44,7 @@
     border: 1px solid black;
 }
 /**to border einai ta oria ,to keli ,ta akra tou pinaka,perigrama*/
+.popup{
+    max-height: 200px;
+    overflow-y: auto;/*epitrepei na yparxeilisi to ypsos tou div ara kata synepeia na einai scrollable*/
+}

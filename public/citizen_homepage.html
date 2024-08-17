@@ -45,11 +45,6 @@
 <div id="citizens"></div>
 
 <!----------Form gia na kano upload to json ton proionton---------------->
-<form action="/upload_products/" method="post" enctype="multipart/form-data">
-  <label for="upload">Upload products:</label>
-  <input type="file" id="upload" name="upload"/>
-  <input type="submit" id="submit" value="Upload products"/>
-</form> 
 
 <script>
 let map = L.map('map'); //ftaxno mono ton xarti. Den exo ta tiles, prostithentai meta
@@ -138,24 +133,26 @@ fetch('/get_items')
 //
 /******perno ta cords tou polith gia xrhsh metepeita**/
 var lat,long; 
-var request_marker; 
+let request_marker = L.marker([38.24,21.73],{draggable:false}); 
 fetch('/get_coordinates/')
 .then(res=>res.json())
 .then(cords=>{
   lat = cords[0]['ST_X(cords)'];
   long = cords[0]['ST_Y(cords)'];
   //console.log(cords[0]['ST_X(cords)'],cords[0]['ST_Y(cords)']);
-  request_marker = L.marker([lat,long],{draggable:false});
+  request_marker.setLatLng([lat,long]);
+  request_marker.addTo(map);
 })
 .catch(error=>{console.log('Error: ',error);})
-//console.log(lat,long);  
-//let request_marker = L.marker([lat,long],{draggable:false});
- //console.log(lat,long);
+
  /*****/
 /******Dimiourgia aithmatos apo ton polith******/
+var requested_item;
+let popup = document.createElement('div');
+
 const request_button = document.querySelector("#request");
 request_button.addEventListener('click',event=>{
-  var requested_item = document.querySelector("#items").value;
+  requested_item = document.querySelector("#items").value;
   fetch('/request/',{
   method:'POST',
   headers: { 'Content-Type':'application/json' },
@@ -170,14 +167,11 @@ request_button.addEventListener('click',event=>{
 .then(data=>{
 //afou kano insert to request sth vash
 //tote enimerose ton marker
-if(!map.hasLayer(request_marker)){
-  //fetcharo to request to aithma
-  request_marker.bindPopup('First request');
-  request_marker.addTo(map);
-}
-else{
-  request_marker.bindPopup('Second');
-}
+let par = document.createElement('p');
+par.innerHTML = `${requested_item}<br>`;
+popup.appendChild(par);
+request_marker.bindPopup(popup);
+
 })
 .catch(error=>{console.log('Error: ',error);})
 //

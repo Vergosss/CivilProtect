@@ -104,6 +104,12 @@ return fetch('/get_requests/');
 .then(res=>res.json())
 .then(requests=>{//chainaro ta promises
   show_requests(requests);
+  //test
+  const res = Object.groupBy(requests,function({username}){
+    return username;
+  });
+  //
+console.log(res);//simantiko!
 })
 .catch(error=>{console.log('Error: ',error);})
 //
@@ -173,8 +179,8 @@ function show_requests(requests){
     else{
       unlifted_requests.addLayer(request_marker);
     }
-    
-    request_marker.bindPopup(`Name : ${first_name},${last_name}<br>Telephone: ${telephone}<br>Entry: ${entry_date}<br>Item: ${item}<br>Quantity: ${quantity}<br><div id="undertake_button"></div>`);
+    let popup = `<div class ="popup">Name : ${first_name},${last_name}<br>Telephone: ${telephone}<br>Entry: ${entry_date}<br>Item: ${item}<br>Quantity: ${quantity}<br><div id="undertake_button"></div></div>`;
+    request_marker.bindPopup(popup);
 
     //otan anigei o marker(to popup tou)
     request_marker.on('popupopen',function (){
