@@ -169,6 +169,10 @@ undertake_button.appendChild(button);
 //
 request_div.appendChild(undertake_button);
 //
+if(request['lifted'] == 1){
+  button.disabled = true;
+}
+//
 popup.appendChild(request_div);
 //
 button.addEventListener('click',function(){

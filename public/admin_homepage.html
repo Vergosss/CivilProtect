@@ -142,7 +142,8 @@ return fetch('/fetch_requests/');
 })
 .then(res=>res.json())
 .then(requests=>{
-  display_requests(requests,get_vehicle);
+  //display_requests(requests,get_vehicle);
+  display_requests2(requests,get_vehicle);
 })
 .catch(error=>{console.log('Error: ',error);})
 /*******/
@@ -196,7 +197,39 @@ console.log(starting_lat,starting_long);
 */
 
 //
+/**********/
+function display_requests2(requests,get_vehicle){
+//
+const grouped_requests = Object.groupBy(requests,function({username}){
+  return username;
+});
+//
+for(let user in grouped_requests){
+//
+let request_marker = L.marker([grouped_requests[user][0]['ST_X(cords)'],grouped_requests[user][0]['ST_Y(cords)']],{draggable:false});
+let popup = document.createElement('div');
+//
+popup.style['max-height'] = "200px";
+popup.style['overflow-y'] = "auto";
+//
+for (let request of grouped_requests[user]){
+let request_div = document.createElement('div');
+request_div.innerHTML = `Name : ${request['citizen_first_name']},${request['citizen_last_name']}<br>Telephone: ${request['citizen_telephone']}<br>Entry: ${request['entry_date']}<br>Item: ${request['item']}<br>Quantity: ${request['quantity']}<br>`
+if(request['lifted'] == true){
+  request_div.innerHTML += `Withdrawal date: ${request['withdrawal_date']}<br>Vehicle: ${request['vehicle_username']}`;
+}
+popup.appendChild(request_div);
+}
+//
+request_marker.bindPopup(popup);
+request_marker.addTo(map);
+//
+}
 
+
+
+
+}
 /********/
 function display_requests(requests,get_vehicle){
 let first_name,last_name,telephone,entry_date,item,quantity,withdrawal_date,vehicle_username,lat,long;
