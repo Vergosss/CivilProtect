@@ -104,6 +104,7 @@ return fetch('/get_requests/');
 .then(res=>res.json())
 .then(requests=>{//chainaro ta promises
   show_requests(requests);
+  show_requests2(requests);
   //test
   const res = Object.groupBy(requests,function({username}){
     return username;
@@ -145,9 +146,27 @@ fetch('/update_vehicle/',{
 
 });
 /*******Fetch ta requests kai offers pou den eksipiretountai apo allo oxhma***/
+function show_requests2(requests){
+const grouped_requests = Object.groupBy(requests,function({username}){
+  return username;
+});
+//console.log(res);
 
+/*******/
+
+for (user in grouped_requests){
+let request_marker = L.marker([grouped_requests[user][0]['ST_X(cords)'],grouped_requests[user][0]['ST_Y(cords)']],{draggable:false});
+let popup = document.createElement('div');
+
+for (let request of grouped_requests[user]){
+let request_div = document.createElement('div');
+request_div.innerHTML = `Name : ${request['citizen_first_name']},${request['citizen_last_name']}<br>Telephone: ${request['citizen_telephone']}<br>Entry: ${request['entry_date']}<br>Item: ${request['item']}<br>Quantity: ${request['quantity']}<br><div id="undertake_button"></div>`
+popup.appendchild(request_div);
+}
+}
+}
 /*********/
-
+//
 function show_requests(requests){
 //xrhsimopoiei to vehicle thelei prosoxi-fix
   let requests_group = L.layerGroup();//vazo se ena group ta requests
