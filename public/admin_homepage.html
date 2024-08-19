@@ -217,8 +217,14 @@ let request_div = document.createElement('div');
 request_div.innerHTML = `Name : ${request['citizen_first_name']},${request['citizen_last_name']}<br>Telephone: ${request['citizen_telephone']}<br>Entry: ${request['entry_date']}<br>Item: ${request['item']}<br>Quantity: ${request['quantity']}<br>`
 if(request['lifted'] == true){
   request_div.innerHTML += `Withdrawal date: ${request['withdrawal_date']}<br>Vehicle: ${request['vehicle_username']}`;
+  let cords = [[request['ST_X(cords)'],request['ST_Y(cords)']],[get_vehicle(request['vehicle_username']).lat,get_vehicle(request['vehicle_username']).lng]];
+  let line = L.polyline(cords,{color:'green'});
+  //line.addTo(map);//sundese to aithma pou exei analifthei me ton diasosti tou
+  lines.addLayer(line);
 }
 popup.appendChild(request_div);
+//
+
 }
 //
 request_marker.bindPopup(popup);
@@ -226,7 +232,8 @@ request_marker.addTo(map);
 //
 }
 
-
+lines.addTo(map);
+filter.addOverlay(lines,'Connections');
 
 
 }

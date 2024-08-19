@@ -171,13 +171,20 @@ request_div.appendChild(undertake_button);
 //
 if(request['lifted'] == 1){
   button.disabled = true;
+  let cords = [[request_marker.getLatLng().lat,request_marker.getLatLng().lng],[vehicle.getLatLng().lat,vehicle.getLatLng().lng]];
+  let line = L.polyline(cords,{color:'green'});
+  //line.addTo(map);
+  lines.addLayer(line);
 }
 //
 popup.appendChild(request_div);
 //
 button.addEventListener('click',function(){
-  console.log(user);
   this.disabled = true;
+  let cords = [[request_marker.getLatLng().lat,request_marker.getLatLng().lng],[vehicle.getLatLng().lat,vehicle.getLatLng().lng]];
+  let line = L.polyline(cords,{color:'green'});
+  lines.addLayer(line);
+
   //create_task(request['username'],request['request_id'],request['citizen_first_name'],request['citizen_last_name'],request['citizen_telephone'],request['item']);
   
 });
@@ -186,8 +193,11 @@ button.addEventListener('click',function(){
 
 request_marker.bindPopup(popup);
 request_marker.addTo(map);
+
 }
 
+lines.addTo(map);
+filter.addOverlay(lines,'Connections');
 
 }
 /*********/
