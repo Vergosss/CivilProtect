@@ -207,47 +207,6 @@ app.post('/register_rescuer/',(req,res)=>{
 
 });
 
-
-//
-//
-app.get('/test/', (req,res)=>{
-fs.readFile(__dirname + '/uploads/upload-1721913498358.json','utf-8',(error,data)=>{
-//asygxrona diavase to arxeio(exei callback)
-	if(error) throw error;
-	data = JSON.parse(data);//diavase ta dedomena os json
-	//let {code,message,categories,...items} = data;//afairo apo to arxeio to code,message,categories gia na xeiristo mono ta proionta
-	//kai menoun mono ta items
-	//let {details,...rest} = items;
-	//console.log(items);
-	console.log(data);
-	//console.log(rest);
-	const final_items = items.items.map(({details,...rest})=>rest);//epestrepse to rest
-	//afairo to details kathe eggrafhs-json object-stixiou tou array meso ths map
-	//to items  epistrefei {items:[...]} to items.items episrefei [...]
-	//console.log(final_items);
-connection.query('TRUNCATE TABLE Item',(error,results)=>{
-	if(error) throw error;
-});
-	for(let item of final_items){
-		connection.query('INSERT INTO Item VALUES(?,?,?)',[item.id,item.name,item.category],(error,results)=>{
-			if(error) throw error;
-			if(results.affectedRows>0){
-				console.log('Success!');
-			}//diatrexo to array twn objects 
-			else{
-				console.log('Failed');
-			}
-		});
-		
-	}
-
- 
-//Katharizo to table prota gia na mhn ksanaeisaxthoun ta proionta
-
-});
-
-});
-//
 app.get('/get_items/',(req,res)=>{
 
 	connection.query('SELECT name FROM Item',(error,results)=>{
@@ -407,42 +366,69 @@ fs.readFile(__dirname + '/' + path,'utf-8',async (error,data)=>{
 
 });
 });
-/*
 
-
-fs.readFile(__dirname + '/' + path,'utf-8',(error,data)=>{
-	if(error) throw error;
-	data = JSON.parse(data);//diavase ta dedomena os JSON
-	console.log(data);
-	let {code,message,categories,...items} = data;//afairo apo to arxeio to code,message,categories gia na xeiristo mono ta proionta
-	connection.query('TRUNCATE TABLE Category',(error,results)=>{
-		if(error) throw error;
+//
+app.post('/update_products/',async (req,res)=>{
+	//
+	let data = req.body;
+	let {code,message,categories,...items} = data;
+	//
+	items = items.items;//einai object me ena mono key to items opote to prospelayno etsi
+	//
+	const products = items.map(item=>{return {id:item.id,name: item.name,category:item.category};});
+	//
+	try{
+		let [results] = await connection.promise().query('TRUNCATE TABLE Category');
+		[results] = await connection.promise().query('TRUNCATE TABLE Item');
+		[results] = await connection.promise().query('TRUNCATE TABLE item_details');
+		//clear the tables and wait till completion
+		/**Insert Categories */
 		for(let category of categories){
-			connection.query('INSERT INTO Category VALUES(?,?)',[category['id'],category['category_name']],(error,results)=>{
+		connection.query('INSERT INTO Category VALUES(?,?)',[category['id'],category['category_name']],(error,results)=>{
+			if(error) throw error;
+			if(results.affectedRows>0){
+				console.log('Success!');
+	
+			}
+			else{
+				console.log('Failure!');
+			}
+		});
+		}
+		/***Insert item details***** */
+		for(let item of items){
+			let id = item.id;
+			for(let detail of item.details){
+				connection.query('INSERT INTO item_details VALUES(?,?,?)',[id,detail['detail_name'],detail['detail_value']],(error,results)=>{
+					if(error) throw error;
+					if(results.affectedRows>0){
+						console.log('Successfull');
+					}
+					else{
+						console.log('Unsuccessfull');
+					}
+				});
+			}
+		}
+		/****Insert Items */
+		for(let product of products){
+			connection.query('INSERT INTO Item VALUES(?,?,?)',[product['id'],product['name'],product['category']],(error,results)=>{
 				if(error) throw error;
 				if(results.affectedRows>0){
-					console.log('Success!');
+					console.log('OK');
 				}
 				else{
-					console.log('Failure!');
+					console.log('Fail');
 				}
 			});
 		}
-	});
+		}
+		catch(error){
+			console.log('Error: ',error);
+		}
 
-*/
-//GOLDEN EXAMPLE
-app.get('/testing/',async (req,res)=>{
-try{
-let id;
- [id] = await connection.promise().query('SELECT id FROM Category where category_name="Books"');
-console.log(id[0].id);
-[results] = await connection.promise().query('SELECT * FROM Category WHERE id=?',[id[0].id]);
-console.log(results);
-}
-catch(error){
-console.log('Error: ',error);
-}
+
+	//
 });
 
 //

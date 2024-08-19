@@ -171,6 +171,7 @@ request_div.appendChild(undertake_button);
 //
 if(request['lifted'] == 1){
   button.disabled = true;
+  request_marker.setIcon(yellowIcon);
   let cords = [[request_marker.getLatLng().lat,request_marker.getLatLng().lng],[vehicle.getLatLng().lat,vehicle.getLatLng().lng]];
   let line = L.polyline(cords,{color:'green'});
   //line.addTo(map);
@@ -181,11 +182,12 @@ popup.appendChild(request_div);
 //
 button.addEventListener('click',function(){
   this.disabled = true;
+  request_marker.setIcon(yellowIcon);
   let cords = [[request_marker.getLatLng().lat,request_marker.getLatLng().lng],[vehicle.getLatLng().lat,vehicle.getLatLng().lng]];
   let line = L.polyline(cords,{color:'green'});
   lines.addLayer(line);
 
-  //create_task(request['username'],request['request_id'],request['citizen_first_name'],request['citizen_last_name'],request['citizen_telephone'],request['item']);
+  create_task(request['username'],request['request_id'],request['citizen_first_name'],request['citizen_last_name'],request['citizen_telephone'],request['item']);
   
 });
 }

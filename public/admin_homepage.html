@@ -92,7 +92,7 @@ var yellowIcon = new L.Icon({
 /*******gia na kano eggrafi ton rescuer***/
 let rescuer_marker = L.marker([38.24,21.73],{draggable:true,icon:blackIcon});
 rescuer_marker.bindPopup('Register');
-rescuer_marker.addTo(map);
+//
 register_group = L.layerGroup();
 register_group.addLayer(rescuer_marker);
 filter.addOverlay(register_group,'Register');
@@ -217,6 +217,8 @@ let request_div = document.createElement('div');
 request_div.innerHTML = `Name : ${request['citizen_first_name']},${request['citizen_last_name']}<br>Telephone: ${request['citizen_telephone']}<br>Entry: ${request['entry_date']}<br>Item: ${request['item']}<br>Quantity: ${request['quantity']}<br>`
 if(request['lifted'] == true){
   request_div.innerHTML += `Withdrawal date: ${request['withdrawal_date']}<br>Vehicle: ${request['vehicle_username']}`;
+  request_marker.setIcon(yellowIcon);
+  //
   let cords = [[request['ST_X(cords)'],request['ST_Y(cords)']],[get_vehicle(request['vehicle_username']).lat,get_vehicle(request['vehicle_username']).lng]];
   let line = L.polyline(cords,{color:'green'});
   //line.addTo(map);//sundese to aithma pou exei analifthei me ton diasosti tou
@@ -296,14 +298,28 @@ return cords;
 /*******************/
 //an patithei to koubi kano fetch ta proionta me amesh klhsh sto url 
 const itemsbutton = document.querySelector("#itemsbutton");
-itemsbutton.addEventListener('click',event=>{
+itemsbutton.addEventListener('click',async ()=>{
 //lyno to cors me th xrhsh enos proxy server
-fetch('https://cors-anywhere.herokuapp.com/'+'http://usidas.ceid.upatras.gr/web/2023/export.php')
-.then(res=>{return res.json();})
-.then(data=>{console.log(data.items);})
-.catch(error=>{console.log('Error : ',error);})
+try{
+let res = await fetch('https://cors-anywhere.herokuapp.com/'+'http://usidas.ceid.upatras.gr/web/2023/export.php');
+let data = await res.json();
+//
+//
+res = await fetch('/update_products/',{
+  method:'POST',
+  headers: { 'Content-Type':'application/json' },
+  body: JSON.stringify(
+  data
+  )
 });
-
+data = await res.json();
+//console.log(data);
+//
+}
+catch(error){
+  console.log('Error: ',error);
+}
+});
 </script>
 
 
