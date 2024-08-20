@@ -526,7 +526,7 @@ app.get('/receive_requests/',(req,res)=>{
 	});
 });
 //
-app.get('/load_inventory',(req,res)=>{
+app.get('/load_inventory/',(req,res)=>{
 	connection.query('SELECT * FROM Inventory',(error,results)=>{
 		if(error) throw error;
 		res.send(results);
@@ -534,7 +534,7 @@ app.get('/load_inventory',(req,res)=>{
 });
 //
 app.post('update_cargo',(req,res)=>{
-	
+
 });
 //
 app.post('/create_task/',(req,res)=>{

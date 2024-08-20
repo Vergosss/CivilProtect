@@ -104,7 +104,7 @@ base.addTo(map);
 
 
 
-fetch('/load_inventory')
+fetch('/load_inventory/')
 .then(res=>res.json())
 .then(inventory=>{
 const inventory_table = document.querySelector("#inventory");
@@ -182,7 +182,29 @@ load.addEventListener('click',event=>{
 //perno-epilego ta proionta apo tin apothiki/pinaka/oti einai telos panton
 //logika pinakas me grammh: eidos-posotita(select ?)
 //ta stelno sth vash gia na enimeroso to cargo
+const inventory = document.querySelector("#inventory");
+let cargo_add = {};
+for(let row of inventory.rows){
+  for(let cell of row.cells){
+    //console.log(cell.innerHTML);
+    //an to epomeno sibling einai null tote eimai sto telos tou pinaka
+    //an to keli me to tick einai ticked
+    //pare to quantity = stixio.parentNode.previousSibling.value
+    //pare to item = stixio.parentNode.previousSibling.previousSibling.value
+    //ftiakse ena object me item : quantity
+    //console.log(cell.nextSibling);
+    if(!cell.nextSibling){
+      const checkbox = cell.firstChild;
+      if(checkbox.checked){
+      let item = cell.previousSibling.previousSibling.innerHTML;
+      let quantity = cell.previousSibling.innerHTML;
+      cargo_add[item] = quantity;
+      }
+    }
+  }
+}
 
+console.log(cargo_add);//meta stile sth DB me post ayto to object gia enimerosi tou cargo
 });
 
 
