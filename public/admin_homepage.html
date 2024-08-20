@@ -125,16 +125,33 @@ base.addTo(map);
 
 /*******os Admin epishs vlepo olous tous diasostes/oximata****/
 let vehicles = L.layerGroup();
-let v = null;
+
 fetch('/get_vehicles/')
 .then(res=>{return res.json();})
-.then(cords=>{
-
-for(let cord of cords){
-  v= L.marker([cord['ST_X(cords)'],cord['ST_Y(cords)']],{draggable:false,icon:redIcon,name:cord['username']});
-  v.bindPopup(`Vehicle username: ${cord['username']}`);
-  vehicles.addLayer(v);//ekkremei to username tou oximatos
+.then(Vehicles=>{
+const grouped_vehicles = Object.groupBy(Vehicles,function({username}){
+return username;
+});
+//
+//exei ena themataki epistrefei mono autous pou exoun eggrafi ston cargo logo lathos query h kai lathos arxikopoihshs etsi px o itsios den emfanizetai san marker
+//se ayto fteei to backend douleyei kanonika kata ta alla. evgaze error epeidh den evala attribute name ston marker
+//epishs an yparxei request pou exei analavi o itsios tha exo ena zeygari cords [normal,undefined] giati tha psaksei ton itsio
+//h get_vehicle(itsios) pou den yparxei o itios sta vehiclelayers tha gyrisei undefined
+for(let user in grouped_vehicles){
+let vehicle_marker = L.marker([grouped_vehicles[user][0]['ST_X(cords)'],grouped_vehicles[user][0]['ST_Y(cords)']],{draggable:false,icon:redIcon,name:user});
+let popup = document.createElement('div');
+popup.innerHTML = `Vehicle username : ${user}<br>Cargo:`;
+//
+popup.style['max-height'] = "200px";
+popup.style['overflow-y'] = "auto";
+//
+for(let vec of grouped_vehicles[user]){
+  popup.innerHTML += `${vec['item']} : ${vec['quantity']}<br>`;
 }
+vehicle_marker.bindPopup(popup);
+vehicles.addLayer(vehicle_marker);
+}
+//
 vehicles.addTo(map);
 filter.addOverlay(vehicles,"Vehicles");
 //
