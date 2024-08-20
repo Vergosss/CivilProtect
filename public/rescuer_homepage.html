@@ -34,6 +34,18 @@
 <!------------------------------------------>
 <a href="/logout"><button>Log out</button></a>
 <button id="fortosi">Load Items into Vehicle</button>
+<button id="ekfortosi">Unload items into storage</button>
+<!----------------->
+<table id="inventory">
+
+<tr>
+  <th>Item</th>
+  <th>Quantity</th>
+  <th>Check/Uncheck Item</th>
+</tr>
+
+
+</table>
 <script>
 
 let map = L.map('map'); //ftaxno mono ton xarti. Den exo ta tiles, prostithentai meta
@@ -88,7 +100,39 @@ base.bindPopup('Base');
 base.addTo(map);
 })
 .catch(error=>{console.log('Error: ',error);})
-/********/
+/**********Inventory***************/
+
+
+
+fetch('/load_inventory')
+.then(res=>res.json())
+.then(inventory=>{
+const inventory_table = document.querySelector("#inventory");
+for(let product of inventory){
+let tr = document.createElement('tr');
+for(field in product){
+let td = document.createElement('td');
+td.innerHTML = product[field];
+tr.appendChild(td);
+}
+let td = document.createElement('td');
+const checkbox = document.createElement('input');
+checkbox.setAttribute('type','checkbox');
+td.appendChild(checkbox);
+tr.appendChild(td);
+inventory_table.appendChild(tr);
+}
+
+})
+.catch(error=>{console.log('Error: ',error);})
+
+
+
+
+
+
+
+/*************************/
 /*****Thelo fetch kai ta cords aytounou mono(vlepei th thesh tou kai mono o diasostis oxi allous diasostes) *********/
 let vehicle = L.marker([38.24,21.73],{draggable:true,icon:redIcon});
 vehicle.addTo(map);
@@ -112,20 +156,40 @@ return fetch('/get_requests/');
 //
 /*******Allagh ton cords tou (oximatos) diasosti me click kai drag*****/
 document.querySelector("#fortosi").disabled = true;
+document.querySelector("#ekfortosi").disabled = true;
 //
 vehicle.addEventListener('dragend',event => {
 //get the cords after dragend
 let lat = vehicle.getLatLng().lat;
 let long = vehicle.getLatLng().lng;
 const fortosi = document.querySelector("#fortosi");
+const ekfortosi = document.querySelector("#ekfortosi");
 //an o rescuer einai entos 100 metron apo th vash
 if(Distance(vehicle,base) < 100){
 //energopoio thn fortosi/ekfortosi
-fortosi.disabled =false;
+fortosi.disabled = false;
+ekfortosi.disabled = false;
 }
 else{
   fortosi.disabled = true;
+  ekfortosi.disabled = true;
 }
+/*******************************/
+const load = document.querySelector("#fortosi");
+const unload = document.querySelector("#ekfortosi");
+//Event listeners
+load.addEventListener('click',event=>{
+//perno-epilego ta proionta apo tin apothiki/pinaka/oti einai telos panton
+//logika pinakas me grammh: eidos-posotita(select ?)
+//ta stelno sth vash gia na enimeroso to cargo
+
+});
+
+
+
+
+/******************************/
+
 //update cords in database
 fetch('/update_vehicle/',{
     method:'POST',

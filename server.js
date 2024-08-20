@@ -526,6 +526,17 @@ app.get('/receive_requests/',(req,res)=>{
 	});
 });
 //
+app.get('/load_inventory',(req,res)=>{
+	connection.query('SELECT * FROM Inventory',(error,results)=>{
+		if(error) throw error;
+		res.send(results);
+	});
+});
+//
+app.post('update_cargo',(req,res)=>{
+	
+});
+//
 app.post('/create_task/',(req,res)=>{
 let username = req.body.username;
 let task_id = req.body.request_id;
