@@ -119,9 +119,8 @@ let lat = vehicle.getLatLng().lat;
 let long = vehicle.getLatLng().lng;
 const fortosi = document.querySelector("#fortosi");
 //an o rescuer einai entos 100 metron apo th vash
-if(map.distance([lat,long],[base.getLatLng().lat,base.getLatLng().lng]) < 100){
+if(Distance(vehicle,base) < 100){
 //energopoio thn fortosi/ekfortosi
-console.log(map.distance([lat,long],[base.getLatLng().lat,base.getLatLng().lng]));
 fortosi.disabled =false;
 }
 else{
@@ -448,6 +447,11 @@ fetch('/cancel_task/',{
 .catch(error=>{console.log('Error: ',error);})
 
 }
+/********************/
+function Distance(vehicle,base){
+  return map.distance([vehicle.getLatLng().lat,vehicle.getLatLng().lng],[base.getLatLng().lat,base.getLatLng().lng]);
+}
+
 </script>
 
 
