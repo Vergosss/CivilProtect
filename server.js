@@ -533,11 +533,20 @@ app.get('/load_inventory/',(req,res)=>{
 	});
 });
 //
-app.post('update_cargo',(req,res)=>{
+app.post('/update_cargo/',(req,res)=>{
 
 	let new_cargo = req.body;
 	for(let item in new_cargo){
-		connection.query();
+		connection.query('INSERT INTO Cargo(username,item,quantity) VALUES(?,?,?) ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)',[req.session.username,item,new_cargo[item]],(error,results)=>{
+			if(error) throw error;
+			if(results.affectedRows>0){
+				console.log('OK');
+			}
+			else{
+				console.log('Not OK');
+			}
+
+		});
 	}
 
 
