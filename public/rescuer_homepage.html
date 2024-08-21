@@ -205,8 +205,22 @@ for(let row of inventory.rows){
 }
 
 console.log(cargo_add);//meta stile sth DB me post ayto to object gia enimerosi tou cargo
+//
+update_cargo(cargo_add);//steile to json ton antikeimenon-posotiton pou fortose apo tin apothiki o diasostis
 });
+/*****************FETCH POST UPDATE CARGO*****/
+function update_cargo(cargo_add){
+  fetch('/update_cargo/',{
+    method : 'POST',
+    headers : { 'Content-Type':'application/json' },
+    body : JSON.stringify(cargo_add)
+  })
+  .then(res=>res.json())
+  .then(data=>{})
+  .catch(error=>{console.log('Error : ',error);})
+//
 
+}
 
 
 

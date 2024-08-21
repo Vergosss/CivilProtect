@@ -535,6 +535,13 @@ app.get('/load_inventory/',(req,res)=>{
 //
 app.post('update_cargo',(req,res)=>{
 
+	let new_cargo = req.body;
+	for(let item in new_cargo){
+		connection.query();
+	}
+
+
+
 });
 //
 app.post('/create_task/',(req,res)=>{
