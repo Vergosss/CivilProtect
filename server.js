@@ -534,7 +534,7 @@ app.get('/load_inventory/',(req,res)=>{
 });
 //
 app.post('/update_cargo/',(req,res)=>{
-
+//enimerosi tou fortiou tou diasosti
 	let new_cargo = req.body;
 	for(let item in new_cargo){
 		connection.query('INSERT INTO Cargo(username,item,quantity) VALUES(?,?,?) ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)',[req.session.username,item,new_cargo[item]],(error,results)=>{
@@ -549,7 +549,7 @@ app.post('/update_cargo/',(req,res)=>{
 		});
 	}
 
-
+//kodikas pou afairei tis posotites apo tin apothiki kai thn enimeroni katallila
 
 });
 //

@@ -112,8 +112,22 @@ for(let product of inventory){
 let tr = document.createElement('tr');
 for(field in product){
 let td = document.createElement('td');
-td.innerHTML = product[field];
+if(field == 'quantity'){
+  let select = document.createElement('select');
+  for(let i=1;i<=product['quantity'];i++){
+    let option = document.createElement('option');
+    option.value = i;
+    option.innerHTML = i;
+    select.appendChild(option);
+  }
+  td.appendChild(select);
+}
+else{
+  td.innerHTML = product[field];
+}
+
 tr.appendChild(td);
+
 }
 let td = document.createElement('td');
 const checkbox = document.createElement('input');
@@ -165,6 +179,19 @@ let long = vehicle.getLatLng().lng;
 const fortosi = document.querySelector("#fortosi");
 const ekfortosi = document.querySelector("#ekfortosi");
 //an o rescuer einai entos 100 metron apo th vash
+//update cords in database
+fetch('/update_vehicle/',{
+    method:'POST',
+    headers: { 'Content-Type':'application/json' },
+    body: JSON.stringify({
+        latitude: lat,
+        longitude: long
+    })
+})
+.then(res=>{return res.json();})
+.then(data=>{console.log(data);})
+.catch(error=>{console.log('Error: ',error);})
+//
 if(Distance(vehicle,base) < 100){
 //energopoio thn fortosi/ekfortosi
 fortosi.disabled = false;
@@ -174,6 +201,7 @@ else{
   fortosi.disabled = true;
   ekfortosi.disabled = true;
 }
+});
 /*******************************/
 const load = document.querySelector("#fortosi");
 const unload = document.querySelector("#ekfortosi");
@@ -197,7 +225,9 @@ for(let row of inventory.rows){
       const checkbox = cell.firstChild;
       if(checkbox.checked){
       let item = cell.previousSibling.previousSibling.innerHTML;
-      let quantity = cell.previousSibling.innerHTML;
+      //let quantity = cell.previousSibling.innerHTML;
+      //logika cell.previousSibling.firstChild.value
+      let quantity = cell.previousSibling.firstChild.value
       cargo_add[item] = quantity;
       }
     }
@@ -219,27 +249,14 @@ function update_cargo(cargo_add){
   .then(data=>{})
   .catch(error=>{console.log('Error : ',error);})
 //
-
 }
 
 
 
 /******************************/
 
-//update cords in database
-fetch('/update_vehicle/',{
-    method:'POST',
-    headers: { 'Content-Type':'application/json' },
-    body: JSON.stringify({
-        latitude: lat,
-        longitude: long
-    })
-})
-.then(res=>{return res.json();})
-.then(data=>{console.log(data);})
-.catch(error=>{console.log('Error: ',error);})
 
-});
+
 /*******Fetch ta requests kai offers pou den eksipiretountai apo allo oxhma***/
 function show_requests2(requests){
 const grouped_requests = Object.groupBy(requests,function({username}){
