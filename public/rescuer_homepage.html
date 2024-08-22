@@ -214,13 +214,7 @@ const inventory = document.querySelector("#inventory");
 let cargo_add = {};
 for(let row of inventory.rows){
   for(let cell of row.cells){
-    //console.log(cell.innerHTML);
-    //an to epomeno sibling einai null tote eimai sto telos tou pinaka
-    //an to keli me to tick einai ticked
-    //pare to quantity = stixio.parentNode.previousSibling.value
-    //pare to item = stixio.parentNode.previousSibling.previousSibling.value
-    //ftiakse ena object me item : quantity
-    //console.log(cell.nextSibling);
+    //
     if(!cell.nextSibling){
       const checkbox = cell.firstChild;
       if(checkbox.checked){
@@ -253,8 +247,13 @@ function update_cargo(cargo_add){
 
 
 
-/******************************/
+/************Move all rescuer's items into inventory******************/
+unload.addEventListener('click',(event)=>{
 
+
+
+
+});
 
 
 /*******Fetch ta requests kai offers pou den eksipiretountai apo allo oxhma***/
