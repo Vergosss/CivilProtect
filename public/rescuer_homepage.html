@@ -281,11 +281,31 @@ let cargo_deload = {};
 for(let row of cargo_table.rows){
   for(let cell of row.cells){
    //Load all vehicle's items into storage
+    if(!cell.nextSibling){
+      //eimaste sto quantity
+      let item = cell.previousSibling.innerHTML;
+      let quantity = cell.innerHTML;
+      cargo_deload[item] = quantity;
+
+    }
   }
 }
-
+console.log(cargo_deload);
+update_inventory(cargo_deload);
 });
+/**************Update inventory*******/
+function update_inventory(cargo_deload){
+  //
+  fetch('/update_inventory/',{
+    method: 'POST',
+    headers : { 'Content-Type':'application/json' },
+    body: JSON.stringify(cargo_deload)
+  })
+  .then(res=>res.json())
+  .then(data=>{})
+  .catch(error=>{console.log('Error: ',error);})
 
+}
 
 /*******Fetch ta requests kai offers pou den eksipiretountai apo allo oxhma***/
 function show_requests2(requests){
