@@ -533,6 +533,31 @@ app.get('/load_inventory/',(req,res)=>{
 	});
 });
 //
+app.post('/update_inventory/',(req,res)=>{
+
+let cargo_deload = req.body;
+for(let item in cargo_deload){
+	connection.query('UPDATE Inventory SET quantity= quantity + ? WHERE item=?',[cargo_deload[item],item],(error,results)=>{
+		if(error) throw error;
+		if(results.affectedRows>0){
+			console.log('OK');
+		}
+		else{
+			console.log('Not OK');
+		}
+	});
+}
+
+
+});
+app.get('/load_cargo/',(req,res)=>{
+	connection.query('SELECT item,quantity FROM Cargo WHERE username=?',[req.session.username],(error,results)=>{
+		if(error) throw error;
+		res.send(results);
+	});
+});
+
+//
 app.post('/update_cargo/',(req,res)=>{
 //enimerosi tou fortiou tou diasosti
 	let new_cargo = req.body;

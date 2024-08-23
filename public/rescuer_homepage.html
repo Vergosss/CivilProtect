@@ -44,8 +44,17 @@
   <th>Check/Uncheck Item</th>
 </tr>
 
+</table>
+
+<table id="cargo_table">
+<tr>
+  <th>Item</th>
+  <th>Quantity</th>
+</tr>
 
 </table>
+
+
 <script>
 
 let map = L.map('map'); //ftaxno mono ton xarti. Den exo ta tiles, prostithentai meta
@@ -139,8 +148,23 @@ inventory_table.appendChild(tr);
 
 })
 .catch(error=>{console.log('Error: ',error);})
+/**********************************/
+fetch('/load_cargo/')
+.then(res=>res.json())
+.then(cargo=>{
+const cargo_table = document.querySelector("#cargo_table");
+for(let product of cargo){
+  let tr = document.createElement('tr');
+  for(let key in product){
+    let td = document.createElement('td');
+    td.innerHTML = product[key];
+    tr.appendChild(td);
+  }
+  cargo_table.appendChild(tr);
+}
 
-
+})
+.catch(error=>{console.log('Error: ',error);})
 
 
 
@@ -172,6 +196,7 @@ return fetch('/get_requests/');
 document.querySelector("#fortosi").disabled = true;
 document.querySelector("#ekfortosi").disabled = true;
 //
+
 vehicle.addEventListener('dragend',event => {
 //get the cords after dragend
 let lat = vehicle.getLatLng().lat;
@@ -250,8 +275,14 @@ function update_cargo(cargo_add){
 /************Move all rescuer's items into inventory******************/
 unload.addEventListener('click',(event)=>{
 
-
-
+const cargo_table = document.querySelector("#cargo_table");
+let cargo_deload = {};
+//
+for(let row of cargo_table.rows){
+  for(let cell of row.cells){
+   //Load all vehicle's items into storage
+  }
+}
 
 });
 
