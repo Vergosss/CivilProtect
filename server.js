@@ -547,7 +547,7 @@ for(let item in cargo_deload){
 		}
 	});
 }
-
+//kodikas gia enimeroni to fortio tou diasosti
 
 });
 app.get('/load_cargo/',(req,res)=>{
@@ -575,6 +575,17 @@ app.post('/update_cargo/',(req,res)=>{
 	}
 
 //kodikas pou afairei tis posotites apo tin apothiki kai thn enimeroni katallila
+	for(let item in new_cargo){
+		connection.query('UPDATE Inventory SET quantity=quantity - ? WHERE item=?',[new_cargo[item],item],(error,results)=>{
+			if(error) throw error;
+			if(results.affectedRows>0){
+				console.log('Done');
+			}
+			else{
+				console.log('NOT DONE');
+			}
+		});
+	}
 
 });
 //
