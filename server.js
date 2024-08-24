@@ -550,6 +550,8 @@ for(let item in cargo_deload){
 }
 //kodikas gia enimeroni to fortio tou diasosti
 
+//kodikas pou epistrefei to ananeomeno pleon inventory
+
 });
 app.get('/load_cargo/',(req,res)=>{
 	connection.query('SELECT item,quantity FROM Cargo WHERE username=?',[req.session.username],(error,results)=>{

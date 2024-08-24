@@ -38,11 +38,17 @@
 <!----------------->
 <table id="inventory">
 
-<tr>
-  <th>Item</th>
-  <th>Quantity</th>
-  <th>Check/Uncheck Item</th>
-</tr>
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th>Quantity</th>
+      <th>Check/Uncheck Item</th>
+    </tr>
+    
+  </thead>
+  <tbody id="inventory_body">
+
+  </tbody>
 
 </table>
 
@@ -122,6 +128,8 @@ fetch('/load_inventory/')
 .then(res=>res.json())
 .then(inventory=>{
 const inventory_table = document.querySelector("#inventory");
+const tbody = document.querySelector("#inventory_body");
+//
 for(let product of inventory){
 let tr = document.createElement('tr');
 for(field in product){
@@ -148,7 +156,7 @@ const checkbox = document.createElement('input');
 checkbox.setAttribute('type','checkbox');
 td.appendChild(checkbox);
 tr.appendChild(td);
-inventory_table.appendChild(tr);
+tbody.appendChild(tr);
 }
 
 })
@@ -295,7 +303,7 @@ function update_cargo_table(updated_cargo){
     td.innerHTML = product[key];
     tr.appendChild(td);
   }
-  tbody.appendChild(tr);
+  tbody.appendChild(tr);//gia na mhn adeiazei olos o pinakas alla mono ta dedomena
 }
 }
 
@@ -329,9 +337,46 @@ function update_inventory(cargo_deload){
     body: JSON.stringify(cargo_deload)
   })
   .then(res=>res.json())
-  .then(data=>{})
+  .then(updated_inventory=>{
+    //code that updates inventory table
+    update_inventory_table(updated_inventory);
+  })
   .catch(error=>{console.log('Error: ',error);})
 
+}
+//
+/**********Update Inventory Table*******/
+function update_inventory_table(updated_inventory){
+  const tbody = document.querySelector("#inventory_body");
+  //
+  tbody.innerHTML = "";
+  for(let product of updated_inventory){
+    let tr = document.createElement('tr');
+    for(let key in product){
+      let td = document.createElement('td');
+      if(key == 'quantity'){
+        let select = document.createElement('select');
+        for(let i=1;i<product[key];i++){
+          let option = document.createElement('option');
+          option.value = i;
+          option.innerHTML = i;
+          select.appendChild(option);
+        }
+        td.appendChild(select);
+      }
+      else{
+        td.innerHTML = product[key];
+      }
+      tr.appendChild(td);
+    }
+    //appending the checkbox
+    let td = document.createElement('td');
+    const checkbox = document.createElement('input');
+    checkbox.setAttribute('type','checkbox');
+    td.appendChild(checkbox);
+    tr.appendChild(td);
+    tbody.appendChild(tr);
+  }
 }
 
 /*******Fetch ta requests kai offers pou den eksipiretountai apo allo oxhma***/
