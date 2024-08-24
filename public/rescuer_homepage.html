@@ -47,10 +47,15 @@
 </table>
 
 <table id="cargo_table">
-<tr>
-  <th>Item</th>
-  <th>Quantity</th>
-</tr>
+<thead>
+  <tr>
+    <th>Item</th>
+    <th>Quantity</th>
+  </tr>
+</thead>
+<tbody id="cargo_table_body">
+  
+</tbody>
 
 </table>
 
@@ -153,6 +158,8 @@ fetch('/load_cargo/')
 .then(res=>res.json())
 .then(cargo=>{
 const cargo_table = document.querySelector("#cargo_table");
+const tbody = document.querySelector("#cargo_table_body")
+
 for(let product of cargo){
   let tr = document.createElement('tr');
   for(let key in product){
@@ -160,7 +167,7 @@ for(let product of cargo){
     td.innerHTML = product[key];
     tr.appendChild(td);
   }
-  cargo_table.appendChild(tr);
+  tbody.appendChild(tr);
 }
 
 })
@@ -265,12 +272,32 @@ function update_cargo(cargo_add){
     body : JSON.stringify(cargo_add)
   })
   .then(res=>res.json())
-  .then(data=>{})
+  .then(updated_cargo=>{
+    //code that updates rescuer's cargo table
+    update_cargo_table(updated_cargo);
+  })
   .catch(error=>{console.log('Error : ',error);})
 //
 }
 
-
+//
+function update_cargo_table(updated_cargo){
+  const cargo_table = document.querySelector("#cargo_table");
+  //
+  const tbody = document.querySelector("#cargo_table_body")
+  tbody.innerHTML = "";
+  
+  //
+  for(let product of updated_cargo){
+  let tr = document.createElement('tr');
+  for(let key in product){
+    let td = document.createElement('td');
+    td.innerHTML = product[key];
+    tr.appendChild(td);
+  }
+  tbody.appendChild(tr);
+}
+}
 
 /************Move all rescuer's items into inventory******************/
 unload.addEventListener('click',(event)=>{

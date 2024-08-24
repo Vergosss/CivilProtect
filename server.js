@@ -428,7 +428,8 @@ app.post('/update_products/',async (req,res)=>{
 		}
 
 
-	//
+	//an evaza sth vash periorismous typou foreign keys tha eixa thema giati trexoun taytoxrona oi 3 parapano loopes
+	//ta adeismata trexoun prota logw await alla ta ypoloipa para to for loop boroun na anamixthoun
 });
 
 //
@@ -573,6 +574,11 @@ app.post('/update_cargo/',(req,res)=>{
 
 		});
 	}
+	//!!!thelei prosoxi!
+	connection.query('SELECT item,quantity FROM Cargo WHERE username=?',[req.session.username],(error,results)=>{
+		if(error) throw error;
+		res.send(results);
+	});
 
 //kodikas pou afairei tis posotites apo tin apothiki kai thn enimeroni katallila
 	for(let item in new_cargo){
