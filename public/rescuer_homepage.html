@@ -18,16 +18,21 @@
 <div class="panel">
 <h2>Tasks</h2>
 <table id="tasks">
+ <thead>
   <tr>
-  <th>First name</th>
-  <th>Last name</th>
-  <th>Telephone</th>
-  <th>Entry Date</th>
-  <th>Item</th>
-  <th>Quantity</th>
-  <th>Complete</th>
-  <th>Cancel</th>
-  </tr>
+    <th>First name</th>
+    <th>Last name</th>
+    <th>Telephone</th>
+    <th>Entry Date</th>
+    <th>Item</th>
+    <th>Quantity</th>
+    <th>Complete</th>
+    <th>Cancel</th>
+    </tr>
+ </thead>
+ <tbody id="tasks_body">
+
+ </tbody>
     </table>
   </div>
 </div>
@@ -356,7 +361,7 @@ function update_inventory_table(updated_inventory){
       let td = document.createElement('td');
       if(key == 'quantity'){
         let select = document.createElement('select');
-        for(let i=1;i<product[key];i++){
+        for(let i=1;i<=product[key];i++){
           let option = document.createElement('option');
           option.value = i;
           option.innerHTML = i;
@@ -594,23 +599,25 @@ fetch('/create_task/',{
     })
 })
 .then(res=>res.json())
-.then(data=>{
+.then(updated_tasks=>{
+//ananeoso me AJAX ton pinaka ton task tou diasosti
+update_tasks_table(updated_tasks);
+//
 
+//
 })
 .catch(error=>{console.log('Error: ',error);})
 
 }
-/********fetchare ta tasks kai dikse ta se enan pinaka*****/
-fetch('/get_tasks/')
-.then(res=>res.json())
-.then(tasks=>{
-
-  let tr,td;
-  const table = document.querySelector("#tasks");
-for(task of tasks){
-  tr = document.createElement('tr');//gia kathe object pou fetchara ftiaxno ena table row
-for(tsk in task){//diatrexo kathe kleidi-timh tou object
-  td = document.createElement('td');//gia kathe pedio tou object dimiourgo ena table data element kai tou vazo timi thn timh tou ekastote pediou tou object
+/*************Enimerose ton pinaka me ta tasks******/
+function update_tasks_table(updated_tasks){
+  const tbody = document.querySelector("#tasks_body");
+  tbody.innerHTML = "";
+  //
+  for(let task of updated_tasks){
+  let tr = document.createElement('tr');//gia kathe object pou fetchara ftiaxno ena table row
+for(let tsk in task){//diatrexo kathe kleidi-timh tou object
+  let td = document.createElement('td');//gia kathe pedio tou object dimiourgo ena table data element kai tou vazo timi thn timh tou ekastote pediou tou object
   td.innerHTML = String(task[tsk]);
   if(tsk == 'task_id' || tsk == 'username'){
     td.style.display = 'none';
@@ -619,16 +626,52 @@ for(tsk in task){//diatrexo kathe kleidi-timh tou object
 
 }
 //koubia
-complete = document.createElement('td');
+let complete = document.createElement('td');
 complete.innerHTML = `<button class="completebutton">Complete</button>`;
 tr.appendChild(complete);
-cancel = document.createElement('td');
+let cancel = document.createElement('td');
 cancel.innerHTML = `<button class="cancelbutton">Cancel</button>`;
 tr.appendChild(cancel);
 //ftiaxno ta dyo zhtoumena koubia
-table.appendChild(tr);
+tbody.appendChild(tr);
 }
-//
+
+//After finishing iterating tasks object...
+
+}
+
+
+
+
+/********fetchare ta tasks kai dikse ta se enan pinaka*****/
+fetch('/get_tasks/')
+.then(res=>res.json())
+.then(tasks=>{
+
+  const table = document.querySelector("#tasks");
+  const tbody = document.querySelector("#tasks_body")
+for(let task of tasks){
+  let tr = document.createElement('tr');//gia kathe object pou fetchara ftiaxno ena table row
+for(let tsk in task){//diatrexo kathe kleidi-timh tou object
+  let td = document.createElement('td');//gia kathe pedio tou object dimiourgo ena table data element kai tou vazo timi thn timh tou ekastote pediou tou object
+  td.innerHTML = String(task[tsk]);
+  if(tsk == 'task_id' || tsk == 'username'){
+    td.style.display = 'none';
+  }
+  tr.appendChild(td);//vazo ayto to table data element sto row/grammh
+
+}
+//koubia
+let complete = document.createElement('td');
+complete.innerHTML = `<button class="completebutton">Complete</button>`;
+tr.appendChild(complete);
+let cancel = document.createElement('td');
+cancel.innerHTML = `<button class="cancelbutton">Cancel</button>`;
+tr.appendChild(cancel);
+//ftiaxno ta dyo zhtoumena koubia
+tbody.appendChild(tr);
+}
+//After finishing iterating tasks object...
 let complete_buttons = document.querySelectorAll(".completebutton");
 for(let btn of complete_buttons){
   btn.addEventListener('click',function(){

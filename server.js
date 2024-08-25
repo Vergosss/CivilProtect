@@ -534,25 +534,37 @@ app.get('/load_inventory/',(req,res)=>{
 	});
 });
 //
-app.post('/update_inventory/',(req,res)=>{
+app.post('/update_inventory/',async (req,res)=>{
 
-let cargo_deload = req.body;
-for(let item in cargo_deload){
-	connection.query('UPDATE Inventory SET quantity= quantity + ? WHERE item=?',[cargo_deload[item],item],(error,results)=>{
-		if(error) throw error;
-		if(results.affectedRows>0){
-			console.log('OK');
-		}
-		else{
-			console.log('Not OK');
-		}
+	let cargo_deload = req.body;
+	try{
+	for(let item in cargo_deload){
+	[results] = await connection.promise().query('UPDATE Inventory SET quantity= quantity + ? WHERE item=?',[cargo_deload[item],item]);
+	if(results.affectedRows>0){
+	console.log('OK');
+	}
+	else{
+	console.log('NOT OK');
+	}
+	//alios me promise all
+	}
+	//
+	connection.query('SELECT * FROM Inventory',(error,results)=>{
+	if(error) throw error;
+	res.send(results);
 	});
-}
-//kodikas gia enimeroni to fortio tou diasosti
+	//
 
-//kodikas pou epistrefei to ananeomeno pleon inventory
-
-});
+	//
+	}
+	catch(error){
+	console.log('Error: ',error);
+	}
+	//kodikas gia enimerosi to fortio tou diasosti kai 
+	
+	
+	});
+//
 app.get('/load_cargo/',(req,res)=>{
 	connection.query('SELECT item,quantity FROM Cargo WHERE username=?',[req.session.username],(error,results)=>{
 		if(error) throw error;
@@ -597,7 +609,7 @@ app.post('/update_cargo/',(req,res)=>{
 
 });
 //
-app.post('/create_task/',(req,res)=>{
+app.post('/create_task/',async (req,res)=>{
 let username = req.body.username;
 let task_id = req.body.request_id;
 let first_name = req.body.first_name;
@@ -612,31 +624,41 @@ if(results.affectedRows>0){
 else{
 	console.log('Error!');
 }
+});
+//
+try{
+
+let [results] = await connection.promise().query('INSERT INTO Task(task_id,username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity) VALUES (?,?,?,?,?,NOW(),?,1) ',[task_id,username,first_name,last_name,telephone,item]);
+if(results.affectedRows>0){
+	console.log('Success!');
+}
+else{
+	console.log('Failure!');
+}
+
+connection.query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username FROM Task WHERE completed=false',(error,results)=>{
+	if(error) throw error;
+	res.send(results);	
+});
+
+//
+}
+catch(error){
+	console.log('Error: ',error);
+}
 
 });
 //boro na ta trexo taytoxrona
 
-connection.query('INSERT INTO Task(task_id,username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity) VALUES (?,?,?,?,?,NOW(),?,1) ',[task_id,username,first_name,last_name,telephone,item],(error,results)=>{
-	if(error) throw error;
-	if(results.affectedRows>0){
-		console.log('Success!');
-	}
-	else{
-		console.log('Error!');
-	}
 
 
-});
 
-});
+
+//gyrna piso ta ananeomena tasks
+
+
 //
-/*
-app.use((req, res, next) => {
-	res.header('Access-Control-Allow-Origin', '*');
-	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-	next();
-  });//gia na lyso to provlima tou CORS
-*/
+
 app.post('/complete_task/',(req,res)=>{
 let tid = req.body.tid;
 	connection.query('UPDATE Task SET completed = 1 WHERE task_id=?',[tid],(error,results)=>{
