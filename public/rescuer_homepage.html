@@ -132,37 +132,7 @@ base.addTo(map);
 fetch('/load_inventory/')
 .then(res=>res.json())
 .then(inventory=>{
-const inventory_table = document.querySelector("#inventory");
-const tbody = document.querySelector("#inventory_body");
-//
-for(let product of inventory){
-let tr = document.createElement('tr');
-for(field in product){
-let td = document.createElement('td');
-if(field == 'quantity'){
-  let select = document.createElement('select');
-  for(let i=1;i<=product['quantity'];i++){
-    let option = document.createElement('option');
-    option.value = i;
-    option.innerHTML = i;
-    select.appendChild(option);
-  }
-  td.appendChild(select);
-}
-else{
-  td.innerHTML = product[field];
-}
-
-tr.appendChild(td);
-
-}
-let td = document.createElement('td');
-const checkbox = document.createElement('input');
-checkbox.setAttribute('type','checkbox');
-td.appendChild(checkbox);
-tr.appendChild(td);
-tbody.appendChild(tr);
-}
+update_inventory_table(inventory);
 
 })
 .catch(error=>{console.log('Error: ',error);})
@@ -627,77 +597,52 @@ for(let tsk in task){//diatrexo kathe kleidi-timh tou object
 }
 //koubia
 let complete = document.createElement('td');
-complete.innerHTML = `<button class="completebutton">Complete</button>`;
+const complete_button = document.createElement('button');
+complete_button.innerHTML = 'Complete';
+complete_button.addEventListener('click',Complete);
+//
+complete.appendChild(complete_button);
+
 tr.appendChild(complete);
+//
 let cancel = document.createElement('td');
-cancel.innerHTML = `<button class="cancelbutton">Cancel</button>`;
+const cancel_button = document.createElement('button');
+cancel_button.innerHTML = 'Cancel';
+//event listeners
+cancel_button.addEventListener('click',Cancel);
+//
+cancel.appendChild(cancel_button);
 tr.appendChild(cancel);
 //ftiaxno ta dyo zhtoumena koubia
 tbody.appendChild(tr);
+//
+
 }
 
 //After finishing iterating tasks object...
 
 }
-
-
+/**************************/
+function Complete(event){
+console.log('Clicked!');
+console.log(this.parentNode.previousSibling.innerHTML);//username
+console.log(this.parentNode.previousSibling.previousSibling.innerHTML);//id
+complete_task(this.parentNode.previousSibling.previousSibling.innerHTML);
+}
+//
+function Cancel(event){
+  console.log('Clicked!');
+  console.log(this.parentNode.previousSibling.previousSibling.innerHTML);//username
+  console.log(this.parentNode.previousSibling.previousSibling.previousSibling.innerHTML);//id
+  cancel_task(this.parentNode.previousSibling.previousSibling.previousSibling.innerHTML);
+}
 
 
 /********fetchare ta tasks kai dikse ta se enan pinaka*****/
 fetch('/get_tasks/')
 .then(res=>res.json())
 .then(tasks=>{
-
-  const table = document.querySelector("#tasks");
-  const tbody = document.querySelector("#tasks_body")
-for(let task of tasks){
-  let tr = document.createElement('tr');//gia kathe object pou fetchara ftiaxno ena table row
-for(let tsk in task){//diatrexo kathe kleidi-timh tou object
-  let td = document.createElement('td');//gia kathe pedio tou object dimiourgo ena table data element kai tou vazo timi thn timh tou ekastote pediou tou object
-  td.innerHTML = String(task[tsk]);
-  if(tsk == 'task_id' || tsk == 'username'){
-    td.style.display = 'none';
-  }
-  tr.appendChild(td);//vazo ayto to table data element sto row/grammh
-
-}
-//koubia
-let complete = document.createElement('td');
-complete.innerHTML = `<button class="completebutton">Complete</button>`;
-tr.appendChild(complete);
-let cancel = document.createElement('td');
-cancel.innerHTML = `<button class="cancelbutton">Cancel</button>`;
-tr.appendChild(cancel);
-//ftiaxno ta dyo zhtoumena koubia
-tbody.appendChild(tr);
-}
-//After finishing iterating tasks object...
-let complete_buttons = document.querySelectorAll(".completebutton");
-for(let btn of complete_buttons){
-  btn.addEventListener('click',function(){
-    console.log('Clicked!');
-    const id = this.parentNode.previousSibling.previousSibling;//o parent tou koubiou einai o container tou diladi
-    console.log(id.innerHTML);//
-    const tid = id.innerHTML;
-    complete_task(tid);
-  });
-}
-//event listeners
-let cancel_buttons = document.querySelectorAll(".cancelbutton");
-for(let btn of cancel_buttons){
-  btn.addEventListener('click',function(){
-    console.log('Clicked!');
-    //get the task id cell
-    const id = this.parentNode.previousSibling.previousSibling.previousSibling;
-    //console.log(id.innerHTML);
-    //get id cell value
-    const tid = id.innerHTML;
-    //delete row
-    const row = this.parentNode.parentNode.rowIndex;//perno to id ths grammhs
-    table.deleteRow(row);
-    cancel_task(tid);
-  });
-}
+  update_tasks_table(tasks);
 })
 .catch(error=>{console.log('Error: ',error);})
 /****function pou oloklironei-diekperaionei ena task***/
@@ -725,7 +670,10 @@ fetch('/cancel_task/',{
   })
 })
 .then(res=>res.json())
-.then(data=>{})
+.then(updated_tasks=>{
+//AJAX update task table
+  update_tasks_table(updated_tasks);
+})
 .catch(error=>{console.log('Error: ',error);})
 
 }

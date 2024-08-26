@@ -10,8 +10,8 @@ console.log(process.version);
 const multer = require("multer");
 const connection = mysql.createConnection({
 	host     : 'localhost',
-	user     : 'root',
-	password : '',
+	user     : 'web',
+	password : 'web',
 	database : 'web'
 });
 //
@@ -573,27 +573,40 @@ app.get('/load_cargo/',(req,res)=>{
 });
 
 //
-app.post('/update_cargo/',(req,res)=>{
+app.post('/update_cargo/',async (req,res)=>{
 //enimerosi tou fortiou tou diasosti
+//sto inventory key = username,item alios kanei ksana px iasonasmakris-water
 	let new_cargo = req.body;
-	for(let item in new_cargo){
-		connection.query('INSERT INTO Cargo(username,item,quantity) VALUES(?,?,?) ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)',[req.session.username,item,new_cargo[item]],(error,results)=>{
+	try{
+		//
+		for(let item in new_cargo){
+		[results] = await connection.promise().query('INSERT INTO Cargo(username,item,quantity) VALUES(?,?,?) ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)',[req.session.username,item,new_cargo[item]]);
+		//
+		if(results.affectedRows>0){
+		console.log('OK');
+		}
+		else{
+		console.log('NOT OK');
+		}
+		
+		}
+		//
+		//
+		connection.query('SELECT item,quantity FROM Cargo WHERE username=?',[req.session.username],(error,results)=>{
 			if(error) throw error;
-			if(results.affectedRows>0){
-				console.log('OK');
-			}
-			else{
-				console.log('Not OK');
-			}
-
+			res.send(results);
 		});
-	}
-	//!!!thelei prosoxi!
-	connection.query('SELECT item,quantity FROM Cargo WHERE username=?',[req.session.username],(error,results)=>{
-		if(error) throw error;
-		res.send(results);
-	});
+	
 
+		}
+		catch(error){
+		console.log('Error: ',error);
+		}
+		
+		
+		
+	//!!!thelei prosoxi!
+	
 //kodikas pou afairei tis posotites apo tin apothiki kai thn enimeroni katallila
 	for(let item in new_cargo){
 		connection.query('UPDATE Inventory SET quantity=quantity - ? WHERE item=?',[new_cargo[item],item],(error,results)=>{
@@ -686,19 +699,26 @@ res.send(results);
 });
 
 //
-app.post('/cancel_task/',(req,res)=>{
+app.post('/cancel_task/',async (req,res)=>{
 	let tid = req.body.tid;
-	connection.query('DELETE FROM Task WHERE task_id=?',[tid],(error,results)=>{
-		if(error) throw error;
-		if(results.affectedRows>0){
-			console.log('Success');
-		}
-		else{
-			console.log('Failure!');
-		}
-	});
 //
-connection.query('UPDATE Request SET lifted=0,vehicle_username=NULL where vehicle_username=? AND request_id=?',[req.session.username,tid],(error,results)=>{
+try{
+let [results] = await connection.promise().query('DELETE FROM Task WHERE task_id=?',[tid]);
+if(results.affectedRows>0){
+	console.log('Deleted successfully!');
+}
+else{
+	console.log('Deletion Failed!');
+}
+//get the updated tasks
+connection.query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username FROM Task WHERE completed=false',(error,results)=>{
+	if(error) throw error;
+	res.send(results);
+});
+
+
+//
+connection.query('UPDATE Request SET lifted=0,vehicle_username=NULL,withdrawal_date=NULL where vehicle_username=? AND request_id=?',[req.session.username,tid],(error,results)=>{
 	if(error) throw error;
 	if(results.affectedRows>0){
 		console.log('OK');
@@ -707,6 +727,13 @@ connection.query('UPDATE Request SET lifted=0,vehicle_username=NULL where vehicl
 		console.log('Error!');
 	}
 });
+}
+catch(error){
+	console.log('Error: ',error);
+}
+
+
+//
 });
 //
 module.exports = app;//an thelo na kano import se allo JS arxeio ton parapano kodika
