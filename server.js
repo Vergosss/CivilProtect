@@ -537,9 +537,11 @@ app.get('/load_inventory/',(req,res)=>{
 app.post('/update_inventory/',async (req,res)=>{
 
 	let cargo_deload = req.body;
+	let new_inventory;
+	let new_cargo;
 	try{
 	for(let item in cargo_deload){
-	[results] = await connection.promise().query('UPDATE Inventory SET quantity= quantity + ? WHERE item=?',[cargo_deload[item],item]);
+	[results] = await connection.promise().query('UPDATE Inventory SET quantity= quantity + ? WHERE item=?',[parseInt(cargo_deload[item]),item]);
 	if(results.affectedRows>0){
 	console.log('OK');
 	}
@@ -549,19 +551,31 @@ app.post('/update_inventory/',async (req,res)=>{
 	//alios me promise all
 	}
 	//
-	connection.query('SELECT * FROM Inventory',(error,results)=>{
-	if(error) throw error;
-	res.send(results);
-	});
+	//kodikas gia enimerosi to fortio tou diasosti kai 
+	for(let item in cargo_deload){
+		[results] = await connection.promise().query('UPDATE Cargo SET quantity = quantity - ? WHERE username=? AND item=?',[parseInt(cargo_deload[item]),req.session.username,item]);
+		if(results.affectedRows>0){
+			console.log('OK');
+		}
+		else{
+			console.log('Problem!');
+		}
+		//
+		}
+	
 	//
-
+	[results] = await connection.promise().query('SELECT * FROM Inventory');
+	new_inventory = results;
 	//
-	}
+	[results] = await connection.promise().query('SELECT item,quantity FROM Cargo WHERE username=?',[req.session.username]);
+	new_cargo = results;
+	console.log('New inventory:',new_inventory);
+	console.log('New cargo:',new_cargo);
+	res.send([new_inventory,new_cargo]);
+}
 	catch(error){
 	console.log('Error: ',error);
 	}
-	//kodikas gia enimerosi to fortio tou diasosti kai 
-	
 	
 	});
 //
@@ -576,11 +590,14 @@ app.get('/load_cargo/',(req,res)=>{
 app.post('/update_cargo/',async (req,res)=>{
 //enimerosi tou fortiou tou diasosti
 //sto inventory key = username,item alios kanei ksana px iasonasmakris-water
-	let new_cargo = req.body;
+	let cargo_load = req.body;
+	let new_inventory;
+	let new_cargo;
+	console.log(cargo_load)
 	try{
 		//
-		for(let item in new_cargo){
-		[results] = await connection.promise().query('INSERT INTO Cargo(username,item,quantity) VALUES(?,?,?) ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)',[req.session.username,item,new_cargo[item]]);
+		for(let item in cargo_load){
+		let [results] = await connection.promise().query('INSERT INTO Cargo(username,item,quantity) VALUES(?,?,?) ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)',[req.session.username,item,parseInt(cargo_load[item])]);
 		//
 		if(results.affectedRows>0){
 		console.log('OK');
@@ -591,34 +608,29 @@ app.post('/update_cargo/',async (req,res)=>{
 		
 		}
 		//
-		//
-		connection.query('SELECT item,quantity FROM Cargo WHERE username=?',[req.session.username],(error,results)=>{
-			if(error) throw error;
-			res.send(results);
-		});
-	
 
+		for(let item in cargo_load){
+			let [results] = await connection.promise().query('UPDATE Inventory SET quantity=quantity - ? WHERE item=?',[parseInt(cargo_load[item]),item]);
+			if(results.affectedRows>0){
+				console.log('Success');
+			}
+			else{
+				console.log('Fail');
+			}
+		}
+		//new inventory
+		let [results] = await connection.promise().query('SELECT * FROM Inventory');
+		new_inventory = results;
+		//new cargo
+		[results] = await connection.promise().query('SELECT item,quantity FROM Cargo WHERE username=?',[req.session.username]);
+		new_cargo = results;
+		console.log('New inventory:',new_inventory);
+		console.log('New cargo:',new_cargo);
+		res.send([new_inventory,new_cargo]);
 		}
 		catch(error){
 		console.log('Error: ',error);
 		}
-		
-		
-		
-	//!!!thelei prosoxi!
-	
-//kodikas pou afairei tis posotites apo tin apothiki kai thn enimeroni katallila
-	for(let item in new_cargo){
-		connection.query('UPDATE Inventory SET quantity=quantity - ? WHERE item=?',[new_cargo[item],item],(error,results)=>{
-			if(error) throw error;
-			if(results.affectedRows>0){
-				console.log('Done');
-			}
-			else{
-				console.log('NOT DONE');
-			}
-		});
-	}
 
 });
 //
@@ -672,22 +684,30 @@ catch(error){
 
 //
 
-app.post('/complete_task/',(req,res)=>{
+app.post('/complete_task/',async (req,res)=>{
 let tid = req.body.tid;
-	connection.query('UPDATE Task SET completed = 1 WHERE task_id=?',[tid],(error,results)=>{
-	if(error) throw error;
-	if(results.affectedRows>0){
-		
-	console.log('Success!');
-		
+	
+	try{
+
+		let [results] = await connection.promise().query('UPDATE Task SET completed = 1 WHERE task_id=?',[tid]);
+		if(results.affectedRows>0){
+			console.log('Success!');
+		}
+		else{
+			console.log('Failed!');
+		}
+		//
+		connection.query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username FROM Task WHERE completed=false',(error,results)=>{
+			if(error) throw error;
+			res.send(results);
+		});
 	}
-	else{
-	console.log('Failure!');
+	catch(error){
+		console.log('Error: ',error);
 	}
-
-	});
-
-
+	
+//
+//kodikas gia delete tou antistixou request
 });
   //
 app.get('/get_tasks/',(req,res)=>{

@@ -17,7 +17,7 @@
 <div id="map" style="width: 900px; height : 580px"></div>
 <div class="panel">
 <h2>Tasks</h2>
-<table id="tasks">
+<table id="tasks" style="overflow-x:auto;">
  <thead>
   <tr>
     <th>First name</th>
@@ -140,18 +140,7 @@ update_inventory_table(inventory);
 fetch('/load_cargo/')
 .then(res=>res.json())
 .then(cargo=>{
-const cargo_table = document.querySelector("#cargo_table");
-const tbody = document.querySelector("#cargo_table_body")
-
-for(let product of cargo){
-  let tr = document.createElement('tr');
-  for(let key in product){
-    let td = document.createElement('td');
-    td.innerHTML = product[key];
-    tr.appendChild(td);
-  }
-  tbody.appendChild(tr);
-}
+update_cargo_table(cargo);
 
 })
 .catch(error=>{console.log('Error: ',error);})
@@ -255,8 +244,13 @@ function update_cargo(cargo_add){
     body : JSON.stringify(cargo_add)
   })
   .then(res=>res.json())
-  .then(updated_cargo=>{
+  .then(updated_inventory_cargo=>{
+    //update inventory table
+  
+    let updated_inventory = updated_inventory_cargo[0];
+    update_inventory_table(updated_inventory);
     //code that updates rescuer's cargo table
+    let updated_cargo = updated_inventory_cargo[1];
     update_cargo_table(updated_cargo);
   })
   .catch(error=>{console.log('Error : ',error);})
@@ -312,9 +306,13 @@ function update_inventory(cargo_deload){
     body: JSON.stringify(cargo_deload)
   })
   .then(res=>res.json())
-  .then(updated_inventory=>{
+  .then(updated_inventory_cargo=>{
     //code that updates inventory table
+    let updated_inventory = updated_inventory_cargo[0];
     update_inventory_table(updated_inventory);
+    //update cargo table
+    let updated_cargo = updated_inventory_cargo[1];
+    update_cargo_table(updated_cargo);
   })
   .catch(error=>{console.log('Error: ',error);})
 
@@ -502,56 +500,7 @@ function show_requests(requests){
   filter.addOverlay(lines,'Connections');
 }
 /********Insert a record on the table****/
-function insert_record(citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,tid,username){
-  const table = document.querySelector("#tasks");
-  const row = table.insertRow();
-  const c1 = row.insertCell(0);
-  const c2 = row.insertCell(1);
-  const c3 = row.insertCell(2);
-  const c4 = row.insertCell(3);
-  const c5 = row.insertCell(4);
-  const c6 = row.insertCell(5);
-  const c7 = row.insertCell(6);
-  const c8 = row.insertCell(7);
-  const c9 = row.insertCell(8);
-  const c10 = row.insertCell(9);
-  c1.innerHTML = citizen_first_name;
-  c2.innerHTML = citizen_last_name;
-  c3.innerHTML = citizen_telephone;
-  c4.innerHTML = entry_date;
-  c5.innerHTML = item;
-  c6.innerHTML = quantity;
-  c7.innerHTML = tid;
-  c8.innerHTML = username;
-  c7.style.display = 'none';
-  c8.style.display = 'none';
-  //buttons
-  const completebutton = document.createElement('button');
-  const cancelbutton = document.createElement('button');
-  //text
-  completebutton.innerHTML = 'Complete';
-  cancelbutton.innerHTML = 'Cancel';
-  //add to table cells
-  c9.appendChild(completebutton);
-  c10.appendChild(cancelbutton);
-  //event listeners
-  completebutton.addEventListener('click',event=>{
-    console.log('Clicked!');
-    complete_task(tid);
-  });
-  //
-  cancelbutton.addEventListener('click',function(){
-    //me arrow function to this einai to windows ara o parent tou window einai undefined
-    console.log('Clicked!');
-    const row = this.parentNode.parentNode.rowIndex;
-    table.deleteRow(row);
-    cancel_task(tid);
-  });
-  /**************************/
 
-  //
-
-}
 
 /*****Creating a task after clicking on the request/offer button******/
 function create_task(username,request_id,first_name,last_name,telephone,item){
@@ -656,7 +605,11 @@ fetch('/complete_task/',{
     })
 })
 .then(res=>res.json())
-.then(data=>{})
+.then(updated_tasks=>{
+    //AJAX again...
+
+update_tasks_table(updated_tasks);
+})
 .catch(error=>{console.log('Error: ',error);})
 
 }
