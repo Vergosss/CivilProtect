@@ -686,7 +686,8 @@ catch(error){
 
 app.post('/complete_task/',async (req,res)=>{
 let tid = req.body.tid;
-	
+let new_tasks;
+let new_requests;
 	try{
 
 		let [results] = await connection.promise().query('UPDATE Task SET completed = 1 WHERE task_id=?',[tid]);
@@ -697,10 +698,24 @@ let tid = req.body.tid;
 			console.log('Failed!');
 		}
 		//
-		connection.query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username FROM Task WHERE completed=false',(error,results)=>{
-			if(error) throw error;
-			res.send(results);
-		});
+		[results]= await connection.promise().query('DELETE FROM Request WHERE request_id=?',[tid]);
+		if(results.affectedRows>0){
+			console.log('Deletion Succesfull');
+		}
+		else{
+			console.log('Deletion failed');
+		}
+		//
+		[results] = await connection.promise().query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username FROM Task WHERE completed=false');
+		new_tasks = results;
+		//
+		[results] = await connection.promise().query('SELECT request_id,username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,ST_X(cords),ST_Y(cords),lifted FROM Request WHERE lifted=false OR vehicle_username=?',[req.session.username]);
+		new_requests = results;
+		//
+		console.log('New tasks: ',new_tasks);
+		console.log('New requests: ',new_requests);
+		res.send([new_tasks,new_requests]);
+		//thelo kai kodika gia update cargo/inventory
 	}
 	catch(error){
 		console.log('Error: ',error);
@@ -721,6 +736,8 @@ res.send(results);
 //
 app.post('/cancel_task/',async (req,res)=>{
 	let tid = req.body.tid;
+	let new_tasks;
+	let new_requests;
 //
 try{
 let [results] = await connection.promise().query('DELETE FROM Task WHERE task_id=?',[tid]);
@@ -731,22 +748,29 @@ else{
 	console.log('Deletion Failed!');
 }
 //get the updated tasks
-connection.query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username FROM Task WHERE completed=false',(error,results)=>{
-	if(error) throw error;
-	res.send(results);
-});
+[results] = await connection.promise().query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username FROM Task WHERE completed=false');
+new_tasks = results;
+
+
+//kane fetch kai ta requests meta gia ajax update tou map me thn show_requests2
+[results] = await connection.promise().query('UPDATE Request SET lifted=0,vehicle_username=NULL,withdrawal_date=NULL where vehicle_username=? AND request_id=?',[req.session.username,tid]);
+if(results.affectedRows>0){
+	console.log('Updated successfully!');
+}
+else{
+	console.log('Update Failed!');
+}
+//
+[results] = await connection.promise().query('SELECT request_id,username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,ST_X(cords),ST_Y(cords),lifted FROM Request WHERE lifted=false OR vehicle_username=?',[req.session.username]);
+new_requests = results;
+//
+console.log('New tasks : ',new_tasks);
+console.log('New requests : ',new_requests);
+//
+res.send([new_tasks,new_requests]);
 
 
 //
-connection.query('UPDATE Request SET lifted=0,vehicle_username=NULL,withdrawal_date=NULL where vehicle_username=? AND request_id=?',[req.session.username,tid],(error,results)=>{
-	if(error) throw error;
-	if(results.affectedRows>0){
-		console.log('OK');
-	}
-	else{
-		console.log('Error!');
-	}
-});
 }
 catch(error){
 	console.log('Error: ',error);

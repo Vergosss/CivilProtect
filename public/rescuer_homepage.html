@@ -69,7 +69,7 @@
 </tbody>
 
 </table>
-
+<button id="test">Clear</button>
 
 <script>
 
@@ -111,10 +111,10 @@ var  lifted_requests = L.layerGroup();
 var unlifted_requests = L.layerGroup();
 var lines = L.layerGroup();
 var filter = L.control.layers();
-filter.addTo(map);
+//filter.addTo(map);
 //
 let base = L.marker([38.24,21.73],{draggable:false,icon:greenIcon});
-base.addTo(map);
+//base.addTo(map);
 /**********arxikopoihseis****/
 /****Mono fetch giati o diasostis vlepei th vash den thn allazei*/
 fetch('/get_base/')
@@ -152,7 +152,7 @@ update_cargo_table(cargo);
 /*************************/
 /*****Thelo fetch kai ta cords aytounou mono(vlepei th thesh tou kai mono o diasostis oxi allous diasostes) *********/
 let vehicle = L.marker([38.24,21.73],{draggable:true,icon:redIcon});
-vehicle.addTo(map);
+//vehicle.addTo(map);
 fetch('/get_vehicle/')
 .then(res=>{return res.json();})
 .then(data=>{
@@ -358,7 +358,13 @@ const grouped_requests = Object.groupBy(requests,function({username}){
   return username;
 });
 //console.log(res);
-
+lines.clearLayers();//katharise ta layergroups
+map.removeLayer(lines);//afairese to group layer apo to map
+map.eachLayer(layer=>{if(layer instanceof L.Marker){map.removeLayer(layer)}});//vgale olous tous markers apo to map
+filter.removeLayer(lines);//adeiazo to filtro
+map.removeControl(filter);//vgale to filtro
+base.addTo(map);//kai th vash os markers mono oi metavlites yparxoun
+vehicle.addTo(map);//ksanavale to vehicle
 /*******/
 
 for (let user in grouped_requests){
@@ -411,7 +417,7 @@ request_marker.addTo(map);
 
 lines.addTo(map);
 filter.addOverlay(lines,'Connections');
-
+filter.addTo(map);
 }
 /*********/
 //
@@ -605,10 +611,13 @@ fetch('/complete_task/',{
     })
 })
 .then(res=>res.json())
-.then(updated_tasks=>{
+.then(updated_tasks_requests=>{
     //AJAX again...
-
-update_tasks_table(updated_tasks);
+  let updated_tasks = updated_tasks_requests[0];
+  update_tasks_table(updated_tasks);
+//
+  let updated_requests = updated_tasks_requests[1];
+  show_requests2(updated_requests);
 })
 .catch(error=>{console.log('Error: ',error);})
 
@@ -623,9 +632,13 @@ fetch('/cancel_task/',{
   })
 })
 .then(res=>res.json())
-.then(updated_tasks=>{
+.then(updated_tasks_requests=>{
 //AJAX update task table
+  let updated_tasks = updated_tasks_requests[0];
   update_tasks_table(updated_tasks);
+  //
+  let updated_requests = updated_tasks_requests[1];
+  show_requests2(updated_requests);
 })
 .catch(error=>{console.log('Error: ',error);})
 
@@ -634,6 +647,16 @@ fetch('/cancel_task/',{
 function Distance(vehicle,base){
   return map.distance([vehicle.getLatLng().lat,vehicle.getLatLng().lng],[base.getLatLng().lat,base.getLatLng().lng]);
 }
+let clear = document.querySelector("#test");
+clear.addEventListener('click',function(){
+  lines.clearLayers();
+  map.eachLayer(layer=>{
+    if(layer instanceof L.Marker){
+      map.removeLayer(layer);
+    }
+  });
+  //
+});
 
 </script>
 
