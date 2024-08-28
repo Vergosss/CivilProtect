@@ -69,7 +69,7 @@
 </tbody>
 
 </table>
-<button id="test">Clear</button>
+
 
 <script>
 
@@ -647,16 +647,8 @@ fetch('/cancel_task/',{
 function Distance(vehicle,base){
   return map.distance([vehicle.getLatLng().lat,vehicle.getLatLng().lng],[base.getLatLng().lat,base.getLatLng().lng]);
 }
-let clear = document.querySelector("#test");
-clear.addEventListener('click',function(){
-  lines.clearLayers();
-  map.eachLayer(layer=>{
-    if(layer instanceof L.Marker){
-      map.removeLayer(layer);
-    }
-  });
-  //
-});
+
+
 
 </script>
 

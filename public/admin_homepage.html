@@ -38,6 +38,23 @@
 </form> 
 <button id="itemsbutton">Fetch Items</button>
 <a href="/logout"><button>Log out</button></a>
+<!-------------------Pinakas me items apothiki,oximata----------------------->
+  <table id="items">
+    <thead>
+      <tr>
+        <th colspan="2">Inventory</th>
+      </tr>
+      <tr>
+        <th>Item</th>
+        <th>Quantity</th>
+      </tr>
+    </thead>
+    <tbody id="inventory_body">
+    
+    </tbody>
+    
+    </table>
+
 
 <script>
 
@@ -122,6 +139,16 @@ base.bindPopup('Base');
 base.addTo(map);
 })
 .catch(error=>{console.log('Error: ',error);})
+/******************************************/
+
+fetch('/get_inventory_cargos/')
+.then(res=>res.json())
+.then(inventory_cargos=>{
+  show_Items(inventory_cargos);
+})
+.catch(error=>{console.log('Error: ',error);})
+
+
 
 /*******os Admin epishs vlepo olous tous diasostes/oximata****/
 let vehicles = L.layerGroup();
@@ -309,8 +336,65 @@ if(marker.options.name == vehicle_username){
 });
 return cords;
 }
+/*************************/
+function show_Items(inventory_cargos){
+  let inventory = inventory_cargos[0];
+  let cargos = inventory_cargos[1];
+  const inventory_body = document.querySelector("#inventory_body")
+  //Add the inventory
+  for(let product of inventory){
+    let tr = document.createElement('tr');
+    for(key in product){
+      let td = document.createElement('td');
+      td.innerHTML = product[key];
+      tr.appendChild(td);
+    }
+    inventory_body.appendChild(tr);
+  }
+  //Add the cargos
+  //kano groupby ta cargos vash to username
+  //kai diatrexo ayto to array
+const table = document.querySelector("#items");
+const grouped_cargos = Object.groupBy(cargos,function({username}){
+return username;
+});
+//
+for(let username in grouped_cargos){
+  let thead = document.createElement('thead');
+  let vehicle_tr = document.createElement('tr');
+  let th = document.createElement('th');
+  th.innerHTML = username;//to onoma tou oximatos
+  th.setAttribute('colspan','2');
+  //
+  vehicle_tr.appendChild(th);//vale to table header me to onoma tou oximatos sth grammh
+  thead.appendChild(vehicle_tr);
+  //
+  let item_tr = document.createElement('tr');
+  let item_th = document.createElement('th');
+  let quantity_th = document.createElement('th');
+  item_th.innerHTML = 'Item';
+  quantity_th.innerHTML = 'Quantity';
+  item_tr.appendChild(item_th);
+  item_tr.appendChild(quantity_th);
+  thead.appendChild(item_tr);
+  table.appendChild(thead);
+  //body work
+  let tbody = document.createElement('tbody');
+  //
+  for(let product of grouped_cargos[username]){
+    let tr = document.createElement('tr');
+    for(let key in product){
+      if(key == 'username') continue;
+      let td = document.createElement('td');
+      td.innerHTML = product[key];
+      tr.appendChild(td);
+    }
+    tbody.appendChild(tr);
+  }
+  table.appendChild(tbody);
+}
 
-
+}
 /*******************/
 //an patithei to koubi kano fetch ta proionta me amesh klhsh sto url 
 const itemsbutton = document.querySelector("#itemsbutton");

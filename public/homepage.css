@@ -39,7 +39,7 @@
     transition: background-color 0.2s;
 }
 
-.table,tr,td{
+.table,tr,td,th{
 
     border: 1px solid black;
 }
@@ -47,4 +47,11 @@
 .popup{
     max-height: 200px;
     overflow-y: auto;/*epitrepei na yparxeilisi to ypsos tou div ara kata synepeia na einai scrollable*/
+}
+thead,tbody{
+    display:block;/*Aanagastika to thead giati alios xalaei to layout*/
+}
+tbody{
+    max-height: 50px;
+    overflow-y: auto;
 }

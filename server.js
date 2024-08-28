@@ -634,6 +634,27 @@ app.post('/update_cargo/',async (req,res)=>{
 
 });
 //
+app.get('/get_inventory_cargos/',async (req,res)=>{
+let inventory;
+let cargos;
+try{
+let [results] = await connection.promise().query('SELECT * from Inventory');
+inventory = results;
+//
+[results] = await connection.promise().query('SELECT * FROM Cargo');
+cargos = results;
+//
+console.log('Inventory: ',inventory);
+console.log('Cargos: ',cargos);
+res.send([inventory,cargos]);
+//
+}
+catch(error){
+console.log('Error: ',error);
+}
+//
+});
+//
 app.post('/create_task/',async (req,res)=>{
 let username = req.body.username;
 let task_id = req.body.request_id;
