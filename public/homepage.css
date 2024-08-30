@@ -48,10 +48,3 @@
     max-height: 200px;
     overflow-y: auto;/*epitrepei na yparxeilisi to ypsos tou div ara kata synepeia na einai scrollable*/
 }
-thead,tbody{
-    display:block;/*Aanagastika to thead giati alios xalaei to layout*/
-}
-tbody{
-    max-height: 50px;
-    overflow-y: auto;
-}

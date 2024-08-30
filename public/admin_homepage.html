@@ -39,6 +39,20 @@
 <button id="itemsbutton">Fetch Items</button>
 <a href="/logout"><button>Log out</button></a>
 <!-------------------Pinakas me items apothiki,oximata----------------------->
+<table id="testing">
+<tr>
+  <td>
+    <input type="checkbox" class="filter"  value="Sardines"> Sardines
+  </td>
+  <td>
+    <input type="checkbox" class="filter"  value="Orange Juice"> Orange Juice
+  </td>
+  <td>
+    <input type="checkbox" class="filter"  value="Croissant"> Croissant
+  </td>
+</tr>
+</table>
+<!------------------------>
   <table id="items">
     <thead>
       <tr>
@@ -54,7 +68,6 @@
     </tbody>
     
     </table>
-
 
 <script>
 
@@ -360,14 +373,17 @@ return username;
 });
 //
 for(let username in grouped_cargos){
-  let thead = document.createElement('thead');
+// kathe pinakas exei to poly 1 thead ara ta vazo ola sto body
+
+  let tbody = document.createElement('tbody');
+  //
   let vehicle_tr = document.createElement('tr');
   let th = document.createElement('th');
   th.innerHTML = username;//to onoma tou oximatos
   th.setAttribute('colspan','2');
   //
   vehicle_tr.appendChild(th);//vale to table header me to onoma tou oximatos sth grammh
-  thead.appendChild(vehicle_tr);
+  tbody.appendChild(vehicle_tr);
   //
   let item_tr = document.createElement('tr');
   let item_th = document.createElement('th');
@@ -376,10 +392,9 @@ for(let username in grouped_cargos){
   quantity_th.innerHTML = 'Quantity';
   item_tr.appendChild(item_th);
   item_tr.appendChild(quantity_th);
-  thead.appendChild(item_tr);
-  table.appendChild(thead);
+  tbody.appendChild(item_tr);
+//
   //body work
-  let tbody = document.createElement('tbody');
   //
   for(let product of grouped_cargos[username]){
     let tr = document.createElement('tr');
@@ -393,6 +408,52 @@ for(let username in grouped_cargos){
   }
   table.appendChild(tbody);
 }
+
+}
+//
+
+/************************Filter table data per categories*******/
+const boxes = document.querySelectorAll(".filter");
+for(let box of boxes){
+  box.addEventListener('click',filter_Items);
+}
+function filter_Items(){
+
+const checkboxes = document.querySelectorAll(".filter");
+let current_values = [];
+for(let box of checkboxes){
+  if(box.checked){
+    current_values.push(box.value);//poies times exoun klikaristei?
+  }
+}
+console.log(current_values);
+/*******/
+const bodies = document.querySelectorAll("#items tbody");
+//perno ola ta bodies tou pinaka
+//#items tbody einai o css selector pou pernei ola ta tbody elements pou exoun patera to element me id items
+console.log(bodies);
+//
+for(let body of bodies){
+  for(let row of body.rows){
+    let ths = row.getElementsByTagName('th').length;
+    if(ths>0) continue;//an den vriskomai se grammh me apokleistika mono td elements proxora sthn epomenh grammh
+      
+      //perno to keli pou tha krata thn kathgoria
+      //an htan omoiomorfos o pinakas diladi oxi inventory->(item,quantity) ->vehicle->(item,quantity)
+      //anti na psaxno kathe keli tsekaro tin timh px tou teleytaiou keliou px tou 3ou
+      if(current_values.indexOf(row.cells[0].innerHTML)>-1){
+        //an diladi to keli exei kapoia timh ton trexonton tsekarismenon timon
+        //afise th grammh os exei
+        row.style.display =  "";
+      }
+      else{
+        //kryfthn
+        row.style.display = "none";
+      }
+    
+  }
+}
+
 
 }
 /*******************/
