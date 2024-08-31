@@ -1,4 +1,7 @@
 
+//process.env.TZ = 'Europe/Athens';
+//
+console.log(new Date());
 
 const express = require("express");//import express module
 const mysql = require("mysql2");
@@ -7,6 +10,7 @@ const bcrypt = require("bcrypt");
 //
 //const path = require('path');
 console.log(process.version);
+//
 const multer = require("multer");
 const connection = mysql.createConnection({
 	host     : 'localhost',
@@ -800,6 +804,13 @@ catch(error){
 
 //
 });
+//
+app.get('/graph/',(req,res)=>{
+	connection.query('SELECT DATE(entry_date) as Date,count(request_id) as requests FROM Request group by DATE(entry_date)',(error,results)=>{
+		res.send(results);
+	});
+});
+
 //
 module.exports = app;//an thelo na kano import se allo JS arxeio ton parapano kodika
 app.listen(port,() => {

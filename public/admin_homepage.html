@@ -9,6 +9,8 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-search/3.0.2/leaflet-search.min.js"></script>
     <link rel="icon" type="image/x-icon" href="/public/favicon.ico">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
     <title>Welcome Admin!</title>
 </head>
@@ -68,6 +70,8 @@
     </tbody>
     
     </table>
+    <!------------------->
+    <canvas id="graph" style="width:100%;max-width:700px"></canvas>
 
 <script>
 
@@ -437,11 +441,8 @@ for(let body of bodies){
   for(let row of body.rows){
     let ths = row.getElementsByTagName('th').length;
     if(ths>0) continue;//an den vriskomai se grammh me apokleistika mono td elements proxora sthn epomenh grammh
-      
-      //perno to keli pou tha krata thn kathgoria
-      //an htan omoiomorfos o pinakas diladi oxi inventory->(item,quantity) ->vehicle->(item,quantity)
       //anti na psaxno kathe keli tsekaro tin timh px tou teleytaiou keliou px tou 3ou
-      if(current_values.indexOf(row.cells[0].innerHTML)>-1){
+      if(current_values.indexOf(row.cells[2].innerHTML)>-1){
         //an diladi to keli exei kapoia timh ton trexonton tsekarismenon timon
         //afise th grammh os exei
         row.style.display =  "";
@@ -453,9 +454,36 @@ for(let body of bodies){
     
   }
 }
-
-
+//
 }
+/************************Chart********/
+fetch('/graph/')
+.then(res=>res.json())
+.then(requests=>{
+  Graph(requests);
+})
+.catch(error=>{console.log('Error: ',error);})
+
+function Graph(requests){
+const ctx = document.querySelector("#graph");
+//
+const chart = new Chart(ctx,{
+  type: 'bar',
+  data: {
+    labels: requests.map(req=> (new Date(req.Date)).toLocaleDateString()), //o aksonas x ousiastika(oi times tou)
+    datasets:[{
+      label: 'Request count per day',
+      data: requests.map(req=>req.requests), // o aksonas y ousiastika(oi times tou)
+      backgroundColor: 'rgba(70, 192, 192, 0.6)',//xroma ths baras(esoteriko)
+      borderColor: 'rgba(150, 100, 255, 1)',//xroma perigrammatos baras
+      borderWidth: 1//eyros(paxos ths baras)
+    }]
+  },
+  options: {}
+}); 
+//
+}
+
 /*******************/
 //an patithei to koubi kano fetch ta proionta me amesh klhsh sto url 
 const itemsbutton = document.querySelector("#itemsbutton");
