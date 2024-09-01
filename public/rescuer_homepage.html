@@ -205,6 +205,12 @@ else{
   fortosi.disabled = true;
   ekfortosi.disabled = true;
 }
+//gia to 50 metra apo task douleyo os eksis:
+//ypologizo distance metaksy vehicle kai kathe marker meso tou pediou username
+//epeidh ena username me polla req/offer ids ta omadopoiei stis IDIES syntetagmenes
+//an apostasi marker.username<50
+//kai energopoio to button sto task table me username to parapano
+//kati san map.eachLayer(marker=>{if(marker.username)//an exei den einai vehicle h base -> if(distance(vehicle,marker)<50){//activate button with username}})
 });
 /*******************************/
 const load = document.querySelector("#fortosi");
@@ -368,7 +374,7 @@ vehicle.addTo(map);//ksanavale to vehicle
 /*******/
 
 for (let user in grouped_requests){
-let request_marker = L.marker([grouped_requests[user][0]['ST_X(cords)'],grouped_requests[user][0]['ST_Y(cords)']],{draggable:false});
+let request_marker = L.marker([grouped_requests[user][0]['ST_X(cords)'],grouped_requests[user][0]['ST_Y(cords)']],{draggable:false,username:user});
 let popup = document.createElement('div');
 //
 popup.style['max-height'] = "200px";

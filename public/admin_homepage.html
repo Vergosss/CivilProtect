@@ -50,7 +50,7 @@
     <input type="checkbox" class="filter"  value="Orange Juice"> Orange Juice
   </td>
   <td>
-    <input type="checkbox" class="filter"  value="Croissant"> Croissant
+    <input type="checkbox" class="filter" value="Croissant"> Croissant
   </td>
 </tr>
 </table>
@@ -72,6 +72,10 @@
     </table>
     <!------------------->
     <canvas id="graph" style="width:100%;max-width:700px"></canvas>
+    <input type="range" id="date_range" list="dates"> 
+    <datalist id="dates">
+
+    </datalist>
 
 <script>
 
@@ -456,6 +460,16 @@ for(let body of bodies){
 }
 //
 }
+
+//
+fetch('/dates/')
+.then(res=>res.json())
+.then(dates=>{
+    Dates(dates);
+})
+.catch(error=>{console.log('Error: ',error);})
+
+
 /************************Chart********/
 fetch('/graph/')
 .then(res=>res.json())
@@ -483,7 +497,21 @@ const chart = new Chart(ctx,{
 }); 
 //
 }
+//
+function Dates(dates){
+const datalist = document.querySelector("#dates");
 
+for(let date of dates){
+  let option = document.createElement('option');
+  option.value = (new Date(date.Date)).toLocaleDateString();
+  datalist.appendChild(option);
+}
+}
+//
+const slider = document.querySelector("#date_range");
+slider.addEventListener('input',function(){
+  console.log(this.value);
+});
 /*******************/
 //an patithei to koubi kano fetch ta proionta me amesh klhsh sto url 
 const itemsbutton = document.querySelector("#itemsbutton");

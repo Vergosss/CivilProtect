@@ -812,6 +812,14 @@ app.get('/graph/',(req,res)=>{
 });
 
 //
+app.get('/dates/',(req,res)=>{
+
+connection.query('SELECT DATE(entry_date) as Date FROM Request group by DATE(entry_date)',(error,results)=>{
+	res.send(results);
+});
+
+});
+//
 module.exports = app;//an thelo na kano import se allo JS arxeio ton parapano kodika
 app.listen(port,() => {
     console.log(`Example app listening on port ${port}!`);
