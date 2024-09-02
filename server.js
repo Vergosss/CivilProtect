@@ -2,7 +2,7 @@
 //process.env.TZ = 'Europe/Athens';
 //
 console.log(new Date());
-
+console.log(__dirname);
 const express = require("express");//import express module
 const mysql = require("mysql2");
 const session = require('express-session');//module gia ta sessions
@@ -21,7 +21,7 @@ const connection = mysql.createConnection({
 //
 
 const app = express();//express object app
-app.use('/public',express.static('/home/vergman/Desktop/Web Programming 2024/Web-Programming-and-Systems/public'));
+app.use('/public',express.static('C:\\Users\\Vergosss\\Web-Programming-and-Systems\\public'));
 //console.log(__dirname + '/../public/');
 //arxikopoio to session-!!an de to valo to session einai undefined kai peta errors sthn post
 app.use(session({
@@ -46,7 +46,7 @@ app.use(express.json());//xoris ayto den kodikopoiountan ta dedomena kai gyrnage
 //route gia thn homepage
 app.get(['/','/login'],(req,res)=>{
 
-res.sendFile(__dirname + '/public/login.html');
+res.sendFile(__dirname + '\\public\\login.html');
 
 });
 
@@ -102,17 +102,17 @@ app.get('/home',(req,res)=>{
 	console.log('Role: ',role);
 	if(req.session.username && role == 'Admin')
 	{
-	res.sendFile(__dirname + '/public/admin_homepage.html');
+	res.sendFile(__dirname + '\\public\\admin_homepage.html');
 	}
 	else if(req.session.username && role == 'Rescuer')
 	{
 	
-	res.sendFile(__dirname + '/public/rescuer_homepage.html');
+	res.sendFile(__dirname + '\\public\\rescuer_homepage.html');
 	}
 	else if(req.session.username && role == 'Citizen')
 	{
 	console.log('Role:',role);
-	res.sendFile(__dirname + '/public/citizen_homepage.html');//
+	res.sendFile(__dirname + '\\public\\citizen_homepage.html');//
 	}
 
 	else{
@@ -142,7 +142,7 @@ else{
 
 //
 app.get('/signup',(req,res)=>{
-	res.sendFile(__dirname + '/public/signup.html');  
+	res.sendFile(__dirname + '\\public\\signup.html');  
 	});
 
 //
@@ -307,7 +307,7 @@ const path = req.file.path;
 //epistrefei ena object me plirofories sxetikes me to ypovlithen arxeio
 //perno to path property pou einai to monopati pou vrisketai to arxeio
 //diavazo to arxeio enonontas to trexo directory + '/' + to path
-fs.readFile(__dirname + '/' + path,'utf-8',async (error,data)=>{
+fs.readFile(__dirname + '\\' + path,'utf-8',async (error,data)=>{
 	if(error) throw error;
 	data = JSON.parse(data);//diavase ta dedomena os JSON
 	//console.log(data);

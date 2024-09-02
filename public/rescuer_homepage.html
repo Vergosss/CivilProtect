@@ -211,7 +211,30 @@ else{
 //an apostasi marker.username<50
 //kai energopoio to button sto task table me username to parapano
 //kati san map.eachLayer(marker=>{if(marker.username)//an exei den einai vehicle h base -> if(distance(vehicle,marker)<50){//activate button with username}})
+Activate_Complete_Button(vehicle);
 });
+/********************************/
+function Activate_Complete_Button(vehicle){
+const tbody = document.querySelector("#tasks_body");
+map.eachLayer(marker=>{
+
+    if(marker.options.username){//an einai marker kapoiou xrhsth(oxi to base kai to vehicle)
+     for(let row of tbody.rows){
+      if(row.cells[7].innerHTML == marker.options.username){
+        //vres to koubi kai kane to enable
+        const button = row.cells[8].firstChild;
+        if(Distance(vehicle,marker) < 50){
+          button.disabled = false;
+        }
+        else{
+          button.disabled = true;
+        }
+      }
+     }
+    }
+   
+});
+}
 /*******************************/
 const load = document.querySelector("#fortosi");
 const unload = document.querySelector("#ekfortosi");
@@ -650,8 +673,8 @@ fetch('/cancel_task/',{
 
 }
 /********************/
-function Distance(vehicle,base){
-  return map.distance([vehicle.getLatLng().lat,vehicle.getLatLng().lng],[base.getLatLng().lat,base.getLatLng().lng]);
+function Distance(vehicle,marker){
+  return map.distance([vehicle.getLatLng().lat,vehicle.getLatLng().lng],[marker.getLatLng().lat,marker.getLatLng().lng]);
 }
 
 

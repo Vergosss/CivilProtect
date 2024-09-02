@@ -26,7 +26,7 @@ CREATE TABLE `Base` (
   `base_id` int NOT NULL AUTO_INCREMENT,
   `cords` point NOT NULL,
   PRIMARY KEY (`base_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -35,7 +35,7 @@ CREATE TABLE `Base` (
 
 LOCK TABLES `Base` WRITE;
 /*!40000 ALTER TABLE `Base` DISABLE KEYS */;
-INSERT INTO `Base` VALUES (1,_binary '\0\0\0\0\0\0\0qäø\ÿ\À1C@\0\0\0\0$\’5@');
+INSERT INTO `Base` VALUES (1,0x000000000101000000718ABFD8CB3143400000000024D53540);
 /*!40000 ALTER TABLE `Base` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -52,7 +52,7 @@ CREATE TABLE `Cargo` (
   `quantity` int NOT NULL,
   UNIQUE KEY `username` (`username`,`item`),
   CONSTRAINT `Cargo_ibfk_1` FOREIGN KEY (`username`) REFERENCES `User` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,7 +76,7 @@ CREATE TABLE `Category` (
   `id` int NOT NULL,
   `category_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -105,7 +105,7 @@ CREATE TABLE `Citizen` (
   `telephone` int NOT NULL,
   `cords` point DEFAULT NULL,
   PRIMARY KEY (`citizen_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -114,7 +114,7 @@ CREATE TABLE `Citizen` (
 
 LOCK TABLES `Citizen` WRITE;
 /*!40000 ALTER TABLE `Citizen` DISABLE KEYS */;
-INSERT INTO `Citizen` VALUES (1,'giorgosvergos','malakas123!','giorgos','vergos',6567,_binary '\0\0\0\0\0\0\0U1ï~¬èF@ê\⁄\ƒ\…˝&>@'),(9,'panagiotisvergos','$2b$10$4UqmiUaEc8ZfJpo9/y9ibuhOvnPhdoFkDYVWLQmPS6KIET18D/zmi','panagiotis','vergos',235443,_binary '\0\0\0\0\0\0\0Y\0u\Á\È C@\0\0à\‡Ω5@'),(10,'bousgiaspanagiotis','$2b$10$XtVt1sTVuAKly/hd0VFV8uFbK8uO2aBpEOcyGbc2zI769Qwm5w8xi','panagiotis','bousgias',13234,_binary '\0\0\0\0\0\0\0F\Â£¸πC@\0\0\0@√π5@'),(11,'konstantinamoustakopoulou','$2b$10$SXE8ZYhehGfRGjrAuI5pnOz6ivFYCKpef4w6zDgShQoHhHXL9wv1m','konstantina','moustakopoulou',958664,_binary '\0\0\0\0\0\0\0X~E≠âC@\0\0\0G¡5@'),(12,'vroustourisnikolaos','$2b$10$CqY2vfAvHILzrPwj77sryuQPADzQoaXhcX3GQE8YAL6rpht9nyaDG','nikolaos','vroustouris',762455,_binary '\0\0\0\0\0\0\0A\Âö\√C@\0\0\0\‡;ø5@'),(13,'takiskouvertaris','$2b$10$EwmFfG9Ysr5bYlO4wSGc0ujhZ.W0muPEreGUerRTuMZoSG38hpqx2','takis','kouvertaris',934601,_binary '\0\0\0\0\0\0\0é\∆\Ô\ÔOC@\0\0\0 Ç¿5@'),(14,'mariaalemi2002','$2b$10$ArxfRQVDPM4E.UEX1VNuQ.s7fikS.OB.nU1eoQAtm/Ekj6jTv8IWG','maria','alemi',825123,_binary '\0\0\0\0\0\0\0\‘\√%\!C@\0\0Ä\Áæ5@'),(15,'test123','test123','test','test',123,_binary '\0\0\0\0\0\0\0\Á®6G¸C@ã®â>\«5@'),(16,'takismeglis','$2b$10$NzHgCJUaSBg.p85kuPi.2e1CACzDSqb9ZvJIOcf92Iz41UlZW7yXC','takis','meglis',1234,_binary '\0\0\0\0\0\0\0N†_ƒåC@\0\0Ä%Ω5@');
+INSERT INTO `Citizen` VALUES (1,'giorgosvergos','malakas123!','giorgos','vergos',6567,0x0000000001010000005531957EC28F464090DAC4C9FD263E40),(9,'panagiotisvergos','$2b$10$4UqmiUaEc8ZfJpo9/y9ibuhOvnPhdoFkDYVWLQmPS6KIET18D/zmi','panagiotis','vergos',235443,0x000000000101000000590075E7E920434001000088E0BD3540),(10,'bousgiaspanagiotis','$2b$10$XtVt1sTVuAKly/hd0VFV8uFbK8uO2aBpEOcyGbc2zI769Qwm5w8xi','panagiotis','bousgias',13234,0x00000000010100000046E5A3FCB91E434000000040C3B93540),(11,'konstantinamoustakopoulou','$2b$10$SXE8ZYhehGfRGjrAuI5pnOz6ivFYCKpef4w6zDgShQoHhHXL9wv1m','konstantina','moustakopoulou',958664,0x000000000101000000587E45AD891D43400100000047C13540),(12,'vroustourisnikolaos','$2b$10$CqY2vfAvHILzrPwj77sryuQPADzQoaXhcX3GQE8YAL6rpht9nyaDG','nikolaos','vroustouris',762455,0x0000000001010000000141E59AC31F4340000000E03BBF3540),(13,'takiskouvertaris','$2b$10$EwmFfG9Ysr5bYlO4wSGc0ujhZ.W0muPEreGUerRTuMZoSG38hpqx2','takis','kouvertaris',934601,0x0000000001010000008EC6EFEF4F1C43400000002082C03540),(14,'mariaalemi2002','$2b$10$ArxfRQVDPM4E.UEX1VNuQ.s7fikS.OB.nU1eoQAtm/Ekj6jTv8IWG','maria','alemi',825123,0x000000000101000000D408C325F021434001000080E7BE3540),(15,'test123','test123','test','test',123,0x000000000101000000E7A83647FC1C43408BA8893E1FC73540),(16,'takismeglis','$2b$10$NzHgCJUaSBg.p85kuPi.2e1CACzDSqb9ZvJIOcf92Iz41UlZW7yXC','takis','meglis',1234,0x0000000001010000004EA05FC48C1943400100008025BD3540);
 /*!40000 ALTER TABLE `Citizen` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -129,7 +129,7 @@ CREATE TABLE `Inventory` (
   `item` varchar(255) NOT NULL,
   `quantity` int NOT NULL,
   UNIQUE KEY `item` (`item`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -154,7 +154,7 @@ CREATE TABLE `Item` (
   `name` varchar(255) NOT NULL,
   `category` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -188,7 +188,7 @@ CREATE TABLE `Request` (
   `cords` point NOT NULL,
   `username` varchar(255) NOT NULL,
   PRIMARY KEY (`request_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -197,7 +197,7 @@ CREATE TABLE `Request` (
 
 LOCK TABLES `Request` WRITE;
 /*!40000 ALTER TABLE `Request` DISABLE KEYS */;
-INSERT INTO `Request` VALUES (1,'giorgos','vergos',412321,'2024-08-06 02:22:52','Water',1,'2024-08-19 15:44:52','iasonasmakris',1,_binary '\0\0\0\0\0\0\0øÇj\⁄C@\0\0PGº5@','giorgosvergos'),(3,'panagiotis','vergos',41351,'2024-08-06 02:24:28','Croissant',1,'2024-08-19 16:43:31','iasonasmakris',1,_binary '\0\0\0\0\0\0\0\È\Ì!^/C@\0\0@3\¬5@','panagiotisvergos'),(4,'konstantina','moustakopoulou',9340123,'2024-08-06 02:26:58','Antiseptic',1,'2024-08-15 21:26:09','iasonasmakris',1,_binary '\0\0\0\0\0\0\0˘M#ùaC@ˇˇˇ6ª5@','konstantinamoustakopoulou'),(15,'giorgos','vergos',412321,'2024-08-18 17:30:27','Orange juice',1,NULL,NULL,0,_binary '\0\0\0\0\0\0\0øÇj\⁄C@\0\0PGº5@','giorgosvergos'),(16,'giorgos','vergos',412321,'2024-08-18 17:31:57','Sardines',1,'2024-08-19 15:53:53','elenibousga',1,_binary '\0\0\0\0\0\0\0øÇj\⁄C@\0\0PGº5@','giorgosvergos');
+INSERT INTO `Request` VALUES (1,'giorgos','vergos',412321,'2024-08-06 02:22:52','Water',1,'2024-08-19 15:44:52','iasonasmakris',1,0x000000000101000000BF826A04DA1E43400100005047BC3540,'giorgosvergos'),(3,'panagiotis','vergos',41351,'2024-08-06 02:24:28','Croissant',1,'2024-08-19 16:43:31','iasonasmakris',1,0x000000000101000000E9ED215E2F1E43400100004033C23540,'panagiotisvergos'),(4,'konstantina','moustakopoulou',9340123,'2024-08-06 02:26:58','Antiseptic',1,'2024-08-15 21:26:09','iasonasmakris',1,0x000000000101000000F94D239D611C4340FFFFFF7F36BB3540,'konstantinamoustakopoulou'),(15,'giorgos','vergos',412321,'2024-08-18 17:30:27','Orange juice',1,NULL,NULL,0,0x000000000101000000BF826A04DA1E43400100005047BC3540,'giorgosvergos'),(16,'giorgos','vergos',412321,'2024-08-18 17:31:57','Sardines',1,'2024-08-19 15:53:53','elenibousga',1,0x000000000101000000BF826A04DA1E43400100005047BC3540,'giorgosvergos');
 /*!40000 ALTER TABLE `Request` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -219,7 +219,7 @@ CREATE TABLE `Task` (
   `completed` tinyint(1) DEFAULT '0',
   `task_id` int NOT NULL,
   PRIMARY KEY (`task_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -250,7 +250,7 @@ CREATE TABLE `User` (
   `role` enum('Admin','Rescuer','Citizen') DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -259,7 +259,7 @@ CREATE TABLE `User` (
 
 LOCK TABLES `User` WRITE;
 /*!40000 ALTER TABLE `User` DISABLE KEYS */;
-INSERT INTO `User` VALUES (1,'giorgosvergos','$2b$10$IdaCDA7NGJzyktnqq.ZGwetGybi//txOZ5YfnbBQ/NQzc7GREs3UW','giorgos','vergos',412321,_binary '\0\0\0\0\0\0\0øÇj\⁄C@\0\0PGº5@','Citizen'),(2,'panagiotisvergos','$2b$10$9jBEwaSL/YoILBvcxJznVuQJDOLY4kSd5DMa4GpbYHwPwFcBdGRQy','panagiotis','vergos',41351,_binary '\0\0\0\0\0\0\0\È\Ì!^/C@\0\0@3\¬5@','Citizen'),(3,'bousgiaspanagiotis','$2b$10$jNxc/nlWha998RNICN8WkOZRYspYNh3.CrvuvhaxIhiYWF8vh4gR.','bousgias','panagiotis',78235,_binary '\0\0\0\0\0\0\0\Ê\‚µ\œ¯ C@\0\0\0\0¿¿5@','Citizen'),(4,'konstantinamoustakopoulou','$2b$10$194l1OLic0L/9itCI8Fr1ekabnoPGZ6Lw.FY9mqNss8rMO8kwr.5G','konstantina','moustakopoulou',9340123,_binary '\0\0\0\0\0\0\0˘M#ùaC@\0\0\0Ä6ª5@','Citizen'),(5,'mariaalemi2002','$2b$10$vKd2C52v6EpLo.PvdFsL1ObQZGlkAnochM.xZiXchGuiOPd4xpM8O','maria','alemi',698213,_binary '\0\0\0\0\0\0\0é\◊\Ï!C@\0\0¿∫∫5@','Citizen'),(6,'anastasiosvergos','$2b$10$zZhsh.e./Vg5XZLCsikxZuaEi8qwPDa0V9/B5zOw4RM73l/061scS','anastasios','vergos',45612,_binary '\0\0\0\0\0\0\0\–2~C@\0\0\0.º5@','Admin'),(7,'dimitrisitsios','$2b$10$i62vX/VDboFJlxwskGVTLuuWyi4GBkSV5n1QIcuvqJDio.tqURJB2','dimitris','itsios',52343,_binary '\0\0\0\0\0\0\04f	l$C@\0\0\0\Á\∆5@','Rescuer'),(8,'elenibousga','$2b$10$QRS9FJQFXhxO9Mg./6tfCODPYkmcvR34dLJ1Y1j07rHGL0WoXnSsm','eleni','bousga',24412,_binary '\0\0\0\0\0\0\0K\Ú3C@\0\0\0\0›≤5@','Rescuer'),(9,'iasonasmakris','$2b$10$jH1drdlhO2NZl.dL6I//W.TmQTJcP4stVkdST635cYFPdYaDBKIp2','iasonas','makris',73241,_binary '\0\0\0\0\0\0\0xxÖ\'t/C@Toc\«¿5@','Rescuer');
+INSERT INTO `User` VALUES (1,'giorgosvergos','$2b$10$IdaCDA7NGJzyktnqq.ZGwetGybi//txOZ5YfnbBQ/NQzc7GREs3UW','giorgos','vergos',412321,0x000000000101000000BF826A04DA1E43400100005047BC3540,'Citizen'),(2,'panagiotisvergos','$2b$10$9jBEwaSL/YoILBvcxJznVuQJDOLY4kSd5DMa4GpbYHwPwFcBdGRQy','panagiotis','vergos',41351,0x000000000101000000E9ED215E2F1E43400100004033C23540,'Citizen'),(3,'bousgiaspanagiotis','$2b$10$jNxc/nlWha998RNICN8WkOZRYspYNh3.CrvuvhaxIhiYWF8vh4gR.','bousgias','panagiotis',78235,0x000000000101000000E6E2B5CFF820434000000000C0C03540,'Citizen'),(4,'konstantinamoustakopoulou','$2b$10$194l1OLic0L/9itCI8Fr1ekabnoPGZ6Lw.FY9mqNss8rMO8kwr.5G','konstantina','moustakopoulou',9340123,0x000000000101000000F94D239D611C43400000008036BB3540,'Citizen'),(5,'mariaalemi2002','$2b$10$vKd2C52v6EpLo.PvdFsL1ObQZGlkAnochM.xZiXchGuiOPd4xpM8O','maria','alemi',698213,0x0000000001010000008ED7EC217F1F4340010000C0BABA3540,'Citizen'),(6,'anastasiosvergos','$2b$10$zZhsh.e./Vg5XZLCsikxZuaEi8qwPDa0V9/B5zOw4RM73l/061scS','anastasios','vergos',45612,0x000000000101000000D01932077E1F4340010000002EBC3540,'Admin'),(7,'dimitrisitsios','$2b$10$i62vX/VDboFJlxwskGVTLuuWyi4GBkSV5n1QIcuvqJDio.tqURJB2','dimitris','itsios',52343,0x000000000101000000340766096C24434001000000E7C63540,'Rescuer'),(8,'elenibousga','$2b$10$QRS9FJQFXhxO9Mg./6tfCODPYkmcvR34dLJ1Y1j07rHGL0WoXnSsm','eleni','bousga',24412,0x0000000001010000004B1C13F23318434000000000DDB23540,'Rescuer'),(9,'iasonasmakris','$2b$10$jH1drdlhO2NZl.dL6I//W.TmQTJcP4stVkdST635cYFPdYaDBKIp2','iasonas','makris',73241,0x00000000010100000078788527742F4340546F63C707C03540,'Rescuer');
 /*!40000 ALTER TABLE `User` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -274,7 +274,7 @@ CREATE TABLE `item_details` (
   `item_id` int NOT NULL,
   `detail_name` varchar(255) NOT NULL,
   `detail_value` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -296,4 +296,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-01 20:44:17
+-- Dump completed on 2024-09-01 22:01:58
