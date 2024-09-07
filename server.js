@@ -1,7 +1,7 @@
 
 //process.env.TZ = 'Europe/Athens';
 //
-console.log(new Date());
+console.log(new Date().toLocaleString());
 console.log(__dirname);
 const express = require("express");//import express module
 const mysql = require("mysql2");
@@ -642,10 +642,10 @@ app.get('/get_inventory_cargos/',async (req,res)=>{
 let inventory;
 let cargos;
 try{
-let [results] = await connection.promise().query('SELECT * from Inventory');
+let [results] = await connection.promise().query('SELECT * from Inventory WHERE quantity>0');
 inventory = results;
 //
-[results] = await connection.promise().query('SELECT * FROM Cargo');
+[results] = await connection.promise().query('SELECT * FROM Cargo WHERE quantity>0');//mono ta proionta me mh mhdenikh posotita emfanizontai.an alaksoun oi posotites sthn epomenh tha fetsaristoun
 cargos = results;
 //
 console.log('Inventory: ',inventory);
@@ -656,6 +656,15 @@ res.send([inventory,cargos]);
 catch(error){
 console.log('Error: ',error);
 }
+//
+});
+//
+app.get('/get_current_categories/',(req,res)=>{
+//
+connection.query('select category,category_name from Cargo inner join Category on Cargo.category=Category.id UNION select category,category_name from Inventory inner join Category on Inventory.category=Category.id;',(error,results)=>{
+	if(error) throw error;
+	res.send(results);
+});
 //
 });
 //
@@ -711,6 +720,10 @@ catch(error){
 
 app.post('/complete_task/',async (req,res)=>{
 let tid = req.body.tid;
+//let item = req.body.item;
+//let quantity = req.body.quantity;
+//logika kapoio type(request,offer)
+//an type einai request meiose fortio diasosti alios an einai offer ayksise to
 let new_tasks;
 let new_requests;
 	try{
@@ -812,14 +825,15 @@ app.get('/graph/',(req,res)=>{
 });
 
 //
-app.get('/dates/',(req,res)=>{
 
-connection.query('SELECT DATE(entry_date) as Date FROM Request group by DATE(entry_date)',(error,results)=>{
-	res.send(results);
-});
-
-});
 //
+app.post('/get_dates/',(req,res)=>{
+	let start = req.body.start;
+	connection.query('SELECT DATE(entry_date) as Date,count(request_id) as requests FROM Request WHERE DATE(entry_date)=? group by DATE(entry_date)',[start],(error,results)=>{
+		if(error) throw error;
+		res.send(results);
+	});
+});
 module.exports = app;//an thelo na kano import se allo JS arxeio ton parapano kodika
 app.listen(port,() => {
     console.log(`Example app listening on port ${port}!`);

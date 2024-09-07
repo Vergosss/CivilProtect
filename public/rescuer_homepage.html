@@ -13,11 +13,11 @@
 </head>
 
 <body>
-<div class="flex-container">
+<div class="flex-container" style="overflow-x: auto;">
 <div id="map" style="width: 900px; height : 580px"></div>
-<div class="panel">
-<h2>Tasks</h2>
-<table id="tasks" style="overflow-x:auto;">
+<div class="panel" style="overflow-x:auto;">
+<!-----------<h2>Tasks</h2>-------->
+<table id="tasks">
  <thead>
   <tr>
     <th>First name</th>
@@ -205,12 +205,7 @@ else{
   fortosi.disabled = true;
   ekfortosi.disabled = true;
 }
-//gia to 50 metra apo task douleyo os eksis:
-//ypologizo distance metaksy vehicle kai kathe marker meso tou pediou username
-//epeidh ena username me polla req/offer ids ta omadopoiei stis IDIES syntetagmenes
-//an apostasi marker.username<50
-//kai energopoio to button sto task table me username to parapano
-//kati san map.eachLayer(marker=>{if(marker.username)//an exei den einai vehicle h base -> if(distance(vehicle,marker)<50){//activate button with username}})
+
 Activate_Complete_Button(vehicle);
 });
 /********************************/
@@ -398,14 +393,19 @@ vehicle.addTo(map);//ksanavale to vehicle
 
 for (let user in grouped_requests){
 let request_marker = L.marker([grouped_requests[user][0]['ST_X(cords)'],grouped_requests[user][0]['ST_Y(cords)']],{draggable:false,username:user});
+//
+//
 let popup = document.createElement('div');
+popup.setAttribute('class','popups');
 //
 popup.style['max-height'] = "200px";
 popup.style['overflow-y'] = "auto";
 //
 for (let request of grouped_requests[user]){
 let request_div = document.createElement('div');
-request_div.innerHTML = `Name : ${request['citizen_first_name']},${request['citizen_last_name']}<br>Telephone: ${request['citizen_telephone']}<br>Entry: ${request['entry_date']}<br>Item: ${request['item']}<br>Quantity: ${request['quantity']}<br>`
+request_div.innerHTML = `Name : ${request['citizen_first_name']},${request['citizen_last_name']}<br>Telephone: ${request['citizen_telephone']}<br>Entry: ${((new Date(request['entry_date'])).toLocaleString('el-GR')).replace(',',' ')}<br>Item: ${request['item']}<br>Quantity: ${request['quantity']}<br>`
+//
+request_div.setAttribute('class','marker_text');
 //
 const button = document.createElement('button');
 button.innerHTML = 'Undertake Task';
@@ -414,6 +414,7 @@ const undertake_button = document.createElement('div');
 undertake_button.appendChild(button);
 //
 request_div.appendChild(undertake_button);
+request_div.appendChild(document.createElement('br'));
 //
 if(request['lifted'] == 1){
   button.disabled = true;
@@ -439,7 +440,7 @@ button.addEventListener('click',function(){
 }
 //
 
-request_marker.bindPopup(popup);
+request_marker.bindPopup(popup,{className:'popup'});
 request_marker.addTo(map);
 
 }
@@ -450,90 +451,7 @@ filter.addTo(map);
 }
 /*********/
 //
-function show_requests(requests){
-//xrhsimopoiei to vehicle thelei prosoxi-fix
-  let requests_group = L.layerGroup();//vazo se ena group ta requests
-  for(let request of requests){
-    let undertake_button;
-    let request_id = request['request_id'];
-    let username = request['username'];
-    let first_name = request['citizen_first_name'];
-    let last_name = request['citizen_last_name'];
-    let telephone = request['citizen_telephone'];
-    let entry_date = request['entry_date'];
-    let item = request['item'];
-    let quantity = request['quantity'];
-    let lat = request['ST_X(cords)'];
-    let long = request['ST_Y(cords)'];
-    let lifted = request['lifted'];
-//variables
-    let request_marker = L.marker([lat,long],{draggable:false,lifted:lifted});
-    if(lifted == true){
-      request_marker.setIcon(yellowIcon);
-      //
-      lifted_requests.addLayer(request_marker);
-      //
-      let cords = [[request_marker.getLatLng().lat,request_marker.getLatLng().lng],[vehicle.getLatLng().lat,vehicle.getLatLng().lng]];
-      let line = L.polyline(cords,{color:'green'});
-      //line.addTo(map);
-      lines.addLayer(line);
-    } 
-    else{
-      unlifted_requests.addLayer(request_marker);
-    }
-    let popup = `<div class ="popup">Name : ${first_name},${last_name}<br>Telephone: ${telephone}<br>Entry: ${entry_date}<br>Item: ${item}<br>Quantity: ${quantity}<br><div id="undertake_button"></div></div>`;
-    request_marker.bindPopup(popup);
 
-    //otan anigei o marker(to popup tou)
-    request_marker.on('popupopen',function (){
-    const button = document.createElement('button');
-    button.innerHTML = 'Undertake Task';
-    //an valo to koubi edo ousiastika kathe fora pou anigei to popup dimiourgitai koubi kai prostithetai
-    //diladi to button einai topiko mono sto ekastote 'anigma tou popup marker'.ara me ayto de stackarontai ta event listeners
-    //afou se kathe anigma exo diaforetiko koubi. kai adeiazei se kathe anigoklima giati einai energo mono sto anigma
-    const undertake_button = document.querySelector("#undertake_button");
-    undertake_button.appendChild(button);
-    //marker work
-    console.log(lifted);
-    if(lifted == 1){
-    button.disabled = true;
-    }
-    //to koubi prepei na menei energopoihmeno gia oso exei analifthei apo ton rescuer
-    else{ 
-      //console.log(lifted);
-   
-      button.addEventListener('click',event=>{
-      //kodikas gia analavi task
-      button.disabled = true;
-      this.setIcon(yellowIcon);//apenergopoihse to koubi,kane yellow ton marker kai alakse thn
-      //katastasi se oti exei analifthei gia na mhn
-      lifted = true;//gia na mhn ksanaenergopoihthei to koubi an ksanaanikso to popup
-      let cords = [[this.getLatLng().lat,this.getLatLng().lng],[vehicle.getLatLng().lat,vehicle.getLatLng().lng]];
-      let line = L.polyline(cords,{color:'green'});
-      line.addTo(map);
-      /**********/
-      insert_record(first_name,last_name,telephone,entry_date,item,quantity,request_id,username);
-      create_task(username,request_id,first_name,last_name,telephone,item);
-      //create_task(username);
-    });
-   
-  }
-   
-    });
-    //
-
-    //
-    requests_group.addLayer(request_marker);
-
-  }
-  unlifted_requests.addTo(map);
-  lifted_requests.addTo(map);//vazo ta layer groups ston xarth
-  requests_group.addTo(map);
-  lines.addTo(map);
-  filter.addOverlay(unlifted_requests,'Free Requests');
-  filter.addOverlay(lifted_requests,'Taken Requests');
-  filter.addOverlay(lines,'Connections');
-}
 /********Insert a record on the table****/
 
 
@@ -572,7 +490,10 @@ function update_tasks_table(updated_tasks){
   let tr = document.createElement('tr');//gia kathe object pou fetchara ftiaxno ena table row
 for(let tsk in task){//diatrexo kathe kleidi-timh tou object
   let td = document.createElement('td');//gia kathe pedio tou object dimiourgo ena table data element kai tou vazo timi thn timh tou ekastote pediou tou object
-  td.innerHTML = String(task[tsk]);
+  if(tsk == 'entry_date') td.innerHTML = (new Date(task[tsk])).toLocaleDateString();
+  else{  
+    td.innerHTML = String(task[tsk]);
+  }
   if(tsk == 'task_id' || tsk == 'username'){
     td.style.display = 'none';
   }
@@ -637,6 +558,8 @@ fetch('/complete_task/',{
     headers: { 'Content-Type':'application/json' },
     body: JSON.stringify({
         tid: tid
+        //item:item
+        //quantity:quantity
     })
 })
 .then(res=>res.json())

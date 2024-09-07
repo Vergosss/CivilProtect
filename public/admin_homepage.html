@@ -5,11 +5,9 @@
 <meta charset="utf-8">
     <link rel="stylesheet" href="/public/homepage.css" type="text/css">
     <link rel = "stylesheet" href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-search@3.0.2/dist/leaflet-search.min.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-search/3.0.2/leaflet-search.min.js"></script>
     <link rel="icon" type="image/x-icon" href="/public/favicon.ico">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 
 
     <title>Welcome Admin!</title>
@@ -41,18 +39,8 @@
 <button id="itemsbutton">Fetch Items</button>
 <a href="/logout"><button>Log out</button></a>
 <!-------------------Pinakas me items apothiki,oximata----------------------->
-<table id="testing">
-<tr>
-  <td>
-    <input type="checkbox" class="filter"  value="Sardines"> Sardines
-  </td>
-  <td>
-    <input type="checkbox" class="filter"  value="Orange Juice"> Orange Juice
-  </td>
-  <td>
-    <input type="checkbox" class="filter" value="Croissant"> Croissant
-  </td>
-</tr>
+<table id="filter_categories">
+
 </table>
 <!------------------------>
   <table id="items">
@@ -72,11 +60,14 @@
     </table>
     <!------------------->
     <canvas id="graph" style="width:100%;max-width:700px"></canvas>
-    <input type="range" id="date_range" list="dates"> 
-    <datalist id="dates">
+    
+<label for="first">Start Date:</label>  
+<input type="date" id="first">
 
-    </datalist>
-
+<!----------------------------->
+<label for="second">End Date:</label>  
+<input type="date" id="second">
+<button id="graph_button">Show Data</button>
 <script>
 
 let map = L.map('map'); //ftaxno mono ton xarti. Den exo ta tiles, prostithentai meta
@@ -131,7 +122,7 @@ var yellowIcon = new L.Icon({
 let rescuer_marker = L.marker([38.24,21.73],{draggable:true,icon:blackIcon});
 rescuer_marker.bindPopup('Register');
 //
-register_group = L.layerGroup();
+var register_group = L.layerGroup();
 register_group.addLayer(rescuer_marker);
 filter.addOverlay(register_group,'Register');
 //gia na ton vgazo ton register marker gia na mhn xalaei to map aisthitika
@@ -162,6 +153,15 @@ base.addTo(map);
 .catch(error=>{console.log('Error: ',error);})
 /******************************************/
 
+fetch('/get_current_categories/')
+.then(res=>res.json())
+.then(categories=>{
+  //
+  filter_Categories(categories);
+})
+.catch(error=>{console.log('Error: ',error);})
+
+/******************************************/
 fetch('/get_inventory_cargos/')
 .then(res=>res.json())
 .then(inventory_cargos=>{
@@ -207,7 +207,6 @@ return fetch('/fetch_requests/');
 })
 .then(res=>res.json())
 .then(requests=>{
-  //display_requests(requests,get_vehicle);
   display_requests2(requests,get_vehicle);
 })
 .catch(error=>{console.log('Error: ',error);})
@@ -279,7 +278,7 @@ popup.style['overflow-y'] = "auto";
 for (let request of grouped_requests[user]){
 let request_div = document.createElement('div');
 request_div.innerHTML = `Name : ${request['citizen_first_name']},${request['citizen_last_name']}<br>Telephone: ${request['citizen_telephone']}<br>Entry: ${request['entry_date']}<br>Item: ${request['item']}<br>Quantity: ${request['quantity']}<br>`
-if(request['lifted'] == true){
+if(request['lifted']){
   request_div.innerHTML += `Withdrawal date: ${request['withdrawal_date']}<br>Vehicle: ${request['vehicle_username']}`;
   request_marker.setIcon(yellowIcon);
   //
@@ -304,48 +303,7 @@ filter.addOverlay(lines,'Connections');
 
 }
 /********/
-function display_requests(requests,get_vehicle){
-let first_name,last_name,telephone,entry_date,item,quantity,withdrawal_date,vehicle_username,lat,long;
-let request_marker,lifted;
-for(let request of requests){
-  first_name = request['citizen_first_name'];
-  last_name = request['citizen_last_name'];
-  telephone = request['citizen_telephone'];
-  entry_date = request['entry_date'];
-  item = request['item'];
-  quantity = request['quantity'];
-  withdrawal_date = request['withdrawal_date'];
-  vehicle_username = request['vehicle_username'];
-  lat = request['ST_X(cords)'];
-  long = request['ST_Y(cords)'];
-  lifted = request['lifted'];
-  request_marker = L.marker([lat,long],{draggable:false});
-  //variables
-  let popup = `User name: ${first_name},${last_name}<br>Telephone: ${telephone}<br>Entry date: ${entry_date}<br>Item: ${item}<br>Quantity: ${quantity}<br>`;
-  if(lifted == true){
-    //an to aithma exei analifthei apo kapoion diasosti
-    request_marker.setIcon(yellowIcon);//kanto kitrino
-    request_marker.bindPopup(popup + `Withdrawal_date: ${withdrawal_date}<br>Vehicle: ${vehicle_username}`);
-    //request_marker.addTo(map);//vale sto popup thn extra pliroforia kai valto sto map
-    lifted_requests.addLayer(request_marker);
-    let cords = [[lat,long],[get_vehicle(vehicle_username).lat,get_vehicle(vehicle_username).lng]];
-    let line = L.polyline(cords,{color:'green'});
-    //line.addTo(map);//sundese to aithma pou exei analifthei me ton diasosti tou
-    lines.addLayer(line);
-  }
-  else{
-    request_marker.bindPopup(popup);//vale sto popup mono th vasikh pliroforia
-    //request_marker.addTo(map);//prosthese to sto map
-    unlifted_requests.addLayer(request_marker);
-  }
-}
-lifted_requests.addTo(map);
-unlifted_requests.addTo(map);
-lines.addTo(map);
-filter.addOverlay(lifted_requests,'Lifted Requests');
-filter.addOverlay(unlifted_requests,'Free Requests');
-filter.addOverlay(lines,'Connections');
-}
+
 /**********/
 function get_vehicle(vehicle_username){
   //pairno ta cords tou oximatos me aytes tis syntetagmenes
@@ -365,10 +323,11 @@ function show_Items(inventory_cargos){
   //Add the inventory
   for(let product of inventory){
     let tr = document.createElement('tr');
-    for(key in product){
+    for(let key in product){
       let td = document.createElement('td');
       td.innerHTML = product[key];
       tr.appendChild(td);
+      if(key == 'category') td.style.display = 'none'; 
     }
     inventory_body.appendChild(tr);
   }
@@ -411,6 +370,7 @@ for(let username in grouped_cargos){
       let td = document.createElement('td');
       td.innerHTML = product[key];
       tr.appendChild(td);
+      if(key == 'category') td.style.display = 'none';
     }
     tbody.appendChild(tr);
   }
@@ -421,10 +381,7 @@ for(let username in grouped_cargos){
 //
 
 /************************Filter table data per categories*******/
-const boxes = document.querySelectorAll(".filter");
-for(let box of boxes){
-  box.addEventListener('click',filter_Items);
-}
+
 function filter_Items(){
 
 const checkboxes = document.querySelectorAll(".filter");
@@ -446,13 +403,10 @@ for(let body of bodies){
     let ths = row.getElementsByTagName('th').length;
     if(ths>0) continue;//an den vriskomai se grammh me apokleistika mono td elements proxora sthn epomenh grammh
       //anti na psaxno kathe keli tsekaro tin timh px tou teleytaiou keliou px tou 3ou
-      if(current_values.indexOf(row.cells[2].innerHTML)>-1){
-        //an diladi to keli exei kapoia timh ton trexonton tsekarismenon timon
-        //afise th grammh os exei
-        row.style.display =  "";
+      if(current_values.indexOf(row.cells[2].innerHTML) > -1){
+      row.style.display =  "";
       }
       else{
-        //kryfthn
         row.style.display = "none";
       }
     
@@ -462,14 +416,29 @@ for(let body of bodies){
 }
 
 //
-fetch('/dates/')
-.then(res=>res.json())
-.then(dates=>{
-    Dates(dates);
-})
-.catch(error=>{console.log('Error: ',error);})
-
-
+function filter_Categories(categories){
+const filter_categories_table = document.querySelector("#filter_categories");
+//
+let tr = document.createElement('tr');
+for(let category of categories){
+  let td = document.createElement('td');
+  let checkbox = document.createElement('input');
+  checkbox.setAttribute('type','checkbox');
+  checkbox.setAttribute('class','filter');
+  //
+  td.innerHTML = category['category_name'];
+  checkbox.value = category['category'];
+  td.appendChild(checkbox);
+  tr.appendChild(td);
+}
+//
+filter_categories_table.appendChild(tr);
+//
+const boxes = document.querySelectorAll(".filter");
+for(let box of boxes){
+  box.addEventListener('click',filter_Items);
+}
+}
 /************************Chart********/
 fetch('/graph/')
 .then(res=>res.json())
@@ -480,6 +449,8 @@ fetch('/graph/')
 
 function Graph(requests){
 const ctx = document.querySelector("#graph");
+//
+if(Chart.getChart(ctx)) Chart.getChart(ctx).destroy();//an o canvas exei kapoio chart kane to destroy adeiase ton diladi
 //
 const chart = new Chart(ctx,{
   type: 'bar',
@@ -496,22 +467,51 @@ const chart = new Chart(ctx,{
   options: {}
 }); 
 //
-}
-//
-function Dates(dates){
-const datalist = document.querySelector("#dates");
 
-for(let date of dates){
-  let option = document.createElement('option');
-  option.value = (new Date(date.Date)).toLocaleDateString();
-  datalist.appendChild(option);
-}
 }
 //
-const slider = document.querySelector("#date_range");
-slider.addEventListener('input',function(){
-  console.log(this.value);
-});
+
+//
+
+//
+const graph_button = document.querySelector("#graph_button");
+graph_button.addEventListener('click',getGraphs);
+//
+function getGraphs(){
+let first_date = document.querySelector("#first").value;
+console.log(first_date); 
+if(first_date){
+ 
+//send the date to DB
+sendDates(first_date);
+}
+else{
+  alert('Invalid Date!');
+}
+}
+/*******************/
+function sendDates(start,end){
+//
+fetch('/get_dates/',{
+  method:'POST',
+  headers: { 'Content-Type':'application/json' },
+  body: JSON.stringify(
+    {
+      start:start
+    }
+  
+  )
+})
+.then(res=>res.json())
+.then(requests=>{
+//  
+    Graph(requests);
+})
+.catch(error=>{console.log('Error: ',error);})
+
+
+//
+}
 /*******************/
 //an patithei to koubi kano fetch ta proionta me amesh klhsh sto url 
 const itemsbutton = document.querySelector("#itemsbutton");
@@ -530,8 +530,7 @@ res = await fetch('/update_products/',{
   )
 });
 data = await res.json();
-//console.log(data);
-//
+
 }
 catch(error){
   console.log('Error: ',error);
