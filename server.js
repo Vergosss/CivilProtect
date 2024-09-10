@@ -124,7 +124,7 @@ app.get('/home',(req,res)=>{
 
 
 //
-app.get('/logout',(req,res)=>{
+app.get('/logout/',(req,res)=>{
 if(req.session.username){
 	console.log('Goodbye!');
 	req.session.destroy(error=>{

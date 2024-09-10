@@ -15,7 +15,7 @@ tis formas pane pio aristera px to username:
 .login form {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: center;/* to div pernei olh th selida kata platos alla me to justify content pernoume to form kai to vazoume sth mesh tou div de metakinoume to idio to div*/
     padding-top: 20px;
 
 }

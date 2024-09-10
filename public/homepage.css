@@ -2,6 +2,10 @@
 
     display:flex;
     flex-direction: row;
+    flex-wrap: wrap;
+    clear: both;
+    margin-top: 10px;
+    background-color: #435165 ;
 }
 .panel{
     margin: 50px;
@@ -15,9 +19,12 @@
 .register-rescuer form{
 
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
     justify-content: center;
-    padding-top: 20px;
+    padding-top: 5px;
+    color:white;
+    
 }
 .register-rescuer form input[type="password"], .register-rescuer form input[type="text"], .register-rescuer form input[type="tel"] {
     width: 100px;
@@ -29,16 +36,23 @@
 
 .register-rescuer form input[type="submit"] {
     width: 100%;
-    padding: 15px;
+    padding: 5px;
    margin-top: 20px;
-    background-color: #3274d6;
+    background-color:dodgerblue;
     border: 0;
+    border-radius: 3px;
     cursor: pointer;
-    font-weight: bold;
+    font-size: 18px;
     color: #ffffff;
     transition: background-color 0.2s;
 }
+.register-rescuer form label{
 
+    color:white;
+    padding:2px;
+    font-size: 16px;
+
+}
 table,td,th{
 
     border: 1px solid black;
@@ -71,7 +85,7 @@ button{
     background-color: #04AA6D; /*to xroma tou backround tou koubioy*/
     color:#dee0e4;/*to xroma tou keimenou tou koubiou*/
     border: none;/*an de valo border none tote einai me to perigrama to koubi, eno etsi apeleytheronetai ginetai pio xontro*/
-    font-size: 16px;/*megethos tou keimenou tou koubiou*/
+    font-size: 18px;/*megethos tou keimenou tou koubiou*/
     text-align: center;
     display: inline-block;
     padding: 10px;
@@ -83,7 +97,7 @@ button{
     background-color: #1f385e;
 }
 .marker_text{
-    background-color: #1f385e;
+    background-color: #435165;
     font-size: 20px;
     color:white;
     font-family: 'Courier New', monospace;
@@ -95,3 +109,77 @@ button{
     background-color: #d1c515;
     color:white;
 }
+/***************/
+.header{
+    background-color: #435165;
+    padding: 40px;
+}
+
+
+.header a{
+
+    background-color: dodgerblue;
+    color: white; 
+    text-align: center;
+    font-size: 18px; 
+    border-radius: 3px; /*otan einai mia timh einai kai stis dyo diastaseis*/
+    padding: 10px;
+
+    /*ola ta links tou header ths selidas*/
+
+}
+.logout{
+    float: right;
+}/*to float dilonei oti to periexomeno aytou tou element-olo to element tha metatopistei-epipleysei pros ta deksia tou container tou*/
+
+.itemfetch{
+    float: left;
+}
+ .itemfetch button{
+    background-color: dodgerblue;
+    color:#dee0e4;
+    border-radius: 3px;
+    cursor: pointer;
+    padding: 5px;
+
+ }
+.itemupload{
+    width: 200px;/*anagastika alios to margin de douleyei*/
+    margin: 0 auto;
+    
+}
+
+.itemupload form{
+    display: flex;
+    flex-direction: row;
+    
+}
+ .itemupload form input[type="submit"] {
+    background-color: dodgerblue;
+    color:white;
+    border-radius: 3px ;
+    border:0;
+    cursor: pointer;
+    font-size: 18px;
+    padding :  5px;
+    
+ }
+ .itemupload form input[type="file"]::file-selector-button{
+
+    background-color: dodgerblue;
+    color: white;
+    border-radius:3px;
+    cursor: pointer;
+    border:none;
+    font-size: 18px;
+    padding:3px;
+ }
+
+ .itemupload label{
+    color:white;
+    font-size: 18px;
+    padding: 2px;
+ }
+ #map{
+    border: 1px solid #435165;
+ }

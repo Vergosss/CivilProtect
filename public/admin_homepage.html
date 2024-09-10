@@ -13,31 +13,52 @@
     <title>Welcome Admin!</title>
 </head>
 <body>
+
+<div class="header">
+  <div class="itemfetch">
+    <button id="itemsbutton">Fetch Items</button>
+  </div>
+
+ <div class="itemupload">
+  <form action="/upload_products/" method="post" enctype="multipart/form-data">
+    <label for="upload">Upload products:</label>
+    <input type="file" id="upload" name="upload"/>
+    <input type="submit" id="submit" value="Upload products"/>
+  </form> 
+ </div>
+
+  <div class="logout">
+    <a href="/logout/">Logout</a>
+  </div>
+</div>
+<!----------------------->
 <div class="flex-container">
   <div id="map" style="width: 900px; height : 580px"></div>
   <div class="register-rescuer">
+    
     <form action="/register_rescuer/" method="post" >
-      Username: <input id="username" type="text" name="username" value=""/> 
-            Password: <input id="password" type="password" name="password" value=""/>
-            First name: <input id="firstname" type="text" name="firstname" value=""/>
-            Last name: <input id="lastname" type="text" name="lastname" value=""/>
-            Telephone: <input id="telephone" type="tel" name="telephone" value=""/>
-            <input id="latitude" name="latitude" type="hidden" value="" />
-            <input id="longitude" name="longitude" type="hidden" value="" />
-            <input type="submit" value="Sign up"/>
+      <label for="username">Username:</label>
+      <input id="username" type="text" name="username" value=""/> 
+      <label for="password">Password:</label>
+      <input id="password" type="password" name="password" value=""/>
+      <label for="firstname">First name:</label>
+      <input id="firstname" type="text" name="firstname" value=""/>
+      <label for="lastname">Last Name:</label>
+      <input id="lastname" type="text" name="lastname" value=""/>
+      <label for="telephone">Telephone:</label>
+      <input id="telephone" type="tel" name="telephone" value=""/>
+      <input id="latitude" name="latitude" type="hidden" value="" />
+      <input id="longitude" name="longitude" type="hidden" value="" />
+      <input type="submit" value="Sign up"/>
     </form>
 
   </div>
 </div>
 <!---->
 <!----------Form gia na kano upload to json ton proionton---------------->
-<form action="/upload_products/" method="post" enctype="multipart/form-data">
-  <label for="upload">Upload products:</label>
-  <input type="file" id="upload" name="upload"/>
-  <input type="submit" id="submit" value="Upload products"/>
-</form> 
-<button id="itemsbutton">Fetch Items</button>
-<a href="/logout"><button>Log out</button></a>
+
+
+
 <!-------------------Pinakas me items apothiki,oximata----------------------->
 <table id="filter_categories">
 
@@ -277,9 +298,13 @@ popup.style['overflow-y'] = "auto";
 //
 for (let request of grouped_requests[user]){
 let request_div = document.createElement('div');
-request_div.innerHTML = `Name : ${request['citizen_first_name']},${request['citizen_last_name']}<br>Telephone: ${request['citizen_telephone']}<br>Entry: ${request['entry_date']}<br>Item: ${request['item']}<br>Quantity: ${request['quantity']}<br>`
+request_div.innerHTML = `Name : ${request['citizen_first_name']},${request['citizen_last_name']}<br>Telephone: ${request['citizen_telephone']}<br>Entry: ${((new Date(request['entry_date'])).toLocaleString('el-GR')).replace(',',' ')}<br>Item: ${request['item']}<br>Quantity: ${request['quantity']}<br>`
+//
+request_div.setAttribute('class','marker_text');
+
+
 if(request['lifted']){
-  request_div.innerHTML += `Withdrawal date: ${request['withdrawal_date']}<br>Vehicle: ${request['vehicle_username']}`;
+  request_div.innerHTML += `Withdrawal date: ${new Date(request['withdrawal_date']).toLocaleString('el-GR').replace(',',' ')}<br>Vehicle: ${request['vehicle_username']}`;
   request_marker.setIcon(yellowIcon);
   //
   let cords = [[request['ST_X(cords)'],request['ST_Y(cords)']],[get_vehicle(request['vehicle_username']).lat,get_vehicle(request['vehicle_username']).lng]];
