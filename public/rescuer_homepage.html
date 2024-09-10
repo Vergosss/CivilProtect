@@ -4,15 +4,23 @@
 <head>
     <meta charset="utf-8">
     <link rel = "stylesheet" href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-search@3.0.2/dist/leaflet-search.min.css" />
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-search/3.0.2/leaflet-search.min.js"></script>
         <link rel="icon" type="image/x-icon" href="/public/favicon.ico">
         <link rel="stylesheet" href="/public/homepage.css" type="text/css">
     <title>Welcome Rescuer!</title>
 </head>
 
 <body>
+
+  <div class="header">
+
+    <div class="logout">
+      <a href="/logout/">Logout</a>
+    </div>
+
+  </div>
+
+
 <div class="flex-container" style="overflow-x: auto;">
 <div id="map" style="width: 900px; height : 580px"></div>
 <div class="panel" style="overflow-x:auto;">
@@ -37,7 +45,7 @@
   </div>
 </div>
 <!------------------------------------------>
-<a href="/logout"><button>Log out</button></a>
+
 <button id="fortosi">Load Items into Vehicle</button>
 <button id="ekfortosi">Unload items into storage</button>
 <!----------------->
@@ -440,7 +448,7 @@ button.addEventListener('click',function(){
 }
 //
 
-request_marker.bindPopup(popup,{className:'popup'});
+request_marker.bindPopup(popup,{className:'markerpopup'});
 request_marker.addTo(map);
 
 }
@@ -490,7 +498,7 @@ function update_tasks_table(updated_tasks){
   let tr = document.createElement('tr');//gia kathe object pou fetchara ftiaxno ena table row
 for(let tsk in task){//diatrexo kathe kleidi-timh tou object
   let td = document.createElement('td');//gia kathe pedio tou object dimiourgo ena table data element kai tou vazo timi thn timh tou ekastote pediou tou object
-  if(tsk == 'entry_date') td.innerHTML = (new Date(task[tsk])).toLocaleDateString();
+  if(tsk == 'entry_date') td.innerHTML = (new Date(task[tsk])).toLocaleString('el-GR').replace(',',' ');
   else{  
     td.innerHTML = String(task[tsk]);
   }

@@ -3,13 +3,13 @@
 
 <head>
 <meta charset="utf-8">
-    <link rel="stylesheet" href="/public/homepage.css" type="text/css">
+   
     <link rel = "stylesheet" href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <link rel="icon" type="image/x-icon" href="/public/favicon.ico">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 
-
+    <link rel="stylesheet" href="/public/homepage.css" type="text/css">
     <title>Welcome Admin!</title>
 </head>
 <body>
@@ -293,6 +293,8 @@ for(let user in grouped_requests){
 let request_marker = L.marker([grouped_requests[user][0]['ST_X(cords)'],grouped_requests[user][0]['ST_Y(cords)']],{draggable:false});
 let popup = document.createElement('div');
 //
+popup.setAttribute('class','popups');
+//
 popup.style['max-height'] = "200px";
 popup.style['overflow-y'] = "auto";
 //
@@ -317,7 +319,7 @@ popup.appendChild(request_div);
 
 }
 //
-request_marker.bindPopup(popup);
+request_marker.bindPopup(popup,{className:'markerpopup'});
 request_marker.addTo(map);
 //
 }
@@ -424,7 +426,12 @@ const bodies = document.querySelectorAll("#items tbody");
 console.log(bodies);
 //
 for(let body of bodies){
-  for(let row of body.rows){
+
+  if(!current_values.length){
+    for(let row of body.rows) row.style.display="";
+  }
+  else{
+    for(let row of body.rows){
     let ths = row.getElementsByTagName('th').length;
     if(ths>0) continue;//an den vriskomai se grammh me apokleistika mono td elements proxora sthn epomenh grammh
       //anti na psaxno kathe keli tsekaro tin timh px tou teleytaiou keliou px tou 3ou
@@ -436,6 +443,8 @@ for(let body of bodies){
       }
     
   }
+  }
+
 }
 //
 }
