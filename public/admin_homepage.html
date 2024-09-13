@@ -36,7 +36,7 @@
   <div id="map" style="width: 900px; height : 580px"></div>
   <div class="register-rescuer">
     
-    <form action="/register_rescuer/" method="post" >
+    <form>
       <label for="username">Username:</label>
       <input id="username" type="text" name="username" value=""/> 
       <label for="password">Password:</label>
@@ -99,6 +99,17 @@
         
         </select>
         </form>
+<!--------Ousiastika edo tha boun oi anakoinoseis multiple dropdown ------------------->
+      <div class="announcement">
+      <select>
+        <option>Choose Items</option>
+      </select> 
+      <div class="announcement_items">
+      
+      </div>
+      </div>
+        
+
 
     <!------------------->
     <canvas id="graph" style="width:100%;max-width:700px"></canvas>
@@ -219,6 +230,18 @@ fetch('/get_categories/')
   loadCategories(categories);
 })
 .catch(error=>{console.log('Error: ',error);})
+/*******************Perno ta items kai ta vazo se ena select gia th dhmiourgia ths anakoinvshs********************/
+
+fetch('/get_items/')
+.then(res=>res.json())
+.then(items=>{
+
+  //
+  loadItems(items);
+})
+.catch(error=>{console.log('Error',error);})
+
+
 
 /*******os Admin epishs vlepo olous tous diasostes/oximata****/
 let vehicles = L.layerGroup();
@@ -570,8 +593,67 @@ function loadCategories(categories){
   }
   //
 }
+/**********************Fortose ta antikeimena sto dropdown ton anakoinvseon*****/
+
+function loadItems(items){
+
+  const announcement_items= document.querySelector(".announcement_items");
+
+  for(let item of items){
+    let label = document.createElement('label');
+    //
+    label.innerHTML = item['name'];
+    let checkbox = document.createElement('input');
+    checkbox.setAttribute('type','checkbox');
+    label.appendChild(checkbox);
+    announcement_items.appendChild(label);
+
+  }
+}
 
 
+/***********Rescuer addition*****************/
+const registerRescuerForm = document.querySelector(".register-rescuer form");
+registerRescuerForm.addEventListener('submit',registerRescuer);
+
+//
+function registerRescuer(event){
+
+  event.preventDefault();
+  //
+  let username = this.children[1].value;
+  let password = this.children[3].value;
+  let firstname= this.children[5].value;
+  let lastname = this.children[7].value;
+  let telephone = this.children[9].value;
+  let latitude = this.children[10].value;
+  let longitude = this.children[11].value;
+  //clear the form
+  this.reset();
+  // send the rescuer's form data to database
+  fetch('/register_rescuer/',{
+  method: 'POST',
+  headers: {
+      'Content-Type': 'application/json'
+    },
+  body:JSON.stringify({
+   username:username,
+   password:password,
+   firstname:firstname,
+   lastname: lastname, 
+   telephone:telephone,
+   latitude:latitude,
+   longitude:longitude
+  })
+})
+.then(res=>res.json())
+.then(results=>{
+  //alert the admin about the insertion's success or failure
+  alert(results['msg']);
+})
+.catch(error=>{console.log('Error: ',error);})
+
+}
 /************************Chart********/
 fetch('/graph/')
 .then(res=>res.json())

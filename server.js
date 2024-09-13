@@ -195,14 +195,14 @@ app.post('/register_rescuer/',(req,res)=>{
 	bcrypt.hash(reg_password,10,(error,hash)=>{
 		if(error) throw error;
 		//h hash periexei ton hasharismeno kodiko
-		connection.query('INSERT INTO User(username,password,first_name,last_name,telephone,cords,role) VALUES (?,?,?,?,?,POINT(?,?),"Rescuer")',[reg_username,hash,reg_first_name,reg_last_name,reg_telephone,reg_latitude,reg_longitude],(error,result)=>{
+		connection.query('INSERT IGNORE INTO User(username,password,first_name,last_name,telephone,cords,role) VALUES (?,?,?,?,?,POINT(?,?),"Rescuer")',[reg_username,hash,reg_first_name,reg_last_name,reg_telephone,reg_latitude,reg_longitude],(error,result)=>{
 		
 			if(error) throw error;
 			if(result.affectedRows>0){
-			res.send('Successfully registered!');
+			res.json({msg:'Successfully Inserted Rescuer!'});
 			}
 			else{
-			res.send('User already in database');
+			res.json({msg:'Rescuer already exists in Database!'});
 			}
 			
 			});

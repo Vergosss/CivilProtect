@@ -103,7 +103,7 @@ list.appendChild(option);//prosthese kathe option sto select menu
 .catch(error=>{console.log('Error: ',error);})
 //
 /********fetch ta idia ta proionta gia na fortothoun se ena dropdown menu**/
-fetch('/get_items')
+fetch('/get_items/')
 .then(res=>res.json())
 .then(items=>{
   var item_list = document.querySelector('#items');

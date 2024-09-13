@@ -6,11 +6,14 @@
     clear: both;
     margin-top: 10px;
     background-color: #435165 ;
+    justify-content: center;
 }
 
 .register-rescuer{
     width: 200px;
     margin: 50px;
+    margin-left: auto;
+    margin-right: auto;
     height: 400px;
 }
 .register-rescuer form{
@@ -18,13 +21,15 @@
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-    justify-content: center;
+    
     padding-top: 5px;
+    text-align: center;
     color:white;
+    margin:auto;
     
 }
 .register-rescuer form input[type="password"], .register-rescuer form input[type="text"], .register-rescuer form input[type="tel"] {
-    width: 100px;
+    width: 100%;/*to width autou tou element pianei to 100% tou width tou patrikou container tou*/
     height: 50px;
     border: 1px solid #dee0e4;
     margin-bottom: 20px;
@@ -44,7 +49,7 @@
     transition: background-color 0.2s;
 }
 .register-rescuer form label{
-
+    
     color:white;
     padding:2px;
     font-size: 16px;
@@ -263,4 +268,8 @@ button{
     display: inline-block;
     width:auto;
     margin-bottom: 20px;
+ }
+ /**********************Announcement Items*******/
+ .announcement_items label{
+    display:block;/*afou to label einai inline kai to input mesa tou tote asxoloumai me to label kai to kano block gia na einai to 1 kato apo to allo*/
  }
