@@ -101,6 +101,7 @@ button{
     text-align: center;
     display: inline-block;
     padding: 10px;
+    cursor: pointer;
 }
 .markerpopup{
     background-color: #435165;/*olo to popup alla meso ths bindpopup*/
@@ -147,7 +148,12 @@ button{
 }
 .logout{
     float: right;
+
 }/*to float dilonei oti to periexomeno aytou tou element-olo to element tha metatopistei-epipleysei pros ta deksia tou container tou*/
+/***/
+.logout:hover{
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24);
+}
 
 .itemfetch{
     float: left;
@@ -199,4 +205,53 @@ button{
  }
  #map{
     border: 1px solid #435165;
+ }
+
+ /****************/
+ .category{
+    display: flex;
+    flex-direction: column;
+ }
+ .category > input[type="text"]{
+    width: 100px;
+    height: 50px;
+    border: 1px solid #dee0e4;
+    margin-bottom: 20px;
+    padding: 0 15px;
+ }
+ .category > label{
+    padding:5px;
+    font-size: 18px;
+
+ }
+
+ .category > button{
+    color:white;
+    background-color: dodgerblue;
+    width:100px;
+    border: none;/*an de valo border none tote einai me to perigrama to koubi, eno etsi apeleytheronetai ginetai pio xontro*/
+    font-size: 18px;/*megethos tou keimenou tou koubiou*/
+    text-align: center;
+    cursor: pointer;
+ }
+ /*********/
+ .items{
+    display:flex;
+    flex-direction:column;
+ }
+ .items > input[type='text']{
+    width: 100px;
+    height: 50px;
+    border: 1px solid #dee0e4;
+    margin-bottom: 20px;
+    padding: 0 15px;
+ }
+ .items > label{
+    padding:5px;
+    font-size:18px;
+ }
+ .items > select{
+    display: inline-block;
+    width:auto;
+    margin-bottom: 20px;
  }

@@ -258,6 +258,22 @@ app.get('/get_categories/',(req,res)=>{
 	});
 });
 //
+app.post('/add_category/',(req,res)=>{
+	let category = req.body.category;
+
+	connection.query('INSERT IGNORE INTO Category(category_name) VALUES(?)',[category],(error,results)=>{
+		if(error) throw error;
+		if(results.affectedRows>0){
+			console.log('Insertion Successfull');
+			res.json({msg:'Success'});
+		}
+		else{
+			console.log('Already in Database!');
+			res.json({msg:'Already in DB!'});
+		}
+	});
+});
+//
 app.get('/coordinates/', (req,res)=>{
 
 	 connection.query('SELECT ST_X(cords),ST_Y(cords) FROM User WHERE role="Citizen"',(error,results,fields)=>{

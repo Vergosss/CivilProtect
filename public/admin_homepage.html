@@ -79,6 +79,27 @@
     </tbody>
     
     </table>
+    <!----------------------->
+
+    <form class="category">
+
+      <label for="category_name">Category Name:</label>
+      <input id="category_name"  type="text"/>
+      <button type="submit" value="">Add Category</button>
+      
+      </form>
+      <!---------------------->
+
+      <form class="items">
+
+        <label for="item_name">Item Name:</label>
+        <input id="item_name" type="text">
+        <label for="category_name">Category:</label>
+        <select id="category_name"> 
+        
+        </select>
+        </form>
+
     <!------------------->
     <canvas id="graph" style="width:100%;max-width:700px"></canvas>
     
@@ -190,7 +211,14 @@ fetch('/get_inventory_cargos/')
 })
 .catch(error=>{console.log('Error: ',error);})
 
+/****************Get categories for item insertion category dropdown************************************/
 
+fetch('/get_categories/')
+.then(res=>res.json())
+.then(categories=>{
+  loadCategories(categories);
+})
+.catch(error=>{console.log('Error: ',error);})
 
 /*******os Admin epishs vlepo olous tous diasostes/oximata****/
 let vehicles = L.layerGroup();
@@ -202,10 +230,7 @@ const grouped_vehicles = Object.groupBy(Vehicles,function({username}){
 return username;
 });
 //
-//exei ena themataki epistrefei mono autous pou exoun eggrafi ston cargo logo lathos query h kai lathos arxikopoihshs etsi px o itsios den emfanizetai san marker
-//se ayto fteei to backend douleyei kanonika kata ta alla. evgaze error epeidh den evala attribute name ston marker
-//epishs an yparxei request pou exei analavi o itsios tha exo ena zeygari cords [normal,undefined] giati tha psaksei ton itsio
-//h get_vehicle(itsios) pou den yparxei o itios sta vehiclelayers tha gyrisei undefined
+
 for(let user in grouped_vehicles){
 let vehicle_marker = L.marker([grouped_vehicles[user][0]['ST_X(cords)'],grouped_vehicles[user][0]['ST_Y(cords)']],{draggable:false,icon:redIcon,name:user});
 let popup = document.createElement('div');
@@ -473,6 +498,72 @@ for(let box of boxes){
   box.addEventListener('click',filter_Items);
 }
 }
+
+/****************Add a category*********************/
+
+//add category insertion form
+const addCategoryForm = document.querySelector(".category");
+addCategoryForm.addEventListener('submit',addCategory);
+//
+function addCategory(event){
+event.preventDefault();//akyrono to event gia na mh kanei refresh th selida
+let category = this.children[1].value;
+console.log(category);
+//
+this.reset();
+//
+fetch('/add_category/',{
+  method: 'POST',
+  headers: {
+      'Content-Type': 'application/json'
+    },
+  body:JSON.stringify({
+    category:category
+  })
+})
+.then(res=>res.json())
+.then(results=>{
+  alert(results['msg']);
+})
+.catch(error=>{console.log('Error: ',error);})
+
+//
+}
+
+/*******************Add Item***********/
+function addItem(event){
+event.preventDefault();
+
+fetch('/add_item/',{
+  method: 'POST',
+  headers: {
+      'Content-Type': 'application/json'
+    },
+  body:JSON.stringify({
+    item: this.children[0].value,
+    category:this.children[1].value
+  })
+})
+.then(res=>res.json())
+.then(results=>{})
+.catch(error=>{console.log('Error: ',error);})
+
+}
+/*************************************/
+function loadCategories(categories){
+
+  const category_name = document.querySelector(".items  #category_name");//perno to select
+  for(let category of categories){
+    let option = document.createElement('option');
+    option.value = category['category_name'];
+    option.innerHTML = category['category_name'];
+    //
+    category_name.appendChild(option);
+  }
+  //
+}
+
+
 /************************Chart********/
 fetch('/graph/')
 .then(res=>res.json())
