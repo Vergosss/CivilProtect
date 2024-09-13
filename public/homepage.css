@@ -81,16 +81,25 @@ tr:nth-child(even){
     background-color: dodgerblue;
 }
 th {
-    
     color: white;
     font-size: 24px;
     padding: 10px;
   }/*Ola ta table headers tha exoun prasino xroma kai to keimeno tha exei aspro xroma*/
+
+#filter_categories th{
+    background-color: #435165;
+    color: white;
+    font-size: 24px;
+    padding: 10px;
+}
+
+
 td{
     text-align: center; /*ousiastika to text align einai to orizontio align th stixish tou keimenou mesa sto keli*/
     vertical-align: middle  ;/* ston aksona y tou keliou pou vrisketai to keimeno koryfh mesh h kato(default mesh)*/
     font-size: 24px;
     padding: 10px;
+    color:white;
 }
 /**to border einai ta oria ,to keli ,ta akra tou pinaka,perigrama*/
 button{

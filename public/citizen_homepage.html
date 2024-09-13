@@ -96,7 +96,7 @@ var list = document.querySelector('#categories');
 for(let cat of categories){
 var option = document.createElement('option');
 option.innerHTML = cat['category_name'];
-option.value = cat['category_name'];
+option.value = cat['id'];
 list.appendChild(option);//prosthese kathe option sto select menu
 }
 })

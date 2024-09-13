@@ -478,6 +478,11 @@ for(let body of bodies){
 function filter_Categories(categories){
 const filter_categories_table = document.querySelector("#filter_categories");
 //
+let th = document.createElement('th');
+th.setAttribute('colspan',categories.length);
+th.innerHTML = 'Filter Inventory/Cargos by Category' ;
+filter_categories_table.appendChild(th);
+//
 let tr = document.createElement('tr');
 for(let category of categories){
   let td = document.createElement('td');
@@ -518,7 +523,8 @@ fetch('/add_category/',{
       'Content-Type': 'application/json'
     },
   body:JSON.stringify({
-    category:category
+    //isos id oxi akoma
+    category:category //onoma kathgorias
   })
 })
 .then(res=>res.json())
@@ -540,8 +546,10 @@ fetch('/add_item/',{
       'Content-Type': 'application/json'
     },
   body:JSON.stringify({
+    //isos id oxi akoma
     item: this.children[0].value,
     category:this.children[1].value
+    //meta ta details
   })
 })
 .then(res=>res.json())
@@ -555,7 +563,7 @@ function loadCategories(categories){
   const category_name = document.querySelector(".items  #category_name");//perno to select
   for(let category of categories){
     let option = document.createElement('option');
-    option.value = category['category_name'];
+    option.value = category['id'];
     option.innerHTML = category['category_name'];
     //
     category_name.appendChild(option);

@@ -252,7 +252,7 @@ app.post('/request/',(req,res)=>{
 });
 //
 app.get('/get_categories/',(req,res)=>{
-	connection.query('SELECT category_name FROM Category',(error,results)=>{
+	connection.query('SELECT * FROM Category',(error,results)=>{
 		if(error) throw error;
 		res.send(results);
 	});
