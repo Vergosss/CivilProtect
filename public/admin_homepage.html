@@ -100,15 +100,24 @@
         </select>
         </form>
 <!--------Ousiastika edo tha boun oi anakoinoseis multiple dropdown ------------------->
-      <div class="announcement">
-      <select>
-        <option>Choose Items</option>
-      </select> 
-      <div class="announcement_items">
-      
-      </div>
-      </div>
-        
+      <form class="submit_announcement"> 
+        <div class="announcement">
+          <div class="item_select">
+            <select>
+              <option>Choose Items</option>
+            </select> 
+          </div>
+            <div class="announcement_items">
+          
+            </div>
+          </div>
+          <!---------------------->
+          <textarea id="announcement_text" name="announcement_text" rows="4" cols="50">
+
+          </textarea>
+          <br>
+          <button type="submit" value="">Submit Announcement</button>
+      </form>
 
 
     <!------------------->
@@ -238,6 +247,7 @@ fetch('/get_items/')
 
   //
   loadItems(items);
+ 
 })
 .catch(error=>{console.log('Error',error);})
 
@@ -580,7 +590,7 @@ fetch('/add_item/',{
 .catch(error=>{console.log('Error: ',error);})
 
 }
-/*************************************/
+/*****************Fortose tis katigories gia to dropdown sthn eisagogi item********************/
 function loadCategories(categories){
 
   const category_name = document.querySelector(".items  #category_name");//perno to select
@@ -610,7 +620,69 @@ function loadItems(items){
 
   }
 }
+/***************Otan klikaroume to neo 'select' tote emfanizontai oi epiloges*************/
 
+const item_select = document.querySelector(".item_select");
+item_select.addEventListener('click',showDropDown);
+function showDropDown(){
+
+const announcement_items = document.querySelector(".announcement_items");
+
+if(announcement_items.style.display == 'none')
+ {//an to dropdown den exei emfanistei opos px sthn arxh ths fortosis ths selidas tote emfanise tis epiloges
+  announcement_items.style.display = 'block';
+}
+else 
+{//alios an to exo hdh aniksei to dropdown kleisto gia eksikonomisi xorou
+announcement_items.style.display = "none";
+}
+//gyrizo to div me ta checkboxes sth default emfanisi tou pou einai ena block element
+}
+
+/*********************gia th dimiourgia tis anakoinosis**********************/
+const submit_announcement_form = document.querySelector(".submit_announcement");
+//
+submit_announcement_form.addEventListener('submit',createAnnouncement);
+//
+
+function createAnnouncement(event){
+event.preventDefault();
+//
+let text = document.querySelector("#announcement_text").value;
+
+//
+const labels = document.querySelectorAll(".announcement_items label");
+let items = [];
+
+for(let label of labels){
+if(label.children[0].checked){
+items.push(label.innerText);
+}
+}
+
+//
+this.reset();
+//exo oloklirosei ta items
+
+fetch('/create_announcement/',{
+  method: 'POST',
+  headers: {
+      'Content-Type': 'application/json'
+    },
+  body:JSON.stringify({
+  text:text,
+	items:items
+  })
+})
+.then(res=>res.json())
+.then(results=>{
+//
+alert(results['msg']);
+})
+.catch(error=>{console.log('Error: ',error);})
+
+//
+}
 
 /***********Rescuer addition*****************/
 const registerRescuerForm = document.querySelector(".register-rescuer form");

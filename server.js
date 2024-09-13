@@ -850,6 +850,18 @@ app.post('/get_dates/',(req,res)=>{
 		res.send(results);
 	});
 });
+
+//
+app.post('/create_announcement/',(req,res)=>{
+
+	let text = req.body.text;
+	let items = req.body.items;
+	//date tora now()
+	console.log(text,items);
+	//query
+});
+
+
 module.exports = app;//an thelo na kano import se allo JS arxeio ton parapano kodika
 app.listen(port,() => {
     console.log(`Example app listening on port ${port}!`);

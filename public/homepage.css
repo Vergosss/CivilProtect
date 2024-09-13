@@ -270,6 +270,12 @@ button{
     margin-bottom: 20px;
  }
  /**********************Announcement Items*******/
+ .announcement_items{
+    display:none;/*arxika den exo epileksei kapoio item*/
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid black;
+ }
  .announcement_items label{
     display:block;/*afou to label einai inline kai to input mesa tou tote asxoloumai me to label kai to kano block gia na einai to 1 kato apo to allo*/
  }
