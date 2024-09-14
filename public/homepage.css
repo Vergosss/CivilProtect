@@ -313,11 +313,18 @@ textarea{
     max-height: 300px;
     overflow-y: auto ;
 }
+.citizen_announcements div{
+    border: 1px solid black;
+}
 .citizen_announcements span{
     font-size: 18px;
-
+    padding:5px;
+    
 }
 
 .citizen_announcements p{
     font-size: 18px;
+}
+.item_spans{
+    cursor: pointer;
 }

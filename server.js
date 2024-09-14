@@ -1,11 +1,11 @@
 
-console.log(__dirname);
+console.log(__dirname);//pou vriskomai
 const express = require("express");//import express module
 const mysql = require("mysql2");
 const session = require('express-session');//module gia ta sessions
 const bcrypt = require("bcrypt");
 //
-//const path = require('path');
+
 console.log(process.version);
 //
 const multer = require("multer");
@@ -65,7 +65,7 @@ let password = req.body.password;
 		if(result){
 		req.session.logged_in = true; //afou o xristis yparxei sth vash tote syndethike mesa
 		req.session.username = username;
-		//req.session.user = 1;
+		//
 		console.log('Successfully logged in');
 		//+
 		
@@ -77,7 +77,6 @@ let password = req.body.password;
 		}
 
 		});
-		//res.send('Succesfull login');
 		
 		//emfanise ti selida
 		//res.redirect('/'); // to url tis selidas pou tha kanoume redirect
@@ -93,9 +92,9 @@ let password = req.body.password;
 //
 
 app.get('/home',(req,res)=>{
-	//res.send('Welcome');
+	//
 	console.log(req.session);
-	//console.log(req.session.user);
+	//
 	console.log('Role: ',role);
 	if(req.session.username && role == 'Admin')
 	{
@@ -219,7 +218,7 @@ app.get('/get_items/',(req,res)=>{
 //
 app.post('/request/',(req,res)=>{
 	let item = req.body.item;
-	var citizen_first_name,citizen_last_name,citizen_telephone;
+	let citizen_first_name,citizen_last_name,citizen_telephone;
 	//
 	connection.query('SELECT first_name,last_name,telephone,ST_X(cords),ST_Y(cords) FROM User Where username=? and role="Citizen"',[req.session.username],(error,results)=>{
 		if(error) throw error;
@@ -234,13 +233,13 @@ app.post('/request/',(req,res)=>{
 			if(error) throw error;
 			if(results.affectedRows>0){
 				console.log('Request submitted successfully!');
-				//res.end();
-				res.json({Success:"!"});
+				//
+				res.json({msg:"Success !"});
 			}
 			else{
 				console.log('Request failed');
-				//res.end();
-				res.json({Failure:"!"});
+				//
+				res.json({msg:"Failure !"});
 			}
 		});
 		
@@ -261,7 +260,7 @@ app.post('/add_category/',(req,res)=>{
 	connection.query('INSERT IGNORE INTO Category(category_name) VALUES(?)',[category],(error,results)=>{
 		if(error) throw error;
 		if(results.affectedRows>0){
-			console.log('Insertion Successfull');
+			console.log('Insertion Successful');
 			res.json({msg:'Success'});
 		}
 		else{
@@ -275,8 +274,7 @@ app.get('/coordinates/', (req,res)=>{
 
 	 connection.query('SELECT ST_X(cords),ST_Y(cords) FROM User WHERE role="Citizen"',(error,results,fields)=>{
 		if(error) throw error;
-		//console.log(results[0]['ST_X(cords)']);
-		//res.json(results);
+		//
 		res.send(results);
 		});
 });
@@ -319,7 +317,7 @@ const path = req.file.path;
 
 //epistrefei ena object me plirofories sxetikes me to ypovlithen arxeio
 //perno to path property pou einai to monopati pou vrisketai to arxeio
-//diavazo to arxeio enonontas to trexo directory + '/' + to path
+//diavazo to arxeio enonontas to trexon directory + '\\' + to path
 fs.readFile(__dirname + '\\' + path,'utf-8',async (error,data)=>{
 	if(error) throw error;
 	data = JSON.parse(data);//diavase ta dedomena os JSON
@@ -356,10 +354,10 @@ fs.readFile(__dirname + '\\' + path,'utf-8',async (error,data)=>{
 			connection.query('INSERT INTO item_details VALUES(?,?,?)',[id,detail['detail_name'],detail['detail_value']],(error,results)=>{
 				if(error) throw error;
 				if(results.affectedRows>0){
-					console.log('Successfull');
+					console.log('Successful');
 				}
 				else{
-					console.log('Unsuccessfull');
+					console.log('Unsuccessful');
 				}
 			});
 		}
@@ -508,11 +506,11 @@ connection.query('UPDATE User SET cords=POINT(?,?) WHERE role="Rescuer" AND user
 if(error) throw error;
 if(results.affectedRows>0){
 	console.log('Changed Vehicle position successfully!');
-	res.json({OK:"!"});
+	res.json({msg:"OK !"});
 }
 else{
 	console.log('Failed to change vehicle\'s position!');
-	res.json({Error:"!"});
+	res.json({msg:"Error !"});
 	
 }
 });
@@ -528,7 +526,7 @@ app.get('/get_requests/',(req,res)=>{
 });
 //
 app.get('/fetch_requests/',(req,res)=>{
-
+//o admin vlepei ola ta requests opote to query ta gyrizei ola
 	connection.query('SELECT username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,withdrawal_date,vehicle_username,ST_X(cords),ST_Y(cords),lifted FROM Request',(error,results)=>{
 		if(error) throw error;
 		res.send(results);
@@ -775,7 +773,7 @@ let new_requests;
 //
 //kodikas gia delete tou antistixou request
 });
-  //
+  //na alaxthei oste na gyrna ta mh olokliromena pou exei analavei AYTOS
 app.get('/get_tasks/',(req,res)=>{
 connection.query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username FROM Task WHERE completed=false',(error,results)=>{
 if(error) throw error;
@@ -855,7 +853,7 @@ app.post('/create_announcement/',(req,res)=>{
 	let items = req.body.items;
 	//date tora now()
 	console.log(text,items);
-	//query insert into announcment gia arxh
+	//query insert into announcement gia arxh
 	connection.query('INSERT INTO Announcement(text,items,create_date) VALUES(?,?,NOW())',[text,items],(error,results)=>{
 		if(error) throw error;
 		if(results.affectedRows>0){
@@ -878,7 +876,25 @@ app.get('/get_announcements/',(req,res)=>{
 	
 	
 	});
+//
 
+app.post('/offer/',(req,res)=>{
+	let item = req.body.item;
+	let quantity = req.body.quantity;
+	//
+	connection.query('INSERT INTO <> VALUES()',[],(error,results)=>{
+
+	}); 
+
+});
+//
+app.post('/cancel_offer/',(req,res)=>{
+
+
+
+});
+
+//
 module.exports = app;//an thelo na kano import se allo JS arxeio ton parapano kodika
 app.listen(port,() => {
     console.log(`Example app listening on port ${port}!`);
