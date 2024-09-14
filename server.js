@@ -1,7 +1,4 @@
 
-//process.env.TZ = 'Europe/Athens';
-//
-console.log(new Date().toLocaleString());
 console.log(__dirname);
 const express = require("express");//import express module
 const mysql = require("mysql2");
@@ -22,13 +19,13 @@ const connection = mysql.createConnection({
 
 const app = express();//express object app
 app.use('/public',express.static('C:\\Users\\Vergosss\\Web-Programming-and-Systems\\public'));
-//console.log(__dirname + '/../public/');
+//
 //arxikopoio to session-!!an de to valo to session einai undefined kai peta errors sthn post
 app.use(session({
 	secret: 'secret',
 	resave: true,
 	saveUninitialized: true
-	//cookie: { maxAge: 60000 } // session timeout of 60 seconds
+	//cookie: { maxAge: 60000 } // session timeout of 60 seconds-an perasei 1 lepto prepei na ksanakano login-katastrefei to session
 }));
 //
 app.use((req,res,next)=>{
@@ -36,7 +33,7 @@ res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
 next();
 });
 //
-const bodyParser = require('body-parser'); // middleware
+const bodyParser = require('body-parser'); // middleware- alios vivliothiki gia na prospelayno to body tou post request
 //
 const port = 3000;
 app.use(bodyParser.urlencoded({ extended: true }));
