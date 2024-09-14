@@ -869,7 +869,18 @@ app.post('/create_announcement/',(req,res)=>{
 		}
 	});
 });
+//
+app.get('/get_announcements/',(req,res)=>{
 
+	connection.query('SELECT * FROM Announcement',(error,results)=>{
+	
+	if(error) throw error;
+	res.send(results);
+	
+	});
+	
+	
+	});
 
 module.exports = app;//an thelo na kano import se allo JS arxeio ton parapano kodika
 app.listen(port,() => {

@@ -280,6 +280,29 @@ button{
     display:block;/*afou to label einai inline kai to input mesa tou tote asxoloumai me to label kai to kano block gia na einai to 1 kato apo to allo*/
     font-size: 18px;
 }
+.announcement_items label:hover{
+    background-color: dodgerblue;
+    padding:3px;
+}
  .item_select{
     position: relative;
  }
+
+ /***Announcement form***/
+ .submit_announcement{
+    display:flex;
+    flex-direction:column;
+    
+    padding-top: 5px;
+    margin:auto;
+    }
+textarea{
+    resize:none;/**na mhn boro na kano resize to textbox kai xalaei to layout**/
+}
+.submit_announcement button{
+    background-color: dodgerblue;
+    color:#dee0e4;
+    border-radius: 3px;
+    cursor: pointer;
+    padding: 5px;
+}

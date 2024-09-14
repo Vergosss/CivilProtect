@@ -57,7 +57,7 @@ tiles.addTo(map);//prostheto ta tiles tou OSM ston xarti
 map.setView([38.24,21.73],16);//orizo tis syntetagmenes tou shmeiou sto opoio tha kentrarei o xarths kai to zoom level
 //
 
-//console.log(marker.getLatLng().lat,marker.getLatLng().lng);
+
 
 /*************************************/
 let base = L.marker([38.24,21.73],{draggable:false});
@@ -84,20 +84,24 @@ showCitizens();
 })
 .catch(error=>{console.log('Error: ' + error);});
 //
+
+
 const input = document.querySelector("#search");
 const div = document.querySelector("#citizens"); //me thn querySelector epilego to searchbar kai thn
 //perioxh(div) pou tha xoresoun oi citizens(to apotelesma tou autocomplete)
+
+
 /********fetch tis katigories ton proionton gia na fortothoun se ena dropdown menu***/
 fetch('/get_categories/')
 .then(res=>res.json())
 .then(categories=>{
-var list = document.querySelector('#categories');
+const categories_menu = document.querySelector('#categories');
 
 for(let cat of categories){
-var option = document.createElement('option');
+let option = document.createElement('option');
 option.innerHTML = cat['category_name'];
 option.value = cat['id'];
-list.appendChild(option);//prosthese kathe option sto select menu
+categories_menu.appendChild(option);//prosthese kathe option sto select menu
 }
 })
 .catch(error=>{console.log('Error: ',error);})
@@ -106,12 +110,14 @@ list.appendChild(option);//prosthese kathe option sto select menu
 fetch('/get_items/')
 .then(res=>res.json())
 .then(items=>{
-  var item_list = document.querySelector('#items');
+  //
+  const items_menu = document.querySelector('#items');
+  //
   for(let item of items){
-    var option = document.createElement('option');
+    let option = document.createElement('option');
     option.innerHTML = item['name'];
     option.value = item['name'];
-    item_list.appendChild(option);
+    items_menu.appendChild(option);
   }
   
 })
@@ -125,7 +131,7 @@ fetch('/get_coordinates/')
 .then(cords=>{
   lat = cords[0]['ST_X(cords)'];
   long = cords[0]['ST_Y(cords)'];
-  //console.log(cords[0]['ST_X(cords)'],cords[0]['ST_Y(cords)']);
+  //
   request_marker.setLatLng([lat,long]);
   request_marker.addTo(map);
 })
@@ -168,12 +174,12 @@ request_marker.bindPopup(popup);
 fetch('/receive_requests/')
 .then(res=>res.json())
 .then(requests=>{
-let tr,td;
+//
 const table = document.querySelector("#requests");
-for(request of requests){
-tr = document.createElement('tr');
-for(req in request){
-  td = document.createElement('td');
+for(let request of requests){
+let tr = document.createElement('tr');
+for(let req in request){
+  let td = document.createElement('td');
   td.innerHTML = String(request[req]);
   tr.appendChild(td);
 }
@@ -184,13 +190,34 @@ table.appendChild(tr);
 })
 .catch(error=>{console.log('Error: ',error);})
 
+/*****Get Announcements from Base*****/
+fetch('/get_announcements/')
+.then(res=>res.json())
+.then(announcements=>{
+//
+displayAnnouncements(announcements);
+})
+.catch(error=>{console.log('Error: ',error);})
+
+/********pernei tis anakoinvseis kai tis parousizei ston polith(OLES OI SYNARTHSEIS - TO Declararion tous ginetai hoisted)************/
+
+function displayAnnouncements(announcements){
+
+    for(let announcement of announcements){
+
+        let announcement_div = document.createElement('div');
+        //
+        let announcement_text = announcement['text'];
+        let announcement_date = ((new Date(announcement['create_date'])).toLocaleString('el-GR')).replace(',',' ');
+        let announcement_items = announcement['items'].split(',');
+
+      }
+
+}
+
 /*********/
 function showCitizens(){
-  /*
-for(let i =0;i<citizens.length;i++){
-console.log(citizens[i]['username']);
-}
-*/
+
 const matches = findMatches(this.value);
 //h map paei se kathe stixio tou array 1-1 kai trexei se kathe stixio 1-1 th synartisi orisma
 matches.map(citizen=>{
