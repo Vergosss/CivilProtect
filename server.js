@@ -858,7 +858,16 @@ app.post('/create_announcement/',(req,res)=>{
 	let items = req.body.items;
 	//date tora now()
 	console.log(text,items);
-	//query
+	//query insert into announcment gia arxh
+	connection.query('INSERT INTO Announcement(text,items,create_date) VALUES(?,?,NOW())',[text,items],(error,results)=>{
+		if(error) throw error;
+		if(results.affectedRows>0){
+			res.json({msg:'Successfully created announcement!'});
+		}
+		else{
+			res.json({msg:'Failed to create announcement!'});
+		}
+	});
 });
 
 

@@ -278,4 +278,8 @@ button{
  }
  .announcement_items label{
     display:block;/*afou to label einai inline kai to input mesa tou tote asxoloumai me to label kai to kano block gia na einai to 1 kato apo to allo*/
+    font-size: 18px;
+}
+ .item_select{
+    position: relative;
  }
