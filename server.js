@@ -537,7 +537,7 @@ app.get('/fetch_requests/',(req,res)=>{
 //
 //
 app.get('/receive_requests/',(req,res)=>{
-	connection.query('SELECT entry_date,item,quantity FROM Request WHERE citizen_first_name="giorgos"',(error,results)=>{
+	connection.query('SELECT entry_date,item,quantity FROM Request WHERE username=?',[req.session.username],(error,results)=>{
 
 		if(error) throw error;
 		res.send(results);
