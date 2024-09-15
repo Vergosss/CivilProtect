@@ -535,7 +535,7 @@ app.get('/fetch_requests/',(req,res)=>{
 //
 //
 app.get('/receive_requests/',(req,res)=>{
-	connection.query('SELECT entry_date,item,quantity FROM Request WHERE username=?',[req.session.username],(error,results)=>{
+	connection.query('SELECT entry_date,item,quantity FROM Request WHERE username=? AND type="Request"',[req.session.username],(error,results)=>{
 
 		if(error) throw error;
 		res.send(results);
@@ -948,6 +948,16 @@ app.post('/cancel_offer/',(req,res)=>{
 
 
 
+});
+
+//
+app.get('/receive_offers/',(req,res)=>{
+	//
+	connection.query('SELECT entry_date,item,quantity FROM Request WHERE username=? AND type="Offer"',[req.session.username],(error,results)=>{
+		//
+		if(error) throw error;
+		res.send(results);
+	});
 });
 
 //
