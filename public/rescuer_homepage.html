@@ -360,6 +360,9 @@ function update_inventory_table(updated_inventory){
     let tr = document.createElement('tr');
     for(let key in product){
       let td = document.createElement('td');
+      if(key == 'category'){
+        continue;
+      }
       if(key == 'quantity'){
         let select = document.createElement('select');
         for(let i=1;i<=product[key];i++){
