@@ -882,9 +882,7 @@ app.post('/offer/',(req,res)=>{
 	let item = req.body.item;
 	let quantity = req.body.quantity;
 	//
-	connection.query('INSERT INTO <> VALUES()',[],(error,results)=>{
-
-	}); 
+	console.log(item,quantity);
 
 });
 //

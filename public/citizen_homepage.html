@@ -44,6 +44,16 @@
 <h2>Search Citizens</h2>
 <input type="text" id="search" placeholder="Find Citizen...">
 <div id="citizens"></div>
+<!---------------------------------------->
+<dialog>
+    <form id="dialog_form" method="dialog">
+      <label for="offer_quantity">How much you offer?</label>
+      <input type="text" id="offer_quantity" name="offer_quantity">
+      <button  value="cancel">Cancel</button>
+      <button id="confirm" value="confirm">Confirm</button>
+    </form>
+
+</dialog>
 
 <div class="citizen_announcements"></div>
 
@@ -155,12 +165,6 @@ fetch('/request/',{
 //afou kano insert to request sth vash
 //tote enimerose ton marker
 
-/*let par = document.createElement('p');
-par.innerHTML = `${requested_item}<br>`;
-popup.appendChild(par);
-request_marker.bindPopup(popup);*/
-
-
 })
 .catch(error=>{console.log('Error: ',error);})
 
@@ -195,6 +199,13 @@ fetch('/get_announcements/')
 displayAnnouncements(announcements);
 })
 .catch(error=>{console.log('Error: ',error);})
+/**********************************/
+const submit_offer = document.querySelector("dialog");
+submit_offer.addEventListener('close',Offer);
+//
+
+const offer_quantity = document.querySelector("#offer_quantity");
+offer_quantity.addEventListener('input',changeOfferValue);
 
 /********pernei tis anakoinvseis kai tis parousizei ston polith(OLES OI SYNARTHSEIS - TO Declararion tous ginetai hoisted)************/
 
@@ -225,6 +236,13 @@ const citizen_announcements = document.querySelector(".citizen_announcements");
         item_span.setAttribute('class','item_spans')
         item_span.innerHTML = item;
         announcement_div.appendChild(item_span);
+        //
+        item_span.addEventListener('click',function(){
+          let submit_offer = document.querySelector('dialog');
+          submit_offer.setAttribute('item',this.innerHTML);
+          submit_offer.showModal();
+        });
+        //
       }
       //menoun ta items ths anakoinvshs
       citizen_announcements.appendChild(announcement_div);
@@ -232,6 +250,46 @@ const citizen_announcements = document.querySelector(".citizen_announcements");
       }
 
 }
+/**********************Offer function********************************/
+
+function Offer(){
+if(this.returnValue == 'cancel' || isNaN(this.returnValue)) return;
+//
+console.log(this.returnValue);
+
+//perno kai to item attribute tou dialog kai to stelno sth vash
+console.log(this.getAttribute('item'));
+
+//
+fetch('/offer/',{
+  method:'POST',
+  headers: { 'Content-Type':'application/json' },
+  body: JSON.stringify({
+    item: this.getAttribute('item'),
+    quantity:this.returnValue
+    //lat: lat,
+    //long: long 
+  })
+
+})
+.then(res=>res.json())
+.then(results=>{
+//afou kano insert to request sth vash
+//tote enimerose ton marker
+alert(results['msg'])
+})
+.catch(error=>{console.log('Error: ',error);})
+
+//
+}
+/********************Change button's value*******************/
+
+function changeOfferValue(){
+  this.form.elements.confirm.value = this.value;
+  //ousiastika h timh pou vazo sto input text pernaei os timh tou confirm button
+  //opote meta otan kleisei to dialog-close event tha epistrafei h timh pou edosa
+}
+
 /**************Fortosi katigorion oste na tis vlepei o poliths***************/
 function loadCategories(categories){
 
@@ -262,7 +320,7 @@ const items_menu = document.querySelector('#items');
 
 //
 }
-
+/**************************/
 
 
 
