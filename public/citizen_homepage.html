@@ -40,11 +40,24 @@
       </thead>
     <tbody id="requests_body"></tbody>
     </table>
-    <button type="button" name="reload" id="reload">Reload</button>
+   
   </div>
 </div>
 <!--------------------->
 
+<table id="offers">
+  <thead>
+    <tr>
+      <th>Entry Date</th>
+      <th>Item</th>
+      <th>Quantity</th>
+    </tr>
+
+  </thead>
+<tbody id="offers_body"></tbody>
+</table>
+
+<!------------------------->
 <h2>Search Citizens</h2>
 <input type="text" id="search" placeholder="Find Citizen...">
 <div id="citizens"></div>
@@ -187,7 +200,22 @@ myRequests(requests);
 /**************Get requests*******************/
 function myRequests(requests){
 //
+const requests_body = document.querySelector('#requests_body');
+requests_body.innerHTML = "";
+//
+for(let req of requests){
 
+let tr = document.createElement('tr');
+for(let key in req){
+  let td = document.createElement('td');
+  //elegxos gia an einai date kai antistixa gia na fertho analogos
+   td.innerHTML = req[key];//default gia alla dedomena
+   //
+   tr.appendChild(td);
+}
+requests_body.appendChild(tr);
+}
+//
 }
 /********************Get offers******/
 fetch('/receive_offers/')
@@ -201,6 +229,22 @@ fetch('/receive_offers/')
 function myOffers(offers){
 //
 
+const offers_body = document.querySelector('#offers_body');
+offers_body.innerHTML = "";
+//
+for(let offr of offers){
+
+let tr = document.createElement('tr');
+for(let key in offr){
+  let td = document.createElement('td');
+  //elegxos gia an einai date kai antistixa gia na fertho analogos
+   td.innerHTML = req[key];//default gia alla dedomena
+   //
+   tr.appendChild(td);
+}
+offers_body.appendChild(tr);
+}
+//
 }
 
 /*****Get Announcements from Base*****/
