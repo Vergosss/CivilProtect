@@ -733,9 +733,10 @@ catch(error){
 
 app.post('/complete_task/',async (req,res)=>{
 let tid = req.body.tid;
-//let item = req.body.item;
-//let quantity = req.body.quantity;
+let item = req.body.item;
+let quantity = req.body.quantity;
 //logika kapoio type(request,offer)
+let type = req.body.type;
 //an type einai request meiose fortio diasosti alios an einai offer ayksise to
 let new_tasks;
 let new_requests;
@@ -762,6 +763,9 @@ let new_requests;
 		//
 		[results] = await connection.promise().query('SELECT request_id,username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,ST_X(cords),ST_Y(cords),lifted FROM Request WHERE lifted=false OR vehicle_username=?',[req.session.username]);
 		new_requests = results;
+		//
+		[results] = await connection.promise().query('UPDATE Cargo SET quantity=quantity ? WHERE username=? AND item=?',[quantity,req.session.username,item]);
+
 		//
 		console.log('New tasks: ',new_tasks);
 		console.log('New requests: ',new_requests);

@@ -562,15 +562,16 @@ fetch('/get_tasks/')
 })
 .catch(error=>{console.log('Error: ',error);})
 /****function pou oloklironei-diekperaionei ena task***/
-function complete_task(tid){
+function complete_task(tid,item,quantity,type){
 
 fetch('/complete_task/',{
   method:'POST',
     headers: { 'Content-Type':'application/json' },
     body: JSON.stringify({
-        tid: tid
-        //item:item
-        //quantity:quantity
+        tid: tid,
+        item:item,
+        quantity:quantity,
+        type:type
     })
 })
 .then(res=>res.json())
