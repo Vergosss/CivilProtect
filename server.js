@@ -764,7 +764,29 @@ let new_requests;
 		[results] = await connection.promise().query('SELECT request_id,username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,ST_X(cords),ST_Y(cords),lifted FROM Request WHERE lifted=false OR vehicle_username=?',[req.session.username]);
 		new_requests = results;
 		//
-		[results] = await connection.promise().query('UPDATE Cargo SET quantity=quantity ? WHERE username=? AND item=?',[quantity,req.session.username,item]);
+		if(type == 'Request'){
+			[results] = await connection.promise().query('UPDATE Cargo SET quantity=quantity - ? WHERE username=? AND item=?',[quantity,req.session.username,item]);
+		
+			if(results.affectedRows>0){
+				console.log('Deletion Succesfull');
+			}
+			else{
+				console.log('Deletion failed');
+			}
+		
+		}
+		else if(type == 'Offer') {
+			[results] = await connection.promise().query('UPDATE Cargo SET quantity=quantity + ? WHERE username=? AND item=?',[quantity,req.session.username,item]);
+			
+			if(results.affectedRows>0){
+				console.log('Deletion Succesfull');
+			}
+			else{
+				console.log('Deletion failed');
+			}
+		
+		}
+		
 
 		//
 		console.log('New tasks: ',new_tasks);

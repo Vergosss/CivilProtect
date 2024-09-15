@@ -541,13 +541,18 @@ tbody.appendChild(tr);
 /**************************/
 function Complete(event){
 console.log('Clicked!');
+let item = this.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.innerHTML ;
+let quantity = this.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.innerHTML ;
+let type = this.parentNode.previousSibling.innerHTML ;
+//
 console.log(this.parentNode.previousSibling.previousSibling.innerHTML);//username
 console.log(this.parentNode.previousSibling.previousSibling.previousSibling.innerHTML);//id
-complete_task(this.parentNode.previousSibling.previousSibling.previousSibling.innerHTML);
+complete_task(this.parentNode.previousSibling.previousSibling.previousSibling.innerHTML,item,quantity,type);
 }
 //
 function Cancel(event){
   console.log('Clicked!');
+
   console.log(this.parentNode.previousSibling.previousSibling.previousSibling.innerHTML);//username
   console.log(this.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.innerHTML);//id
   cancel_task(this.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.innerHTML);
