@@ -229,7 +229,7 @@ app.post('/request/',(req,res)=>{
 		let longitude = results[0]['ST_Y(cords)'];
 		//
 //anagastika to deytero query sto proto epeidh logw async JS prepei na oloklirothei prota to proto query(na exo tis plirofories)
-		connection.query('INSERT INTO Request(citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,cords,username) VALUES(?,?,?,NOW(),?,1,POINT(?,?),?)',[citizen_first_name,citizen_last_name,citizen_telephone,item,latitude,longitude,req.session.username],(error,results)=>{
+		connection.query('INSERT INTO Request(citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,cords,username,type) VALUES(?,?,?,NOW(),?,1,POINT(?,?),?,"Request")',[citizen_first_name,citizen_last_name,citizen_telephone,item,latitude,longitude,req.session.username],(error,results)=>{
 			if(error) throw error;
 			if(results.affectedRows>0){
 				console.log('Request submitted successfully!');
@@ -527,7 +527,7 @@ app.get('/get_requests/',(req,res)=>{
 //
 app.get('/fetch_requests/',(req,res)=>{
 //o admin vlepei ola ta requests opote to query ta gyrizei ola
-	connection.query('SELECT username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,withdrawal_date,vehicle_username,ST_X(cords),ST_Y(cords),lifted FROM Request',(error,results)=>{
+	connection.query('SELECT username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,withdrawal_date,vehicle_username,ST_X(cords),ST_Y(cords),lifted,type FROM Request',(error,results)=>{
 		if(error) throw error;
 		res.send(results);
 	});
@@ -883,6 +883,36 @@ app.post('/offer/',(req,res)=>{
 	let quantity = req.body.quantity;
 	//
 	console.log(item,quantity);
+
+	let citizen_first_name,citizen_last_name,citizen_telephone;
+	//kratane ta stixia gia na dimiourgithei to offer
+
+	connection.query('SELECT first_name,last_name,telephone,ST_X(cords),ST_Y(cords) FROM User Where username=? and role="Citizen"',[req.session.username],(error,results)=>{
+		if(error) throw error;
+		citizen_first_name = results[0].first_name;
+		citizen_last_name = results[0].last_name;
+		citizen_telephone = results[0].telephone;
+		let latitude = results[0]['ST_X(cords)'];
+		let longitude = results[0]['ST_Y(cords)'];
+		//
+//anagastika to deytero query sto proto epeidh logw async JS prepei na oloklirothei prota to proto query(na exo tis plirofories)
+//menei na valo to type=offer
+		connection.query('INSERT INTO Request(citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,cords,username,type) VALUES(?,?,?,NOW(),?,?,POINT(?,?),?,"Offer")',[citizen_first_name,citizen_last_name,citizen_telephone,item,quantity,latitude,longitude,req.session.username],(error,results)=>{
+			if(error) throw error;
+			if(results.affectedRows>0){
+				console.log('Offer submitted successfully!');
+				//
+				res.json({msg:"Success !"});
+			}
+			else{
+				console.log('Offer failed');
+				//
+				res.json({msg:"Failure !"});
+			}
+		});
+		
+	});
+
 
 });
 //
