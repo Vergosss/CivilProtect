@@ -768,10 +768,10 @@ let new_requests;
 			[results] = await connection.promise().query('UPDATE Cargo SET quantity=quantity - ? WHERE username=? AND item=?',[quantity,req.session.username,item]);
 		
 			if(results.affectedRows>0){
-				console.log('Deletion Succesfull');
+				console.log('Update Succesfull');
 			}
 			else{
-				console.log('Deletion failed');
+				console.log('Update failed');
 			}
 		
 		}
@@ -779,10 +779,10 @@ let new_requests;
 			[results] = await connection.promise().query('UPDATE Cargo SET quantity=quantity + ? WHERE username=? AND item=?',[quantity,req.session.username,item]);
 			
 			if(results.affectedRows>0){
-				console.log('Deletion Succesfull');
+				console.log('Update Succesfull');
 			}
 			else{
-				console.log('Deletion failed');
+				console.log('Update failed');
 			}
 		
 		}
