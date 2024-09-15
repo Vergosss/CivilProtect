@@ -226,7 +226,7 @@ map.eachLayer(marker=>{
      for(let row of tbody.rows){
       if(row.cells[7].innerHTML == marker.options.username){
         //vres to koubi kai kane to enable
-        const button = row.cells[8].firstChild;
+        const button = row.cells[9].firstChild;
         if(Distance(vehicle,marker) < 50){
           button.disabled = false;
         }
