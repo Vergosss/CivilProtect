@@ -34,6 +34,7 @@
     <th>Entry Date</th>
     <th>Item</th>
     <th>Quantity</th>
+    <th>Type</th>
     <th>Complete</th>
     <th>Cancel</th>
     </tr>
@@ -411,7 +412,7 @@ popup.style['overflow-y'] = "auto";
 //
 for (let request of grouped_requests[user]){
 let request_div = document.createElement('div');
-request_div.innerHTML = `Name : ${request['citizen_first_name']},${request['citizen_last_name']}<br>Telephone: ${request['citizen_telephone']}<br>Entry: ${((new Date(request['entry_date'])).toLocaleString('el-GR')).replace(',',' ')}<br>Item: ${request['item']}<br>Quantity: ${request['quantity']}<br>`
+request_div.innerHTML = `Name : ${request['citizen_first_name']},${request['citizen_last_name']}<br>Telephone: ${request['citizen_telephone']}<br>Entry: ${((new Date(request['entry_date'])).toLocaleString('el-GR')).replace(',',' ')}<br>Item: ${request['item']}<br>Quantity: ${request['quantity']}<br>Type: ${request['type']}<br>`;
 //
 request_div.setAttribute('class','marker_text');
 //
@@ -442,7 +443,7 @@ button.addEventListener('click',function(){
   let line = L.polyline(cords,{color:'green'});
   lines.addLayer(line);
 
-  create_task(request['username'],request['request_id'],request['citizen_first_name'],request['citizen_last_name'],request['citizen_telephone'],request['item']);
+  create_task(request['username'],request['request_id'],request['citizen_first_name'],request['citizen_last_name'],request['citizen_telephone'],[request['item'],request['quantity']],request['type']);
   
 });
 }
@@ -464,7 +465,7 @@ filter.addTo(map);
 
 
 /*****Creating a task after clicking on the request/offer button******/
-function create_task(username,request_id,first_name,last_name,telephone,item){
+function create_task(username,request_id,first_name,last_name,telephone,item_quantity,type){
 
 fetch('/create_task/',{
     method:'POST',
@@ -475,12 +476,14 @@ fetch('/create_task/',{
       first_name:first_name,
       last_name:last_name,
       telephone:telephone,
-      item:item
+      item:item_quantity[0],
+      quantity:item_quantity[1],
+      type:type
     })
 })
 .then(res=>res.json())
 .then(updated_tasks=>{
-//ananeoso me AJAX ton pinaka ton task tou diasosti
+//ananeono me AJAX ton pinaka ton task tou diasosti
 update_tasks_table(updated_tasks);
 //
 
@@ -538,16 +541,16 @@ tbody.appendChild(tr);
 /**************************/
 function Complete(event){
 console.log('Clicked!');
-console.log(this.parentNode.previousSibling.innerHTML);//username
-console.log(this.parentNode.previousSibling.previousSibling.innerHTML);//id
-complete_task(this.parentNode.previousSibling.previousSibling.innerHTML);
+console.log(this.parentNode.previousSibling.previousSibling.innerHTML);//username
+console.log(this.parentNode.previousSibling.previousSibling.previousSibling.innerHTML);//id
+complete_task(this.parentNode.previousSibling.previousSibling.previousSibling.innerHTML);
 }
 //
 function Cancel(event){
   console.log('Clicked!');
-  console.log(this.parentNode.previousSibling.previousSibling.innerHTML);//username
-  console.log(this.parentNode.previousSibling.previousSibling.previousSibling.innerHTML);//id
-  cancel_task(this.parentNode.previousSibling.previousSibling.previousSibling.innerHTML);
+  console.log(this.parentNode.previousSibling.previousSibling.previousSibling.innerHTML);//username
+  console.log(this.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.innerHTML);//id
+  cancel_task(this.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.innerHTML);
 }
 
 

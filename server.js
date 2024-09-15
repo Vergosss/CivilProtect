@@ -519,7 +519,7 @@ else{
 //
 app.get('/get_requests/',(req,res)=>{
 
-	connection.query('SELECT request_id,username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,ST_X(cords),ST_Y(cords),lifted FROM Request WHERE lifted=false OR vehicle_username=?',[req.session.username],(error,results)=>{
+	connection.query('SELECT request_id,username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,ST_X(cords),ST_Y(cords),lifted,type FROM Request WHERE lifted=false OR vehicle_username=?',[req.session.username],(error,results)=>{
 		if(error) throw error;
 		res.send(results);
  	});
@@ -686,6 +686,8 @@ let first_name = req.body.first_name;
 let last_name = req.body.last_name;
 let telephone = req.body.telephone;
 let item = req.body.item;
+let quantity = req.body.quantity;
+let type = req.body.type;
 connection.query('UPDATE Request SET lifted=true,vehicle_username=?,withdrawal_date=NOW() WHERE username=? AND request_id=?',[req.session.username,username,task_id],(error,results)=>{
 if(error) throw error;
 if(results.affectedRows>0){
@@ -698,7 +700,7 @@ else{
 //
 try{
 
-let [results] = await connection.promise().query('INSERT INTO Task(task_id,username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity) VALUES (?,?,?,?,?,NOW(),?,1) ',[task_id,username,first_name,last_name,telephone,item]);
+let [results] = await connection.promise().query('INSERT INTO Task(task_id,username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,type) VALUES (?,?,?,?,?,NOW(),?,?,?) ',[task_id,username,first_name,last_name,telephone,item,quantity,type]);
 if(results.affectedRows>0){
 	console.log('Success!');
 }
@@ -706,7 +708,7 @@ else{
 	console.log('Failure!');
 }
 
-connection.query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username FROM Task WHERE completed=false',(error,results)=>{
+connection.query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username,type FROM Task WHERE completed=false',(error,results)=>{
 	if(error) throw error;
 	res.send(results);	
 });
@@ -775,7 +777,7 @@ let new_requests;
 });
   //na alaxthei oste na gyrna ta mh olokliromena pou exei analavei AYTOS
 app.get('/get_tasks/',(req,res)=>{
-connection.query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username FROM Task WHERE completed=false',(error,results)=>{
+connection.query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username,type FROM Task WHERE completed=false',(error,results)=>{
 if(error) throw error;
 res.send(results);
 
@@ -797,7 +799,7 @@ else{
 	console.log('Deletion Failed!');
 }
 //get the updated tasks
-[results] = await connection.promise().query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username FROM Task WHERE completed=false');
+[results] = await connection.promise().query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username,type FROM Task WHERE completed=false');
 new_tasks = results;
 
 
@@ -810,7 +812,7 @@ else{
 	console.log('Update Failed!');
 }
 //
-[results] = await connection.promise().query('SELECT request_id,username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,ST_X(cords),ST_Y(cords),lifted FROM Request WHERE lifted=false OR vehicle_username=?',[req.session.username]);
+[results] = await connection.promise().query('SELECT request_id,username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,ST_X(cords),ST_Y(cords),lifted,type FROM Request WHERE lifted=false OR vehicle_username=?',[req.session.username]);
 new_requests = results;
 //
 console.log('New tasks : ',new_tasks);

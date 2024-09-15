@@ -356,7 +356,7 @@ popup.style['overflow-y'] = "auto";
 //
 for (let request of grouped_requests[user]){
 let request_div = document.createElement('div');
-request_div.innerHTML = `Name : ${request['citizen_first_name']},${request['citizen_last_name']}<br>Telephone: ${request['citizen_telephone']}<br>Entry: ${((new Date(request['entry_date'])).toLocaleString('el-GR')).replace(',',' ')}<br>Item: ${request['item']}<br>Quantity: ${request['quantity']}<br>`
+request_div.innerHTML = `Name : ${request['citizen_first_name']},${request['citizen_last_name']}<br>Telephone: ${request['citizen_telephone']}<br>Entry: ${((new Date(request['entry_date'])).toLocaleString('el-GR')).replace(',',' ')}<br>Item: ${request['item']}<br>Quantity: ${request['quantity']}<br>Type: ${request['type']}`;
 //
 request_div.setAttribute('class','marker_text');
 
