@@ -534,12 +534,31 @@ app.get('/fetch_requests/',(req,res)=>{
 });
 //
 //
-app.get('/receive_requests/',(req,res)=>{
-	connection.query('SELECT entry_date,item,quantity FROM Request WHERE username=? AND type="Request"',[req.session.username],(error,results)=>{
+app.get('/receive_requests/',async (req,res)=>{
+//
+//
+let untaken_requests;
+let taken_requests;
+let completed_requests;
+try{
 
-		if(error) throw error;
-		res.send(results);
-	});
+let [results] = await connection.promise().query('SELECT item,quantity FROM Request WHERE username=? AND type="Request" AND lifted=0',[req.session.username]);
+//get free offers
+untaken_requests = results;
+//get offers that have been taken by a rescuer
+[results] = await connection.promise().query('SELECT Request.item,Request.quantity,withdrawal_date FROM Request WHERE username=? AND lifted=1 AND type="Request"',[req.session.username]);
+	//
+taken_requests = results;
+//get completed offers	kai to complete date
+[results] = await connection.promise().query('SELECT item,quantity,entry_date FROM Task WHERE username=? AND type="Request" AND completed=1',[req.session.username]);
+completed_requests=results;
+//
+res.send([untaken_requests,taken_requests,completed_requests]);
+}
+catch(error){
+	console.log('Error: ',error);
+}
+
 });
 //
 app.get('/load_inventory/',(req,res)=>{
@@ -951,13 +970,30 @@ app.post('/cancel_offer/',(req,res)=>{
 });
 
 //
-app.get('/receive_offers/',(req,res)=>{
+app.get('/receive_offers/',async (req,res)=>{
 	//
-	connection.query('SELECT entry_date,item,quantity FROM Request WHERE username=? AND type="Offer"',[req.session.username],(error,results)=>{
+	let untaken_offers;
+	let taken_offers;
+	let completed_offers;
+	try{
+	
+	let [results] = await connection.promise().query('SELECT item,quantity FROM Request WHERE username=? AND type="Offer" AND lifted=0',[req.session.username]);
+	//get free offers
+	untaken_offers = results;
+	//get offers that have been taken by a rescuer
+	[results] = await connection.promise().query('SELECT Request.item,Request.quantity,withdrawal_date FROM Request WHERE username=? AND lifted=1 AND type="Offer"',[req.session.username]);
 		//
-		if(error) throw error;
-		res.send(results);
-	});
+	taken_offers = results;
+	//get completed offers	kai to complete date
+	[results] = await connection.promise().query('SELECT item,quantity,entry_date FROM Task WHERE username=? AND type="Offer" AND completed=1',[req.session.username]);
+	completed_offers=results;
+	//
+	res.send([untaken_offers,taken_offers,completed_offers]);
+	}
+	catch(error){
+		console.log('Error: ',error);
+	}
+
 });
 
 //

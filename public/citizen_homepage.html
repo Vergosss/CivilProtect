@@ -32,9 +32,10 @@
     <table id="requests">
       <thead>
         <tr>
-          <th>Entry Date</th>
           <th>Item</th>
           <th>Quantity</th>
+          <th>Withdrawal Date</th>
+          <th>Complete Date</td>
         </tr>
 
       </thead>
@@ -48,19 +49,20 @@
 <table id="offers">
   <thead>
     <tr>
-      <th>Entry Date</th>
       <th>Item</th>
       <th>Quantity</th>
+      <th>Withdrawal Date</th>
+      <th>Complete Date</th>
     </tr>
 
   </thead>
 <tbody id="offers_body"></tbody>
 </table>
 
-<!------------------------->
-<h2>Search Citizens</h2>
+<!---------<h2>Search Citizens</h2>
 <input type="text" id="search" placeholder="Find Citizen...">
-<div id="citizens"></div>
+<div id="citizens"></div>---------------->
+
 <!---------------------------------------->
 <dialog>
     <form id="dialog_form" method="dialog">
@@ -200,10 +202,15 @@ myRequests(requests);
 /**************Get requests*******************/
 function myRequests(requests){
 //
+let untaken_requests = requests[0];
+let taken_requests = requests[1];
+let completed_requests = requests[2];
+
+//
 const requests_body = document.querySelector('#requests_body');
 requests_body.innerHTML = "";
 //
-for(let req of requests){
+for(let req of untaken_requests){
 
 let tr = document.createElement('tr');
 for(let key in req){
@@ -213,38 +220,99 @@ for(let key in req){
    //
    tr.appendChild(td);
 }
+//
+  let withdrawal_date = document.createElement('td');
+  let complete_date = document.createElement('td');
+  withdrawal_date.innerHTML = '-';
+  complete_date.innerHTML = '-';
+  tr.appendChild(withdrawal_date);
+  tr.appendChild(complete_date);
 requests_body.appendChild(tr);
 }
 //
+
+//completed
+for(let req of completed_requests){
+  let tr = document.createElement('tr');
+  //
+  for(let key in req){
+    let td = document.createElement('td');
+    if(key == 'entry_date' || key == 'complete_date'){
+      td.innerHTML = (new Date(req[key])).toLocaleString('el-GR').replace(',',' ');
+    }
+    else{
+      td.innerHTML = req[key];
+    }
+    //
+    tr.appendChild(td);
+  }
+  //
+
+  //
+  requests_body.appendChild(tr);
+  //
+ 
+}
+
 }
 /********************Get offers******/
 fetch('/receive_offers/')
 .then(res=>res.json())
 .then(offers=>{
   //
-  myOffers(offers);
+ myOffers(offers);
 })
 .catch(error=>{console.log('Error: ',error);})
 /*************Provoli ton Prosforon**************/
 function myOffers(offers){
 //
-
+let untaken_offers = offers[0];
+let taken_offers = offers[1];
+let completed_offers = offers[2];
 const offers_body = document.querySelector('#offers_body');
 offers_body.innerHTML = "";
 //
-for(let offr of offers){
+for(let offr of untaken_offers){
 
 let tr = document.createElement('tr');
 for(let key in offr){
   let td = document.createElement('td');
   //elegxos gia an einai date kai antistixa gia na fertho analogos
-   td.innerHTML = req[key];//default gia alla dedomena
+   td.innerHTML = offr[key];//default gia alla dedomena
+   //
+   tr.appendChild(td);
+}
+//
+  let withdrawal_date = document.createElement('td');
+  let complete_date = document.createElement('td');
+  withdrawal_date.innerHTML = '-';
+  complete_date.innerHTML = '-';
+  tr.appendChild(withdrawal_date);
+  tr.appendChild(complete_date);
+offers_body.appendChild(tr);
+}
+//
+
+for(let offr of completed_offers){
+
+let tr = document.createElement('tr');
+for(let key in offr){
+  let td = document.createElement('td');
+  //elegxos gia an einai date kai antistixa gia na fertho analogos
+  if(key == 'entry_date' || key == 'complete_date'){
+      td.innerHTML = (new Date(offr[key])).toLocaleString('el-GR').replace(',',' ');
+    }
+    else{
+      td.innerHTML = offr[key];
+    }
    //
    tr.appendChild(td);
 }
 offers_body.appendChild(tr);
 }
-//
+
+
+
 }
 
 /*****Get Announcements from Base*****/
