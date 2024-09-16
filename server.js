@@ -761,7 +761,7 @@ let new_tasks;
 let new_requests;
 	try{
 
-		let [results] = await connection.promise().query('UPDATE Task SET completed = 1 WHERE task_id=?',[tid]);
+		let [results] = await connection.promise().query('UPDATE Task SET completed = 1,complete_date=NOW() WHERE task_id=?',[tid]);
 		if(results.affectedRows>0){
 			console.log('Success!');
 		}
