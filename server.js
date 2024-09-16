@@ -614,7 +614,7 @@ app.post('/update_inventory/',async (req,res)=>{
 	});
 //
 app.get('/load_cargo/',(req,res)=>{
-	connection.query('SELECT item,quantity FROM Cargo WHERE username=?',[req.session.username],(error,results)=>{
+	connection.query('SELECT item,quantity FROM Cargo WHERE username=? AND quantity>0',[req.session.username],(error,results)=>{
 		if(error) throw error;
 		res.send(results);
 	});
@@ -656,7 +656,7 @@ app.post('/update_cargo/',async (req,res)=>{
 		let [results] = await connection.promise().query('SELECT * FROM Inventory');
 		new_inventory = results;
 		//new cargo
-		[results] = await connection.promise().query('SELECT item,quantity FROM Cargo WHERE username=?',[req.session.username]);
+		[results] = await connection.promise().query('SELECT item,quantity FROM Cargo WHERE username=? AND quantity>0',[req.session.username]);
 		new_cargo = results;
 		console.log('New inventory:',new_inventory);
 		console.log('New cargo:',new_cargo);
