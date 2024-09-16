@@ -103,8 +103,10 @@ base.addTo(map);
 /*****os admin vlepo th vash****/
 
 
-/**************************/
-fetch('/citizens/')
+/************
+ * 
+ * 
+ * fetch('/citizens/')
 .then (res=>{return res.json();})
 .then(json=>{//omoio se logikh me to apo pano
 citizens = json;
@@ -112,11 +114,14 @@ citizens = json;
 showCitizens();
 })
 .catch(error=>{console.log('Error: ' + error);});
+
+**************/
+
 //
 
 
-const input = document.querySelector("#search");
-const div = document.querySelector("#citizens"); //me thn querySelector epilego to searchbar kai thn
+//const input = document.querySelector("#search");
+//const div = document.querySelector("#citizens"); //me thn querySelector epilego to searchbar kai thn
 //perioxh(div) pou tha xoresoun oi citizens(to apotelesma tou autocomplete)
 
 
@@ -209,7 +214,7 @@ let completed_requests = requests[2];
 //
 const requests_body = document.querySelector('#requests_body');
 requests_body.innerHTML = "";
-//
+//untaken requests
 for(let req of untaken_requests){
 
 let tr = document.createElement('tr');
@@ -229,7 +234,32 @@ for(let key in req){
   tr.appendChild(complete_date);
 requests_body.appendChild(tr);
 }
-//
+//taken but not completed requests(active tasks)
+
+for(let req of taken_requests){
+  let tr = document.createElement('tr');
+  //
+  for(let key in req){
+    let td = document.createElement('td');
+    if(key == 'withdrawal_date'){
+      td.innerHTML = (new Date(req[key])).toLocaleString('el-GR').replace(',',' ');
+    }
+    else{
+      td.innerHTML = req[key];
+    }
+    //
+    tr.appendChild(td);
+  }
+  //
+  let complete_date = document.createElement('td');
+  complete_date.innerHTML = '-';
+  tr.appendChild(complete_date);
+  //
+  requests_body.appendChild(tr);
+  //
+ 
+}
+
 
 //completed
 for(let req of completed_requests){
@@ -271,7 +301,7 @@ let taken_offers = offers[1];
 let completed_offers = offers[2];
 const offers_body = document.querySelector('#offers_body');
 offers_body.innerHTML = "";
-//
+//free offers
 for(let offr of untaken_offers){
 
 let tr = document.createElement('tr');
@@ -291,8 +321,31 @@ for(let key in offr){
   tr.appendChild(complete_date);
 offers_body.appendChild(tr);
 }
-//
+//lifted but not completed offers(in progress)
 
+for(let offr of taken_offers){
+
+let tr = document.createElement('tr');
+for(let key in offr){
+  let td = document.createElement('td');
+  //elegxos gia an einai date kai antistixa gia na fertho analogos
+  if(key == 'withdrawal_date'){
+      td.innerHTML = (new Date(offr[key])).toLocaleString('el-GR').replace(',',' ');
+    }
+    else{
+      td.innerHTML = offr[key];
+    }
+}
+//
+  let complete_date = document.createElement('td');
+  //
+  complete_date.innerHTML = '-';
+  tr.appendChild(withdrawal_date);
+  
+offers_body.appendChild(tr);
+}
+
+//completed offers
 for(let offr of completed_offers){
 
 let tr = document.createElement('tr');
@@ -449,40 +502,6 @@ const items_menu = document.querySelector('#items');
 
 
 /**************************/
-function showCitizens(){
-
-const matches = findMatches(this.value);
-//h map paei se kathe stixio tou array 1-1 kai trexei se kathe stixio 1-1 th synartisi orisma
-matches.map(citizen=>{
-div.innerHTML = "";
-let p = document.createElement("p");
-let span = document.createElement("span");
-span.innerHTML = citizen.username;
-p.appendChild(span);
-div.appendChild(p);
-p.addEventListener('click',()=>{
-input.value = span.innerHTML;
-
-});
-
-});
-
-
-}
-/****************/
-
-/**************/
-function findMatches(search){
-if(!search) search = null;
-return citizens.filter(citizen=>{//h filter filtrarei ta stixia tou citizens diladi epistrefei tous citizens pou ikanopoioun th synarthsh-orisma
-const regex = new RegExp(search,'gi');//ftiaxno ena object regexp me orismata th leksh pou psaxno kai 'gi'. dhladh o,ti tairiazei me th leksh pou pliktrologo
-return citizen.username.match(regex);//epestrepse matches ths lekshs anazitisis(kanonikis kefrasis) me ta username ton politon
-});
-}
-
-//const  = document.querySelector("#search");
-input.addEventListener("keyup",showCitizens);//enas event listener otan pliktrologiso kai AFISO to pliktro trexei h showCitizens
-/********klhsh sto url to json************/
 
  </script> 
  

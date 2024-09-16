@@ -108,7 +108,7 @@ td{
 }
 /**to border einai ta oria ,to keli ,ta akra tou pinaka,perigrama*/
 button{
-    background-color: #04AA6D; /*to xroma tou backround tou koubioy*/
+    background-color: dodgerblue; /*to xroma tou backround tou koubioy*/
     color:#dee0e4;/*to xroma tou keimenou tou koubiou*/
     border: none;/*an de valo border none tote einai me to perigrama to koubi, eno etsi apeleytheronetai ginetai pio xontro*/
     font-size: 18px;/*megethos tou keimenou tou koubiou*/
@@ -327,4 +327,9 @@ textarea{
 }
 .item_spans{
     cursor: pointer;
+}
+/***************/
+#offers{
+    margin:auto;
+    padding:50px;
 }

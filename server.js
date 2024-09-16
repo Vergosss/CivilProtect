@@ -546,11 +546,11 @@ let [results] = await connection.promise().query('SELECT item,quantity FROM Requ
 //get free offers
 untaken_requests = results;
 //get offers that have been taken by a rescuer
-[results] = await connection.promise().query('SELECT Request.item,Request.quantity,withdrawal_date FROM Request WHERE username=? AND lifted=1 AND type="Request"',[req.session.username]);
+[results] = await connection.promise().query('SELECT item,quantity,withdrawal_date FROM Request WHERE username=? AND lifted=1 AND type="Request"',[req.session.username]);
 	//
 taken_requests = results;
 //get completed offers	kai to complete date
-[results] = await connection.promise().query('SELECT item,quantity,entry_date FROM Task WHERE username=? AND type="Request" AND completed=1',[req.session.username]);
+[results] = await connection.promise().query('SELECT item,quantity,entry_date,complete_date FROM Task WHERE username=? AND type="Request" AND completed=1',[req.session.username]);
 completed_requests=results;
 //
 res.send([untaken_requests,taken_requests,completed_requests]);
@@ -981,11 +981,11 @@ app.get('/receive_offers/',async (req,res)=>{
 	//get free offers
 	untaken_offers = results;
 	//get offers that have been taken by a rescuer
-	[results] = await connection.promise().query('SELECT Request.item,Request.quantity,withdrawal_date FROM Request WHERE username=? AND lifted=1 AND type="Offer"',[req.session.username]);
+	[results] = await connection.promise().query('SELECT item,quantity,withdrawal_date FROM Request WHERE username=? AND lifted=1 AND type="Offer"',[req.session.username]);
 		//
 	taken_offers = results;
 	//get completed offers	kai to complete date
-	[results] = await connection.promise().query('SELECT item,quantity,entry_date FROM Task WHERE username=? AND type="Offer" AND completed=1',[req.session.username]);
+	[results] = await connection.promise().query('SELECT item,quantity,entry_date,complete_date FROM Task WHERE username=? AND type="Offer" AND completed=1',[req.session.username]);
 	completed_offers=results;
 	//
 	res.send([untaken_offers,taken_offers,completed_offers]);
