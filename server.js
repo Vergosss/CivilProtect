@@ -19,6 +19,7 @@ const connection = mysql.createConnection({
 
 const app = express();//express object app
 app.use('/public',express.static('C:\\Users\\Vergosss\\Web-Programming-and-Systems\\public'));
+
 //
 //arxikopoio to session-!!an de to valo to session einai undefined kai peta errors sthn post
 app.use(session({
@@ -162,7 +163,7 @@ app.post('/signup',(req,res)=>{
 	
 		if(error) throw error;
 		if(result.affectedRows>0){
-		res.send('Successfully registered!');
+		res.send('Successfully registered!');//boro na to kano res.json kai meta alert
 		}
 		else{
 		res.send('User already in database');
@@ -209,7 +210,7 @@ app.post('/register_rescuer/',(req,res)=>{
 
 app.get('/get_items/',(req,res)=>{
 
-	connection.query('SELECT name FROM Item',(error,results)=>{
+	connection.query('SELECT * FROM Item',(error,results)=>{
 
 		if(error) throw error;
 		res.send(results);
@@ -218,6 +219,7 @@ app.get('/get_items/',(req,res)=>{
 //
 app.post('/request/',(req,res)=>{
 	let item = req.body.item;
+	let quantity = req.body.quantity;
 	let citizen_first_name,citizen_last_name,citizen_telephone;
 	//
 	connection.query('SELECT first_name,last_name,telephone,ST_X(cords),ST_Y(cords) FROM User Where username=? and role="Citizen"',[req.session.username],(error,results)=>{
@@ -229,7 +231,7 @@ app.post('/request/',(req,res)=>{
 		let longitude = results[0]['ST_Y(cords)'];
 		//
 //anagastika to deytero query sto proto epeidh logw async JS prepei na oloklirothei prota to proto query(na exo tis plirofories)
-		connection.query('INSERT INTO Request(citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,cords,username,type) VALUES(?,?,?,NOW(),?,1,POINT(?,?),?,"Request")',[citizen_first_name,citizen_last_name,citizen_telephone,item,latitude,longitude,req.session.username],(error,results)=>{
+		connection.query('INSERT INTO Request(citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,cords,username,type) VALUES(?,?,?,NOW(),?,?,POINT(?,?),?,"Request")',[citizen_first_name,citizen_last_name,citizen_telephone,item,quantity,latitude,longitude,req.session.username],(error,results)=>{
 			if(error) throw error;
 			if(results.affectedRows>0){
 				console.log('Request submitted successfully!');
@@ -487,13 +489,21 @@ res.send(results);
 
 });
 //
-app.get('/get_vehicles/',(req,res)=>{
-
+app.get('/get_vehicles/', async(req,res)=>{
+//
+let all_tasks;
+//
 connection.query('SELECT User.username,ST_X(cords),ST_Y(cords),item,quantity FROM User inner join Cargo on User.username = Cargo.username WHERE role="Rescuer"',(error,results)=>{
 if(error) throw error;
 res.send(results);
 
 });
+//
+
+[results] = await connection.promise().query('SELECT vehicle_username,count(request_id) as number FROM Request where lifted=1 group by vehicle_username');
+all_tasks = results;
+//
+//res.send();
 
 });
 //
@@ -719,7 +729,7 @@ else{
 //
 try{
 
-let [results] = await connection.promise().query('INSERT INTO Task(task_id,username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,type) VALUES (?,?,?,?,?,NOW(),?,?,?) ',[task_id,username,first_name,last_name,telephone,item,quantity,type]);
+let [results] = await connection.promise().query('INSERT INTO Task(task_id,username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,type,vehicle_username) VALUES (?,?,?,?,?,NOW(),?,?,?,?) ',[task_id,username,first_name,last_name,telephone,item,quantity,type,req.session.username]);
 if(results.affectedRows>0){
 	console.log('Success!');
 }
@@ -727,7 +737,7 @@ else{
 	console.log('Failure!');
 }
 
-connection.query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username,type FROM Task WHERE completed=false',(error,results)=>{
+connection.query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username,type FROM Task WHERE completed=false AND vehicle_username=?',[req.session.username],(error,results)=>{
 	if(error) throw error;
 	res.send(results);	
 });
@@ -777,7 +787,7 @@ let new_requests;
 			console.log('Deletion failed');
 		}
 		//
-		[results] = await connection.promise().query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username,type FROM Task WHERE completed=false');
+		[results] = await connection.promise().query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username,type FROM Task WHERE completed=false AND vehicle_username=?',[req.session.username]);
 		new_tasks = results;
 		//
 		[results] = await connection.promise().query('SELECT request_id,username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,ST_X(cords),ST_Y(cords),lifted,type FROM Request WHERE lifted=false OR vehicle_username=?',[req.session.username]);
@@ -822,7 +832,7 @@ let new_requests;
 });
   //na alaxthei oste na gyrna ta mh olokliromena pou exei analavei AYTOS
 app.get('/get_tasks/',(req,res)=>{
-connection.query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username,type FROM Task WHERE completed=false',(error,results)=>{
+connection.query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username,type FROM Task WHERE completed=false AND vehicle_username=?',[req.session.username],(error,results)=>{
 if(error) throw error;
 res.send(results);
 
@@ -844,7 +854,7 @@ else{
 	console.log('Deletion Failed!');
 }
 //get the updated tasks
-[results] = await connection.promise().query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username,type FROM Task WHERE completed=false');
+[results] = await connection.promise().query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username,type FROM Task WHERE completed=false AND vehicle_username=?',[req.session.username]);
 new_tasks = results;
 
 

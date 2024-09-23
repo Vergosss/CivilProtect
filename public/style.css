@@ -12,6 +12,10 @@ body {
 /* stylaro tin forma mono, kano align ta periexomena tis formas sto kentro, an valo px left ta periexomena
 tis formas pane pio aristera px to username:
 */
+#map{
+    margin-left:auto;
+    margin-right:auto;
+}
 .login form {
     display: flex;
     flex-wrap: wrap;

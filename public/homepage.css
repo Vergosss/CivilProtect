@@ -37,7 +37,8 @@
 }
 
 .register-rescuer form input[type="submit"] {
-    width: 100%;
+    margin-left:auto;
+    margin-right:auto;
     padding: 5px;
    margin-top: 20px;
     background-color:dodgerblue;
@@ -71,12 +72,23 @@ table{
     border-collapse: collapse;
      
 }
+h1{
+    text-align: center;
+}
 #inventory{
-    margin: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    margin-bottom: 30px;
 }
 
 #cargo_table{
-    margin-left:20px;
+    margin-left:auto;
+    margin-right: auto;
+    
+}
+body{
+    background-color:#17c7a1;
 }
 /*******/
 tr:nth-child(odd){
@@ -88,8 +100,16 @@ tr:nth-child(even){
 th {
     color: white;
     font-size: 24px;
+    font-family: 'Courier New', Courier, monospace;
     padding: 10px;
   }/*Ola ta table headers tha exoun prasino xroma kai to keimeno tha exei aspro xroma*/
+
+#filter_categories{
+    margin-left:auto;
+    margin-right:auto;
+    margin-top:30px;
+    margin-bottom: 80px;
+}
 
 #filter_categories th{
     background-color: #435165;
@@ -97,12 +117,16 @@ th {
     font-size: 24px;
     padding: 10px;
 }
-
+#items{
+margin-left:auto;
+margin-right:auto;
+}
 
 td{
     text-align: center; /*ousiastika to text align einai to orizontio align th stixish tou keimenou mesa sto keli*/
     vertical-align: middle  ;/* ston aksona y tou keliou pou vrisketai to keimeno koryfh mesh h kato(default mesh)*/
     font-size: 24px;
+    font-family: 'Courier New', Courier, monospace;
     padding: 10px;
     color:white;
 }
@@ -126,6 +150,9 @@ button{
 }
 .leaflet-popup-content-wrapper,.leaflet-popup-tip{
     background-color:  #435165  /*kanei override to style tou leaflet.css arxeiou*/; 
+    font-size: 18px;
+    color:white;
+    font-family: 'Courier New', monospace;
 }
 .marker_text{
     background-color: #435165;
@@ -165,6 +192,15 @@ button{
 
 }/*to float dilonei oti to periexomeno aytou tou element-olo to element tha metatopistei-epipleysei pros ta deksia tou container tou*/
 /***/
+
+#ekfortosi{
+    margin: 0 auto;
+    position:relative;
+    display: block;
+}
+#fortosi{
+   float:left;
+}
 .logout:hover{
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24);
 }
@@ -178,7 +214,7 @@ button{
     border-radius: 3px;
     cursor: pointer;
     padding: 5px;
-
+    
  }
 .itemupload{
     width: 200px;/*anagastika alios to margin de douleyei*/
@@ -225,6 +261,9 @@ button{
  .category{
     display: flex;
     flex-direction: column;
+    color:white;
+   
+    
  }
  .category > input[type="text"]{
     width: 100px;
@@ -232,11 +271,14 @@ button{
     border: 1px solid #dee0e4;
     margin-bottom: 20px;
     padding: 0 15px;
+    margin-left:auto;
+    margin-right:auto;
  }
  .category > label{
     padding:5px;
     font-size: 18px;
-
+    margin-left:auto;
+    margin-right:auto;
  }
 
  .category > button{
@@ -247,6 +289,8 @@ button{
     font-size: 18px;/*megethos tou keimenou tou koubiou*/
     text-align: center;
     cursor: pointer;
+    margin-left:auto;
+    margin-right:auto;
  }
  /*********/
  .items{
@@ -259,15 +303,19 @@ button{
     border: 1px solid #dee0e4;
     margin-bottom: 20px;
     padding: 0 15px;
+    margin-left:auto;
+    margin-right:auto;
  }
  .items > label{
     padding:5px;
     font-size:18px;
+    text-align: center;
  }
  .items > select{
-    display: inline-block;
-    width:auto;
+    display: block;
     margin-bottom: 20px;
+    margin-left:auto;
+    margin-right: auto;
  }
  /**********************Announcement Items*******/
  .announcement_items{
@@ -285,9 +333,13 @@ button{
     padding:3px;
 }
  .item_select{
-    position: relative;
+    
  }
-
+.item_select select{
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
+}
  /***Announcement form***/
  .submit_announcement{
     display:flex;
@@ -298,6 +350,8 @@ button{
     }
 textarea{
     resize:none;/**na mhn boro na kano resize to textbox kai xalaei to layout**/
+    margin-left:auto;
+    margin-right:auto;
 }
 .submit_announcement button{
     background-color: dodgerblue;
@@ -305,6 +359,10 @@ textarea{
     border-radius: 3px;
     cursor: pointer;
     padding: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left:auto;
+    margin-right:auto;
 }
 .citizen_announcements{
     border: 1px solid black;
@@ -314,22 +372,27 @@ textarea{
     overflow-y: auto ;
 }
 .citizen_announcements div{
-    border: 1px solid black;
+    border: 3px solid black;
+    border-collapse: collapse;
 }
 .citizen_announcements span{
-    font-size: 18px;
+    font-size: 24px;
     padding:5px;
+    font-family: 'Courier New', Courier, monospace;
     
 }
 
 .citizen_announcements p{
-    font-size: 18px;
+    font-size: 24px;
 }
 .item_spans{
     cursor: pointer;
 }
 /***************/
 #offers{
-    margin:auto;
+    margin-left:auto;
+    margin-right:auto;
+    margin-top: 30px;
     padding:50px;
+    margin-bottom:50px;
 }

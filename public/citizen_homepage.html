@@ -25,10 +25,12 @@
   <div class="panel">
     <h2>
       Categories
+    </h2>
       <select name="categories" id="categories"></select>
       <select name="items" id="items"></select>
+      <input type="text" id="request_quantity" name="request_quantity">
       <button type= "button" name="request" id="request">Submit request</button>
-    </h2>
+   
     <table id="requests">
       <thead>
         <tr>
@@ -45,7 +47,7 @@
   </div>
 </div>
 <!--------------------->
-
+<h1>Your Offers</h1>
 <table id="offers">
   <thead>
     <tr>
@@ -73,7 +75,7 @@
     </form>
 
 </dialog>
-
+<h1>Base Announcements</h1>
 <div class="citizen_announcements"></div>
 
 <script>
@@ -171,14 +173,19 @@ request_button.addEventListener('click',Request);
 /*******************Create request************************/
 function Request(){
 //
-let requested_item = document.querySelector("#items").value;
+let requested_item = document.querySelector("#items").innerHTML;
+let requested_quantity = document.querySelector("#request_quantity").value;
+if(isNaN(requested_quantity)) {
+  alert('Quantity must be a number!');
+  return;
+}
 //
 fetch('/request/',{
   method:'POST',
   headers: { 'Content-Type':'application/json' },
   body: JSON.stringify({
     item: requested_item,
-    //quantity:requested_quantity
+    quantity:requested_quantity
     //lat: lat,
     //long: long 
   })
@@ -186,8 +193,7 @@ fetch('/request/',{
 })
 .then(res=>res.json())
 .then(data=>{
-//afou kano insert to request sth vash
-//tote enimerose ton marker
+//
 
 })
 .catch(error=>{console.log('Error: ',error);})
@@ -471,7 +477,8 @@ function changeOfferValue(){
 function loadCategories(categories){
 
 const categories_menu = document.querySelector('#categories');
-
+//
+categories_menu.innerHTML = "";
 for(let cat of categories){
 let option = document.createElement('option');
 option.innerHTML = cat['category_name'];
@@ -479,19 +486,41 @@ option.value = cat['id'];
 categories_menu.appendChild(option);//prosthese kathe option sto select menu
 }
 
-
+categories_menu.addEventListener('change',filterItems);
 //
 }
+/***********************************/
+function filterItems(){
+  //pare thn kathgoria pou epelekses apo to select
+  let category = document.querySelector("#categories").value;
+  //vash ayths filtrare ta values tou deyterou select diladi ta items
+  const item_options = document.querySelectorAll('#items option');
+  //
+  for(let option of item_options){
+    if(option.value == category){
+      option.style.display = "";
+    }
+    else{
+      option.style.display = "none";
+    }
+  }
+
+  //
+}
+
 /******Fortosi proionton oste na ta vlepei o poliths***/
 
 function loadItems(items){
 //
 const items_menu = document.querySelector('#items');
+//
+items_menu.innerHTML.innerHTML = "";
+//
   //
   for(let item of items){
     let option = document.createElement('option');
     option.innerHTML = item['name'];
-    option.value = item['name'];
+    option.value = item['category'];
     items_menu.appendChild(option);
   }
 

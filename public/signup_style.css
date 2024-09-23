@@ -1,7 +1,10 @@
 body {
     background-color: #435165;
 }
-
+#map{
+    margin-left: auto;
+    margin-right: auto;
+}
 .signup {
     width: 400px;
     background-color: #ffffff;

@@ -60,10 +60,12 @@
 
 
 <!-------------------Pinakas me items apothiki,oximata----------------------->
+<h1>You can filter the inventory and Cargos here</h1>
 <table id="filter_categories">
 
 </table>
 <!------------------------>
+<h1>Inventory and all Rescuer Cargos</h1>
   <table id="items">
     <thead>
       <tr>
@@ -80,7 +82,7 @@
     
     </table>
     <!----------------------->
-
+    <h1>Add an Item Category</h1>
     <form class="category">
 
       <label for="category_name">Category Name:</label>
@@ -89,7 +91,7 @@
       
       </form>
       <!---------------------->
-
+      <h1>Add an Item</h1>
       <form class="items">
 
         <label for="item_name">Item Name:</label>
@@ -100,6 +102,7 @@
         </select>
         </form>
 <!--------Ousiastika edo tha boun oi anakoinoseis multiple dropdown ------------------->
+      <h1>Create an Announcement</h1>
       <form class="submit_announcement"> 
         <div class="announcement">
           <div class="item_select">
@@ -141,7 +144,34 @@ map.setView([38.24,21.73],16);//orizo tis syntetagmenes tou shmeiou sto opoio th
 var filter = L.control.layers();
 filter.addTo(map);
 //
+//thelei to RELATIVE path
+var unliftedOfferIcon = new L.Icon({
+  iconUrl: '/public/img/offerunlifted.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
 
+});
+//
+var liftedOfferIcon = new L.Icon({
+  iconUrl: '/public/img/offerLifted.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+//
+var violetIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
 //
 var redIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
@@ -201,7 +231,10 @@ base.addTo(map);//prostheto ton marker ston xarth
 //
 var lifted_requests = L.layerGroup();
 var unlifted_requests = L.layerGroup();
+var offers = L.layerGroup();
 var lines = L.layerGroup();
+var busy_vehicles = L.layerGroup();
+var free_vehicles = L.layerGroup();
 /**** os admin vlepo th vash****/
 fetch('/get_base/')
 .then(res=>{return res.json();})
@@ -265,7 +298,7 @@ return username;
 for(let user in grouped_vehicles){
 let vehicle_marker = L.marker([grouped_vehicles[user][0]['ST_X(cords)'],grouped_vehicles[user][0]['ST_Y(cords)']],{draggable:false,icon:redIcon,name:user});
 let popup = document.createElement('div');
-popup.innerHTML = `Vehicle username : ${user}<br>Cargo:`;
+popup.innerHTML = `Vehicle username : ${user}<br><br>Cargo:<br>`;
 //
 popup.style['max-height'] = "200px";
 popup.style['overflow-y'] = "auto";
@@ -356,13 +389,13 @@ popup.style['overflow-y'] = "auto";
 //
 for (let request of grouped_requests[user]){
 let request_div = document.createElement('div');
-request_div.innerHTML = `Name : ${request['citizen_first_name']},${request['citizen_last_name']}<br>Telephone: ${request['citizen_telephone']}<br>Entry: ${((new Date(request['entry_date'])).toLocaleString('el-GR')).replace(',',' ')}<br>Item: ${request['item']}<br>Quantity: ${request['quantity']}<br>Type: ${request['type']}`;
+request_div.innerHTML = `Name : ${request['citizen_first_name']},${request['citizen_last_name']}<br>Telephone: ${request['citizen_telephone']}<br>Entry: ${((new Date(request['entry_date'])).toLocaleString('el-GR')).replace(',',' ')}<br>Item: ${request['item']}<br>Quantity: ${request['quantity']}<br>Type: ${request['type']}<br>`;
 //
 request_div.setAttribute('class','marker_text');
 
 
-if(request['lifted']){
-  request_div.innerHTML += `Withdrawal date: ${new Date(request['withdrawal_date']).toLocaleString('el-GR').replace(',',' ')}<br>Vehicle: ${request['vehicle_username']}`;
+if(request['lifted'] && request['type'] == 'Request'){
+  request_div.innerHTML += `<br>Withdrawal date: ${new Date(request['withdrawal_date']).toLocaleString('el-GR').replace(',',' ')}<br>Vehicle: ${request['vehicle_username']}<br>`;
   request_marker.setIcon(yellowIcon);
   //
   let cords = [[request['ST_X(cords)'],request['ST_Y(cords)']],[get_vehicle(request['vehicle_username']).lat,get_vehicle(request['vehicle_username']).lng]];
@@ -370,6 +403,20 @@ if(request['lifted']){
   //line.addTo(map);//sundese to aithma pou exei analifthei me ton diasosti tou
   lines.addLayer(line);
 }
+else if(request['type'] == 'Offer'){
+  request_marker.setIcon(unliftedOfferIcon); //to unlifted offer ti xroma tha exei
+  if(request['lifted']){
+    //to lifted offer tha diaferei apo to unlifted os pros to xroma
+  request_marker.setIcon(liftedOfferIcon); 
+  request_div.innerHTML += `<br>Withdrawal date: ${new Date(request['withdrawal_date']).toLocaleString('el-GR').replace(',',' ')}<br>Vehicle: ${request['vehicle_username']}`;
+  let cords = [[request['ST_X(cords)'],request['ST_Y(cords)']],[get_vehicle(request['vehicle_username']).lat,get_vehicle(request['vehicle_username']).lng]];
+  let line = L.polyline(cords,{color:'green'});
+  //line.addTo(map);//sundese to aithma pou exei analifthei me ton diasosti tou
+  lines.addLayer(line);
+  }
+}
+
+//
 popup.appendChild(request_div);
 //
 
