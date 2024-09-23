@@ -173,13 +173,15 @@ request_button.addEventListener('click',Request);
 /*******************Create request************************/
 function Request(){
 //
-let requested_item = document.querySelector("#items").innerHTML;
+let requested_item = JSON.parse(document.querySelector("#items").value).name;//
+console.log(requested_item);
 let requested_quantity = document.querySelector("#request_quantity").value;
 if(isNaN(requested_quantity)) {
   alert('Quantity must be a number!');
   return;
 }
 //
+return;
 fetch('/request/',{
   method:'POST',
   headers: { 'Content-Type':'application/json' },
@@ -497,7 +499,8 @@ function filterItems(){
   const item_options = document.querySelectorAll('#items option');
   //
   for(let option of item_options){
-    if(option.value == category){
+    
+    if(JSON.parse(option.value).category == category){
       option.style.display = "";
     }
     else{
@@ -520,7 +523,11 @@ items_menu.innerHTML.innerHTML = "";
   for(let item of items){
     let option = document.createElement('option');
     option.innerHTML = item['name'];
-    option.value = item['category'];
+    //borei na parei px ena object typou {'name': val,'category':value}
+    const value_data = `{"name":"${item['name']}","category":"${item['category']}"}`;
+    //
+    option.value = value_data;
+    //
     items_menu.appendChild(option);
   }
 

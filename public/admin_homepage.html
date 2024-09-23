@@ -811,15 +811,11 @@ graph_button.addEventListener('click',getGraphs);
 //
 function getGraphs(){
 let first_date = document.querySelector("#first").value;
+let second_date = document.querySelector("#second").value;
 console.log(first_date); 
-if(first_date){
- 
-//send the date to DB
-sendDates(first_date);
-}
-else{
-  alert('Invalid Date!');
-}
+//
+console.log(second_date);
+
 }
 /*******************/
 function sendDates(start,end){
@@ -829,7 +825,8 @@ fetch('/get_dates/',{
   headers: { 'Content-Type':'application/json' },
   body: JSON.stringify(
     {
-      start:start
+      start:start,
+      end:end
     }
   
   )
