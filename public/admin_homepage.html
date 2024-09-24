@@ -780,7 +780,7 @@ fetch('/graph/')
 .catch(error=>{console.log('Error: ',error);})
 
 function Graph(requests){
-const ctx = document.querySelector("#graph");
+const ctx = document.querySelector("#graph");//perno ton canva
 //
 if(Chart.getChart(ctx)) Chart.getChart(ctx).destroy();//an o canvas exei kapoio chart kane to destroy adeiase ton diladi
 //
@@ -789,12 +789,13 @@ const chart = new Chart(ctx,{
   data: {
     labels: requests.map(req=> (new Date(req.Date)).toLocaleDateString()), //o aksonas x ousiastika(oi times tou)
     datasets:[{
-      label: 'Request count per day',
+      label: 'New Request count per day',
       data: requests.map(req=>req.requests), // o aksonas y ousiastika(oi times tou)
-      backgroundColor: 'rgba(70, 192, 192, 0.6)',//xroma ths baras(esoteriko)
+      backgroundColor: 'Red',//xroma ths baras(esoteriko)
       borderColor: 'rgba(150, 100, 255, 1)',//xroma perigrammatos baras
       borderWidth: 1//eyros(paxos ths baras)
-    }]
+    }
+  ]
   },
   options: {}
 }); 
@@ -815,7 +816,7 @@ let second_date = document.querySelector("#second").value;
 console.log(first_date); 
 //
 console.log(second_date);
-
+sendDates(first_date,second_date);
 }
 /*******************/
 function sendDates(start,end){

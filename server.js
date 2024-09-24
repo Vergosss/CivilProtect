@@ -895,12 +895,20 @@ app.get('/graph/',(req,res)=>{
 //
 
 //
-app.post('/get_dates/',(req,res)=>{
+app.post('/get_dates/',async (req,res)=>{
 	let start = req.body.start;
-	connection.query('SELECT DATE(entry_date) as Date,count(request_id) as requests FROM Request WHERE DATE(entry_date)=? group by DATE(entry_date)',[start],(error,results)=>{
-		if(error) throw error;
-		res.send(results);
-	});
+	let new_requests;
+	let new_offers;
+	try{
+	let [results] = await connection.promise().query('SELECT DATE(entry_date) as Date,count(request_id) as requests FROM Request WHERE DATE(entry_date)>? AND type="Request" group by DATE(entry_date)',[start]);
+	new_requests = results;
+	res.send(new_requests);
+	}	
+	catch(error){
+		console.log('Error: ',error);
+	}
+
+	//
 });
 
 //
