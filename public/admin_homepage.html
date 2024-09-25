@@ -530,7 +530,7 @@ console.log(bodies);
 //
 for(let body of bodies){
 
-  if(!current_values.length){
+  if(!current_values.length){//an einai ola untickarismena tote emfanizontai ola ta items
     for(let row of body.rows) row.style.display="";
   }
   else{
@@ -771,27 +771,49 @@ function registerRescuer(event){
 .catch(error=>{console.log('Error: ',error);})
 
 }
-/************************Chart********/
+
+
+
+
+/************************Chart-Arxika kapoia grafimata********/
 fetch('/graph/')
 .then(res=>res.json())
 .then(requests=>{
-  Graph(requests);
+  //Graph(requests);
 })
 .catch(error=>{console.log('Error: ',error);})
 
+
+
+/************Synarthsh pou paragei ta grafimata**********/
 function Graph(requests){
 const ctx = document.querySelector("#graph");//perno ton canva
 //
+let new_requests = requests[0];
+let new_offers = requests[1];
+let completed_requests = requests[2];
+let completed_offers = requests[3];
+//
 if(Chart.getChart(ctx)) Chart.getChart(ctx).destroy();//an o canvas exei kapoio chart kane to destroy adeiase ton diladi
 //
+/*
 const chart = new Chart(ctx,{
   type: 'bar',
   data: {
-    labels: requests.map(req=> (new Date(req.Date)).toLocaleDateString()), //o aksonas x ousiastika(oi times tou)
+   //o aksonas x ousiastika(oi times tou)
     datasets:[{
-      label: 'New Request count per day',
-      data: requests.map(req=>req.requests), // o aksonas y ousiastika(oi times tou)
+      label: 'New Requests',
+      labels: new_requests.map(req=> (new Date(req.Date)).toLocaleDateString()),
+      data: new_requests.map(req=>req.requests), // o aksonas y ousiastika(oi times tou)
       backgroundColor: 'Red',//xroma ths baras(esoteriko)
+      borderColor: 'rgba(150, 100, 255, 1)',//xroma perigrammatos baras
+      borderWidth: 1//eyros(paxos ths baras)
+    },
+    {
+      label: 'New Offers',
+      labels: new_offers.map(offr=> (new Date(offr.Date)).toLocaleDateString()),
+      data: new_offers.map(offr=>offr.offers), // o aksonas y ousiastika(oi times tou)
+      backgroundColor: 'Yellow',//xroma ths baras(esoteriko)
       borderColor: 'rgba(150, 100, 255, 1)',//xroma perigrammatos baras
       borderWidth: 1//eyros(paxos ths baras)
     }
@@ -800,10 +822,35 @@ const chart = new Chart(ctx,{
   options: {}
 }); 
 //
+*/
+const chart = new Chart(ctx,{
+  type: 'doughnut',
+  data: {
+    labels:[
+    'Red',
+    'Yellow',
+    'Green',
+    'Blue'
+    ]
+    ,
+   //o aksonas x ousiastika(oi times tou)
+    datasets:[{
+      label: 'New Requests',
+      data: [(new_requests.map(req=>req.requests)).reduce((sum,current)=>sum+current,0),(new_offers.map(offr=>offr.offers)).reduce((sum,current)=>sum+current,0),(completed_requests.map(req=>req.requests)).reduce((sum,current)=>sum+current,0),(completed_offers.map(offr=>offr.offers)).reduce((sum,current)=>sum+current,0)], // o aksonas y ousiastika(oi times tou)
+      backgroundColor: ['Red','Yellow','Green','Blue'],//xroma ths baras(esoteriko)
+      borderColor: 'rgba(150, 100, 255, 1)',//xroma perigrammatos baras
+      //borderWidth: 1//eyros(paxos ths baras)
+    }
+  ]
+  },
+  options: {}
+}); 
+
+
 
 }
 //
-
+/******************************/
 //
 
 //

@@ -899,10 +899,25 @@ app.post('/get_dates/',async (req,res)=>{
 	let start = req.body.start;
 	let new_requests;
 	let new_offers;
+	let completed_requests;
+	let completed_offers;
 	try{
 	let [results] = await connection.promise().query('SELECT DATE(entry_date) as Date,count(request_id) as requests FROM Request WHERE DATE(entry_date)>? AND type="Request" group by DATE(entry_date)',[start]);
 	new_requests = results;
-	res.send(new_requests);
+	
+	//
+	[results] = await connection.promise().query('SELECT DATE(entry_date) as Date,count(request_id) as offers FROM Request WHERE DATE(entry_date)>? AND type="Offer" group by DATE(entry_date)',[start]);
+	new_offers=results;
+	//
+	[results] = await connection.promise().query('SELECT DATE(complete_date) as Date,count(task_id) as requests FROM Task WHERE DATE(complete_date)>? AND type="Request" AND completed=1 group by DATE(complete_date)',[start]);
+	//
+	completed_requests = results;
+	//
+	[results] = await connection.promise().query('SELECT DATE(complete_date) as Date,count(task_id) as offers FROM Task WHERE DATE(complete_date)>? AND type="Offer" AND completed=1 group by DATE(complete_date)',[start]);
+	//
+	completed_offers = results;
+	//
+	res.send([new_requests,new_offers,completed_requests,completed_offers]);
 	}	
 	catch(error){
 		console.log('Error: ',error);
