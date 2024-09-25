@@ -42,6 +42,20 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());//xoris ayto den kodikopoiountan ta dedomena kai gyrnage undefined cords sto backend
 //
 //route gia thn homepage
+function LoggedIn(req,res,next){
+	if(req.session.username){
+		//an eisai loggedin synexise sto epomeno middleware
+		return next(); // to return termatizei
+	}
+	else{
+		res.redirect('/');
+	}
+}
+//
+app.get('/route/',LoggedIn,(req,res)=>{
+	console.log('Testing...');
+});
+//
 app.get(['/','/login'],(req,res)=>{
 
 res.sendFile(__dirname + '\\public\\login.html');
