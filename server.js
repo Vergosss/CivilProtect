@@ -140,6 +140,7 @@ if(req.session.username){
 	console.log('Goodbye!');
 	req.session.destroy(error=>{
 	if(error) throw error;
+	role = null;//afou kaname logout den yparxei rolos
 	res.redirect('/');
 	});
 }

@@ -30,13 +30,18 @@
 
         <div id="map" class="map" style="width: 800px; height : 200px"></div>
 <script>
+  //
 let map = L.map('map');
 let tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
    });//vazo ta tiles tou OSM
 tiles.addTo(map);//prostheto ta tiles tou OSM ston xarti
 map.setView([38.24,21.73],16);//orizo tis syntetagmenes tou shmeiou sto opoio tha kentrarei o xarths kai to zoom level
+
+
 //ftiaxno enan marker
+
+
 let marker = L.marker([38.24,21.73],{draggable:true});
 marker.bindPopup('Move this marker to your location');// 'syndeo' ton marker me to popup
 marker.addTo(map);//prostheto ton marker ston xarth
