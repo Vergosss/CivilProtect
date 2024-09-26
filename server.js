@@ -152,12 +152,12 @@ else{
 //
 
 //
-app.get('/signup',(req,res)=>{
+app.get('/signup/',(req,res)=>{
 	res.sendFile(__dirname + '\\public\\signup.html');  
 	});
 
 //
-app.post('/signup',(req,res)=>{
+app.post('/signup/',(req,res)=>{
 
 	let reg_username = req.body.username;
 	let reg_password = req.body.password;   
@@ -173,14 +173,16 @@ app.post('/signup',(req,res)=>{
 	bcrypt.hash(reg_password,10,(error,hash)=>{
 	if(error) throw error;
 	//h hash periexei ton hasharismeno kodiko
-	connection.query('INSERT INTO User(username,password,first_name,last_name,telephone,cords,role) VALUES (?,?,?,?,?,POINT(?,?),"Citizen")',[reg_username,hash,reg_first_name,reg_last_name,reg_telephone,reg_latitude,reg_longitude],(error,result)=>{
+	connection.query('INSERT IGNORE INTO User(username,password,first_name,last_name,telephone,cords,role) VALUES (?,?,?,?,?,POINT(?,?),"Citizen")',[reg_username,hash,reg_first_name,reg_last_name,reg_telephone,reg_latitude,reg_longitude],(error,result)=>{
 	
 		if(error) throw error;
 		if(result.affectedRows>0){
 		res.send('Successfully registered!');//boro na to kano res.json kai meta alert
+		//res.json({msg:'Successfully Registered!'});
 		}
 		else{
 		res.send('User already in database');
+		//res.json({msg:'Username not available!'});
 		}
 		
 		});
