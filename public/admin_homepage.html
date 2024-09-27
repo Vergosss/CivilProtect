@@ -208,6 +208,21 @@ var yellowIcon = new L.Icon({
   popupAnchor: [1, -34],
   shadowSize: [41, 41]
 });
+
+
+var orangeIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
+
+
+
+
 /*******gia na kano eggrafi ton rescuer***/
 let rescuer_marker = L.marker([38.24,21.73],{draggable:true,icon:blackIcon});
 rescuer_marker.bindPopup('Register');
@@ -290,28 +305,7 @@ let vehicles = L.layerGroup();
 fetch('/get_vehicles/')
 .then(res=>{return res.json();})
 .then(Vehicles=>{
-const grouped_vehicles = Object.groupBy(Vehicles,function({username}){
-return username;
-});
-//
-
-for(let user in grouped_vehicles){
-let vehicle_marker = L.marker([grouped_vehicles[user][0]['ST_X(cords)'],grouped_vehicles[user][0]['ST_Y(cords)']],{draggable:false,icon:redIcon,name:user});
-let popup = document.createElement('div');
-popup.innerHTML = `Vehicle username : ${user}<br><br>Cargo:<br>`;
-//
-popup.style['max-height'] = "200px";
-popup.style['overflow-y'] = "auto";
-//
-for(let vec of grouped_vehicles[user]){
-  popup.innerHTML += `${vec['item']} : ${vec['quantity']}<br>`;
-}
-vehicle_marker.bindPopup(popup);
-vehicles.addLayer(vehicle_marker);
-}
-//
-vehicles.addTo(map);
-filter.addOverlay(vehicles,"Vehicles");
+display_Vehicles(Vehicles);
 //
 return fetch('/fetch_requests/');
 })
@@ -367,7 +361,58 @@ starting_long = base.getLatLng().lng;
 console.log(starting_lat,starting_long);
 });
 /****************/
+function display_Vehicles(Vehicles){
+let task_free_vehicles = Vehicles[0];
 
+const free_grouped_vehicles = Object.groupBy(task_free_vehicles,function({username}){
+return username;
+});
+//
+for(let user in free_grouped_vehicles){
+let vehicle_marker = L.marker([free_grouped_vehicles[user][0]['ST_X(cords)'],free_grouped_vehicles[user][0]['ST_Y(cords)']],{draggable:false,icon:orangeIcon,name:user});
+let popup = document.createElement('div');
+popup.innerHTML = `Vehicle username : ${user}<br><br>Cargo:<br>`;
+//
+popup.style['max-height'] = "200px";
+popup.style['overflow-y'] = "auto";
+//
+for(let vec of free_grouped_vehicles[user]){
+  popup.innerHTML += `${vec['item']} : ${vec['quantity']}<br>`;
+}
+vehicle_marker.bindPopup(popup);
+free_vehicles.addLayer(vehicle_marker);
+}
+//
+free_vehicles.addTo(map);
+filter.addOverlay(free_vehicles,"Free Vehicles");
+//
+/******************************/
+let task_busy_vehicles = Vehicles[1];
+
+const busy_grouped_vehicles = Object.groupBy(task_busy_vehicles,function({username}){
+return username;
+});
+//
+for(let user in busy_grouped_vehicles){
+let vehicle_marker = L.marker([busy_grouped_vehicles[user][0]['ST_X(cords)'],busy_grouped_vehicles[user][0]['ST_Y(cords)']],{draggable:false,icon:redIcon,name:user});
+let popup = document.createElement('div');
+popup.innerHTML = `Vehicle username : ${user}<br><br>Cargo:<br>`;
+//
+popup.style['max-height'] = "200px";
+popup.style['overflow-y'] = "auto";
+//
+for(let vec of busy_grouped_vehicles[user]){
+  popup.innerHTML += `${vec['item']} : ${vec['quantity']}<br>`;
+}
+vehicle_marker.bindPopup(popup);
+busy_vehicles.addLayer(vehicle_marker);
+}
+//
+busy_vehicles.addTo(map);
+filter.addOverlay(busy_vehicles,"Busy Vehicles");
+//
+}
+//
 
 //
 /**********/
@@ -438,7 +483,7 @@ filter.addOverlay(lines,'Connections');
 function get_vehicle(vehicle_username){
   //pairno ta cords tou oximatos me aytes tis syntetagmenes
 let cords;
-vehicles.eachLayer(marker=>{
+busy_vehicles.eachLayer(marker=>{//edo einai to thema
 if(marker.options.name == vehicle_username){
   cords = marker.getLatLng();
 }

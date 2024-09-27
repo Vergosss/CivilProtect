@@ -508,19 +508,19 @@ res.send(results);
 //
 app.get('/get_vehicles/', async(req,res)=>{
 //
-let all_tasks;
-//
-connection.query('SELECT User.username,ST_X(cords),ST_Y(cords),item,quantity FROM User inner join Cargo on User.username = Cargo.username WHERE role="Rescuer"',(error,results)=>{
-if(error) throw error;
-res.send(results);
 
-});
+let task_free_vehicles;
 //
-
-[results] = await connection.promise().query('SELECT vehicle_username,count(request_id) as number FROM Request where lifted=1 group by vehicle_username');
-all_tasks = results;
+let task_busy_vehicles;
 //
-//res.send();
+let [results] = await connection.promise().query('SELECT User.username,ST_X(cords),ST_Y(cords),item,quantity FROM User inner join Cargo on User.username = Cargo.username WHERE role="Rescuer" AND User.username IN(SELECT distinct vehicle_username from Request where vehicle_username is not null)');
+//
+task_busy_vehicles = results;
+//
+[results] = await connection.promise().query('SELECT User.username,ST_X(cords),ST_Y(cords),item,quantity FROM User inner join Cargo on User.username = Cargo.username WHERE role="Rescuer" AND User.username NOT IN(SELECT distinct vehicle_username from Request where vehicle_username is not null)');
+task_free_vehicles = results;
+//
+res.send([task_free_vehicles,task_busy_vehicles]);
 
 });
 //
@@ -822,8 +822,8 @@ let new_requests;
 		
 		}
 		else if(type == 'Offer') {
-			[results] = await connection.promise().query('UPDATE Cargo SET quantity=quantity + ? WHERE username=? AND item=?',[quantity,req.session.username,item]);
-			
+			[results] = await connection.promise().query('INSERT INTO Cargo(username,item,quantity) VALUES(?,?,?) ON DUPLICATE KEY UPDATE quantity=quantity + VALUES(quantity)',[req.session.username,item,quantity]);
+			//idanika epeidh borei na mhn exei sto cargo tou to item epeidh milame gia prosfora kalytera 
 			if(results.affectedRows>0){
 				console.log('Update Succesfull');
 			}
