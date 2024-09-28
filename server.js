@@ -1051,5 +1051,5 @@ app.get('/receive_offers/',async (req,res)=>{
 //
 module.exports = app;//an thelo na kano import se allo JS arxeio ton parapano kodika
 app.listen(port,() => {
-    console.log(`Example app listening on port ${port}!`);
+    console.log(`Listening on port ${port}!`);
   });

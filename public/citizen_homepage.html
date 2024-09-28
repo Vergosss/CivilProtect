@@ -176,7 +176,7 @@ function Request(){
 let requested_item = JSON.parse(document.querySelector("#items").value).name;//
 console.log(requested_item);
 let requested_quantity = document.querySelector("#request_quantity").value;
-if(isNaN(requested_quantity) || requested_quantity<=0 || !(Number.isInteger(requested_quantity))) {
+if(isNaN(requested_quantity) || requested_quantity<=0 || !(Number.isInteger(Number(requested_quantity)))) {
   alert('Quantity must be a positive number!');
   return;
 }
@@ -439,7 +439,7 @@ const citizen_announcements = document.querySelector(".citizen_announcements");
 /**********************Offer function********************************/
 
 function Offer(){
-if(this.returnValue == 'cancel' || isNaN(this.returnValue) || this.returnValue <=0)
+if(this.returnValue == 'cancel' || isNaN(this.returnValue) || this.returnValue <=0 || !(Number.isInteger(Number(this.returnValue))))//edo epeidh den einai .value to returnvalue einai string kai h isinteger('1') epistrefei false
 {
 alert('Offered amount must be a positive integer!');
 return;
@@ -493,7 +493,7 @@ option.value = cat['id'];
 categories_menu.appendChild(option);//prosthese kathe option sto select menu
 }
 
-categories_menu.addEventListener('change',filterItems);
+categories_menu.addEventListener('input',filterItems);//isos kai oninput
 //
 }
 /***********************************/
