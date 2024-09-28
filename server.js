@@ -45,7 +45,7 @@ app.use(express.json());//xoris ayto den kodikopoiountan ta dedomena kai gyrnage
 function LoggedIn(req,res,next){
 	if(req.session.username){
 		//an eisai loggedin synexise sto epomeno middleware
-		return next(); // to return termatizei
+		return next(); // to return termatizei ton kodika ayths synarthshs-middlewarre-exyphreth
 	}
 	else{
 		res.redirect('/');
@@ -194,7 +194,7 @@ app.post('/signup/',(req,res)=>{
 	
 	});
 //
-app.post('/register_rescuer/',(req,res)=>{
+app.post('/register_rescuer/',LoggedIn,(req,res)=>{
 
 	let reg_username = req.body.username;
 	let reg_password = req.body.password;   
@@ -225,7 +225,7 @@ app.post('/register_rescuer/',(req,res)=>{
 
 });
 
-app.get('/get_items/',(req,res)=>{
+app.get('/get_items/',LoggedIn,(req,res)=>{
 
 	connection.query('SELECT * FROM Item',(error,results)=>{
 
@@ -234,7 +234,7 @@ app.get('/get_items/',(req,res)=>{
 	})
 });
 //
-app.post('/request/',(req,res)=>{
+app.post('/request/',LoggedIn,(req,res)=>{
 	let item = req.body.item;
 	let quantity = req.body.quantity;
 	let citizen_first_name,citizen_last_name,citizen_telephone;
@@ -266,14 +266,14 @@ app.post('/request/',(req,res)=>{
 	
 });
 //
-app.get('/get_categories/',(req,res)=>{
+app.get('/get_categories/',LoggedIn,(req,res)=>{
 	connection.query('SELECT * FROM Category',(error,results)=>{
 		if(error) throw error;
 		res.send(results);
 	});
 });
 //
-app.post('/add_category/',(req,res)=>{
+app.post('/add_category/',LoggedIn,(req,res)=>{
 	let category = req.body.category;
 
 	connection.query('INSERT IGNORE INTO Category(category_name) VALUES(?)',[category],(error,results)=>{
@@ -299,7 +299,7 @@ app.get('/coordinates/', (req,res)=>{
 });
 
 //
-app.get('/get_coordinates/',(req,res)=>{
+app.get('/get_coordinates/',LoggedIn,(req,res)=>{
 
 connection.query('SELECT ST_X(cords),ST_Y(cords) FROM User WHERE username=?',[req.session.username],(error,results)=>{
 if(error) throw error;
@@ -467,7 +467,7 @@ app.post('/update_products/',async (req,res)=>{
 });
 
 //
-app.get('/get_base/',(req,res)=>{
+app.get('/get_base/',LoggedIn,(req,res)=>{
 
 connection.query('SELECT ST_X(cords),ST_Y(cords) FROM Base',(error,results)=>{
 
@@ -477,7 +477,7 @@ res.send(results);
 });
 });
 //
-app.post('/change_base/',(req,res)=>{
+app.post('/change_base/',LoggedIn,(req,res)=>{
 
 let latitude = req.body.latitude;
 let longitude = req.body.longitude;
@@ -496,7 +496,7 @@ console.log('Base cords didnt change');
 
 });
 //
-app.get('/get_vehicle/',(req,res)=>{
+app.get('/get_vehicle/',LoggedIn,(req,res)=>{
 
 connection.query('SELECT ST_X(cords),ST_Y(cords) FROM User WHERE role="Rescuer" AND username=?',[req.session.username],(error,results)=>{
 if(error) throw error;
@@ -506,7 +506,7 @@ res.send(results);
 
 });
 //
-app.get('/get_vehicles/', async(req,res)=>{
+app.get('/get_vehicles/',LoggedIn,async(req,res)=>{
 //
 
 let task_free_vehicles;
@@ -524,7 +524,7 @@ res.send([task_free_vehicles,task_busy_vehicles]);
 
 });
 //
-app.post('/update_vehicle/',(req,res)=>{
+app.post('/update_vehicle/',LoggedIn,(req,res)=>{
 let latitude = req.body.latitude;
 let longitude = req.body.longitude;
 let username = req.session.username;
@@ -544,7 +544,7 @@ else{
 
 });
 //
-app.get('/get_requests/',(req,res)=>{
+app.get('/get_requests/',LoggedIn,(req,res)=>{
 
 	connection.query('SELECT request_id,username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,ST_X(cords),ST_Y(cords),lifted,type FROM Request WHERE lifted=false OR vehicle_username=?',[req.session.username],(error,results)=>{
 		if(error) throw error;
@@ -552,7 +552,7 @@ app.get('/get_requests/',(req,res)=>{
  	});
 });
 //
-app.get('/fetch_requests/',(req,res)=>{
+app.get('/fetch_requests/',LoggedIn,(req,res)=>{
 //o admin vlepei ola ta requests opote to query ta gyrizei ola
 	connection.query('SELECT username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,withdrawal_date,vehicle_username,ST_X(cords),ST_Y(cords),lifted,type FROM Request',(error,results)=>{
 		if(error) throw error;
@@ -561,7 +561,7 @@ app.get('/fetch_requests/',(req,res)=>{
 });
 //
 //
-app.get('/receive_requests/',async (req,res)=>{
+app.get('/receive_requests/',LoggedIn,async (req,res)=>{
 //
 //
 let untaken_requests;
@@ -588,14 +588,14 @@ catch(error){
 
 });
 //
-app.get('/load_inventory/',(req,res)=>{
+app.get('/load_inventory/',LoggedIn,(req,res)=>{
 	connection.query('SELECT * FROM Inventory',(error,results)=>{
 		if(error) throw error;
 		res.send(results);
 	});
 });
 //
-app.post('/update_inventory/',async (req,res)=>{
+app.post('/update_inventory/',LoggedIn,async (req,res)=>{
 
 	let cargo_deload = req.body;
 	let new_inventory;
@@ -640,7 +640,7 @@ app.post('/update_inventory/',async (req,res)=>{
 	
 	});
 //
-app.get('/load_cargo/',(req,res)=>{
+app.get('/load_cargo/',LoggedIn,(req,res)=>{
 	connection.query('SELECT item,quantity FROM Cargo WHERE username=? AND quantity>0',[req.session.username],(error,results)=>{
 		if(error) throw error;
 		res.send(results);
@@ -648,7 +648,7 @@ app.get('/load_cargo/',(req,res)=>{
 });
 
 //
-app.post('/update_cargo/',async (req,res)=>{
+app.post('/update_cargo/',LoggedIn,async (req,res)=>{
 //enimerosi tou fortiou tou diasosti
 //sto inventory key = username,item alios kanei ksana px iasonasmakris-water
 	let cargo_load = req.body;
@@ -695,7 +695,7 @@ app.post('/update_cargo/',async (req,res)=>{
 
 });
 //
-app.get('/get_inventory_cargos/',async (req,res)=>{
+app.get('/get_inventory_cargos/',LoggedIn,async (req,res)=>{
 let inventory;
 let cargos;
 try{
@@ -716,7 +716,7 @@ console.log('Error: ',error);
 //
 });
 //
-app.get('/get_current_categories/',(req,res)=>{
+app.get('/get_current_categories/',LoggedIn,(req,res)=>{
 //
 connection.query('select category,category_name from Cargo inner join Category on Cargo.category=Category.id WHERE quantity>0 UNION select category,category_name from Inventory inner join Category on Inventory.category=Category.id WHERE quantity>0',(error,results)=>{
 	//eksasfalizo me to union oti mono distinct katigories tha emfanistoun kai oti an sta cargos-apothiki yparxei item me mhdenikh posotita kai den yparxei
@@ -727,7 +727,7 @@ connection.query('select category,category_name from Cargo inner join Category o
 //
 });
 //
-app.post('/create_task/',async (req,res)=>{
+app.post('/create_task/',LoggedIn,async (req,res)=>{
 let username = req.body.username;
 let task_id = req.body.request_id;
 let first_name = req.body.first_name;
@@ -779,7 +779,7 @@ catch(error){
 
 //
 
-app.post('/complete_task/',async (req,res)=>{
+app.post('/complete_task/',LoggedIn,async (req,res)=>{
 let tid = req.body.tid;
 let item = req.body.item;
 let quantity = req.body.quantity;
@@ -850,7 +850,7 @@ let new_requests;
 //kodikas gia delete tou antistixou request
 });
   //na alaxthei oste na gyrna ta mh olokliromena pou exei analavei AYTOS
-app.get('/get_tasks/',(req,res)=>{
+app.get('/get_tasks/',LoggedIn,(req,res)=>{
 connection.query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username,type FROM Task WHERE completed=false AND vehicle_username=?',[req.session.username],(error,results)=>{
 if(error) throw error;
 res.send(results);
@@ -859,7 +859,7 @@ res.send(results);
 });
 
 //
-app.post('/cancel_task/',async (req,res)=>{
+app.post('/cancel_task/',LoggedIn,async (req,res)=>{
 	let tid = req.body.tid;
 	let new_tasks;
 	let new_requests;
@@ -905,7 +905,7 @@ catch(error){
 //
 });
 //
-app.get('/graph/',(req,res)=>{
+app.get('/graph/',LoggedIn,(req,res)=>{
 	connection.query('SELECT DATE(entry_date) as Date,count(request_id) as requests FROM Request group by DATE(entry_date)',(error,results)=>{
 		res.send(results);
 	});
@@ -914,7 +914,7 @@ app.get('/graph/',(req,res)=>{
 //
 
 //
-app.post('/get_dates/',async (req,res)=>{
+app.post('/get_dates/',LoggedIn,async (req,res)=>{
 	let start = req.body.start;
 	let new_requests;
 	let new_offers;
@@ -946,7 +946,7 @@ app.post('/get_dates/',async (req,res)=>{
 });
 
 //
-app.post('/create_announcement/',(req,res)=>{
+app.post('/create_announcement/',LoggedIn,(req,res)=>{
 
 	let text = req.body.text;
 	let items = req.body.items;
@@ -964,7 +964,7 @@ app.post('/create_announcement/',(req,res)=>{
 	});
 });
 //
-app.get('/get_announcements/',(req,res)=>{
+app.get('/get_announcements/',LoggedIn,(req,res)=>{
 
 	connection.query('SELECT * FROM Announcement',(error,results)=>{
 	
@@ -977,7 +977,7 @@ app.get('/get_announcements/',(req,res)=>{
 	});
 //
 
-app.post('/offer/',(req,res)=>{
+app.post('/offer/',LoggedIn,(req,res)=>{
 	let item = req.body.item;
 	let quantity = req.body.quantity;
 	//
@@ -1022,7 +1022,7 @@ app.post('/cancel_offer/',(req,res)=>{
 });
 
 //
-app.get('/receive_offers/',async (req,res)=>{
+app.get('/receive_offers/',LoggedIn,async (req,res)=>{
 	//
 	let untaken_offers;
 	let taken_offers;
