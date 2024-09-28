@@ -602,7 +602,7 @@ app.post('/update_inventory/',async (req,res)=>{
 	let new_cargo;
 	try{
 	for(let item in cargo_deload){
-	[results] = await connection.promise().query('UPDATE Inventory SET quantity= quantity + ? WHERE item=?',[parseInt(cargo_deload[item]),item]);
+	let [results] = await connection.promise().query('UPDATE Inventory SET quantity= quantity + ? WHERE item=?',[parseInt(cargo_deload[item]),item]);
 	if(results.affectedRows>0){
 	console.log('OK');
 	}
@@ -614,7 +614,7 @@ app.post('/update_inventory/',async (req,res)=>{
 	//
 	//kodikas gia enimerosi to fortio tou diasosti kai 
 	for(let item in cargo_deload){
-		[results] = await connection.promise().query('UPDATE Cargo SET quantity = quantity - ? WHERE username=? AND item=?',[parseInt(cargo_deload[item]),req.session.username,item]);
+		let [results] = await connection.promise().query('UPDATE Cargo SET quantity = quantity - ? WHERE username=? AND item=?',[parseInt(cargo_deload[item]),req.session.username,item]);
 		if(results.affectedRows>0){
 			console.log('OK');
 		}
@@ -625,7 +625,7 @@ app.post('/update_inventory/',async (req,res)=>{
 		}
 	
 	//
-	[results] = await connection.promise().query('SELECT * FROM Inventory');
+	let [results] = await connection.promise().query('SELECT * FROM Inventory');
 	new_inventory = results;
 	//
 	[results] = await connection.promise().query('SELECT item,quantity FROM Cargo WHERE username=?',[req.session.username]);
@@ -718,7 +718,9 @@ console.log('Error: ',error);
 //
 app.get('/get_current_categories/',(req,res)=>{
 //
-connection.query('select category,category_name from Cargo inner join Category on Cargo.category=Category.id UNION select category,category_name from Inventory inner join Category on Inventory.category=Category.id;',(error,results)=>{
+connection.query('select category,category_name from Cargo inner join Category on Cargo.category=Category.id WHERE quantity>0 UNION select category,category_name from Inventory inner join Category on Inventory.category=Category.id WHERE quantity>0',(error,results)=>{
+	//eksasfalizo me to union oti mono distinct katigories tha emfanistoun kai oti an sta cargos-apothiki yparxei item me mhdenikh posotita kai den yparxei
+	//item ths idias katigorias me quantity>0 h kathgoria ayth na mhn epistrefetai oste na eksikonomiso xoro
 	if(error) throw error;
 	res.send(results);
 });

@@ -300,8 +300,7 @@ fetch('/get_items/')
 
 
 /*******os Admin epishs vlepo olous tous diasostes/oximata****/
-let vehicles = L.layerGroup();
-
+//
 fetch('/get_vehicles/')
 .then(res=>{return res.json();})
 .then(Vehicles=>{
