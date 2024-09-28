@@ -273,33 +273,41 @@ load.addEventListener('click',event=>{
 //logika pinakas me grammh: eidos-posotita(select ?)
 //ta stelno sth vash gia na enimeroso to cargo
 const inventory = document.querySelector("#inventory");
-let cargo_add = {};
+let add_cargo = [];
+
 for(let row of inventory.rows){
   for(let cell of row.cells){
     //
     if(!cell.nextSibling){
       const checkbox = cell.firstChild;
       if(checkbox.checked){
-      let item = cell.previousSibling.previousSibling.innerHTML;
+      let item = cell.previousSibling.previousSibling.previousSibling.innerHTML;
+      let category = cell.previousSibling.innerHTML;
       //let quantity = cell.previousSibling.innerHTML;
       //logika cell.previousSibling.firstChild.value
-      let quantity = cell.previousSibling.firstChild.value
-      cargo_add[item] = quantity;
+      let quantity = cell.previousSibling.previousSibling.firstChild.value;
+      let cargo_add = {};
+      cargo_add['item'] = item;
+      cargo_add['quantity'] = quantity;
+      cargo_add['category'] = category; 
+      add_cargo.push(cargo_add);
       }
     }
   }
 }
 
-console.log(cargo_add);//meta stile sth DB me post ayto to object gia enimerosi tou cargo
+console.log(add_cargo);//meta stile sth DB me post ayto to object gia enimerosi tou cargo
 //
-update_cargo(cargo_add);//steile to json ton antikeimenon-posotiton pou fortose apo tin apothiki o diasostis
+update_cargo(add_cargo);//steile to json ton antikeimenon-posotiton pou fortose apo tin apothiki o diasostis
 });
 /*****************FETCH POST UPDATE CARGO*****/
-function update_cargo(cargo_add){
+function update_cargo(add_cargo){
   fetch('/update_cargo/',{
     method : 'POST',
     headers : { 'Content-Type':'application/json' },
-    body : JSON.stringify(cargo_add)
+    body : JSON.stringify({
+      add_cargo: add_cargo
+    })
   })
   .then(res=>res.json())
   .then(updated_inventory_cargo=>{
@@ -338,30 +346,34 @@ function update_cargo_table(updated_cargo){
 unload.addEventListener('click',(event)=>{
 
 const cargo_table = document.querySelector("#cargo_table");
-let cargo_deload = {};
+let deload_cargo = [];
 //
 for(let row of cargo_table.rows){
   for(let cell of row.cells){
    //Load all vehicle's items into storage
     if(!cell.nextSibling){
       //eimaste sto quantity
+      let cargo_deload = {};
       let item = cell.previousSibling.innerHTML;
       let quantity = cell.innerHTML;
-      cargo_deload[item] = quantity;
-
+      cargo_deload['item'] = item;
+      cargo_deload['quantity'] = quantity;
+      deload_cargo.push(cargo_deload);
     }
   }
 }
-console.log(cargo_deload);
-update_inventory(cargo_deload);
+console.log(deload_cargo);
+//update_inventory(deload_cargo);
 });
 /**************Update inventory*******/
-function update_inventory(cargo_deload){
+function update_inventory(deload_cargo){
   //
   fetch('/update_inventory/',{
     method: 'POST',
     headers : { 'Content-Type':'application/json' },
-    body: JSON.stringify(cargo_deload)
+    body: JSON.stringify({
+      deload_cargo:deload_cargo
+    })
   })
   .then(res=>res.json())
   .then(updated_inventory_cargo=>{
@@ -386,7 +398,8 @@ function update_inventory_table(updated_inventory){
     for(let key in product){
       let td = document.createElement('td');
       if(key == 'category'){
-        continue;
+        td.innerHTML = product[key];
+        td.style.display = "none";
       }
       if(key == 'quantity'){
         let select = document.createElement('select');

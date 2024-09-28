@@ -597,13 +597,13 @@ app.get('/load_inventory/',LoggedIn,(req,res)=>{
 //
 app.post('/update_inventory/',LoggedIn,async (req,res)=>{
 
-	let cargo_deload = req.body;
+	let cargo_deload = req.body.deload_cargo;
 	let new_inventory;
 	let new_cargo;
 	try{
-	for(let item in cargo_deload){
-	let [results] = await connection.promise().query('UPDATE Inventory SET quantity= quantity + ? WHERE item=?',[parseInt(cargo_deload[item]),item]);
-	if(results.affectedRows>0){
+	for(let item of cargo_deload){
+	let [results] = await connection.promise().query('UPDATE Inventory SET quantity= quantity + ? WHERE item=?',[parseInt(item['quantity']),item['item']]);
+	if(results.affectedRows>0){//INSERT ON DUPLICATE KAI EDO
 	console.log('OK');
 	}
 	else{
@@ -613,8 +613,8 @@ app.post('/update_inventory/',LoggedIn,async (req,res)=>{
 	}
 	//
 	//kodikas gia enimerosi to fortio tou diasosti kai 
-	for(let item in cargo_deload){
-		let [results] = await connection.promise().query('UPDATE Cargo SET quantity = quantity - ? WHERE username=? AND item=?',[parseInt(cargo_deload[item]),req.session.username,item]);
+	for(let item of cargo_deload){
+		let [results] = await connection.promise().query('UPDATE Cargo SET quantity = quantity - ? WHERE username=? AND item=?',[parseInt(item['quantity']),req.session.username,item['item']]);
 		if(results.affectedRows>0){
 			console.log('OK');
 		}
@@ -651,14 +651,14 @@ app.get('/load_cargo/',LoggedIn,(req,res)=>{
 app.post('/update_cargo/',LoggedIn,async (req,res)=>{
 //enimerosi tou fortiou tou diasosti
 //sto inventory key = username,item alios kanei ksana px iasonasmakris-water
-	let cargo_load = req.body;
+	let cargo_load = req.body.add_cargo;
 	let new_inventory;
 	let new_cargo;
-	console.log(cargo_load)
+	console.log(cargo_load);
 	try{
 		//
-		for(let item in cargo_load){
-		let [results] = await connection.promise().query('INSERT INTO Cargo(username,item,quantity) VALUES(?,?,?) ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)',[req.session.username,item,parseInt(cargo_load[item])]);
+		for(let product of cargo_load){
+		let [results] = await connection.promise().query('INSERT INTO Cargo(username,item,quantity,category) VALUES(?,?,?,?) ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)',[req.session.username,product['item'],parseInt(product['quantity']),product['category']]);
 		//
 		if(results.affectedRows>0){
 		console.log('OK');
@@ -670,8 +670,8 @@ app.post('/update_cargo/',LoggedIn,async (req,res)=>{
 		}
 		//
 
-		for(let item in cargo_load){
-			let [results] = await connection.promise().query('UPDATE Inventory SET quantity=quantity - ? WHERE item=?',[parseInt(cargo_load[item]),item]);
+		for(let product of cargo_load){
+			let [results] = await connection.promise().query('UPDATE Inventory SET quantity=quantity - ? WHERE item=?',[parseInt(product['quantity']),product['item']]);
 			if(results.affectedRows>0){
 				console.log('Success');
 			}
@@ -826,7 +826,7 @@ let new_requests;
 		else if(type == 'Offer') {
 			[results] = await connection.promise().query('INSERT INTO Cargo(username,item,quantity) VALUES(?,?,?) ON DUPLICATE KEY UPDATE quantity=quantity + VALUES(quantity)',[req.session.username,item,quantity]);
 			//idanika epeidh borei na mhn exei sto cargo tou to item epeidh milame gia prosfora kalytera 
-			if(results.affectedRows>0){
+			if(results.affectedRows>0){//tha valo kai to category EDO THA TO FETCHARO MIA TIMH EINAI MONO ME 1 MONO APOTELESMA
 				console.log('Update Succesfull');
 			}
 			else{
