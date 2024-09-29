@@ -440,24 +440,27 @@ request_div.setAttribute('class','marker_text');
 
 if(request['lifted'] && request['type'] == 'Request'){
   request_div.innerHTML += `<br>Withdrawal date: ${new Date(request['withdrawal_date']).toLocaleString('el-GR').replace(',',' ')}<br>Vehicle: ${request['vehicle_username']}<br>`;
-  request_marker.setIcon(yellowIcon);
+  request_marker.setIcon(yellowIcon);//diaforetiko xroma gia ta pros diaikperaiosi requests
   //
   let cords = [[request['ST_X(cords)'],request['ST_Y(cords)']],[get_vehicle(request['vehicle_username']).lat,get_vehicle(request['vehicle_username']).lng]];
   let line = L.polyline(cords,{color:'green'});
   //line.addTo(map);//sundese to aithma pou exei analifthei me ton diasosti tou
   lines.addLayer(line);
 }
-else if(request['type'] == 'Offer'){
-  request_marker.setIcon(unliftedOfferIcon); //to unlifted offer ti xroma tha exei
-  if(request['lifted']){
-    //to lifted offer tha diaferei apo to unlifted os pros to xroma
-  request_marker.setIcon(liftedOfferIcon); 
+else if(request['type'] == 'Offer' && request['lifted']){
+  request_marker.setIcon(liftedOfferIcon); //to lifted offer ti xroma tha exei
+  
+  // 
   request_div.innerHTML += `<br>Withdrawal date: ${new Date(request['withdrawal_date']).toLocaleString('el-GR').replace(',',' ')}<br>Vehicle: ${request['vehicle_username']}`;
   let cords = [[request['ST_X(cords)'],request['ST_Y(cords)']],[get_vehicle(request['vehicle_username']).lat,get_vehicle(request['vehicle_username']).lng]];
   let line = L.polyline(cords,{color:'green'});
   //line.addTo(map);//sundese to aithma pou exei analifthei me ton diasosti tou
   lines.addLayer(line);
-  }
+  
+}
+else if(request['type'] == 'Offer' && !(request['lifted'])){
+  //unlifted Offer
+  request_marker.setIcon(unliftedOfferIcon);
 }
 
 //

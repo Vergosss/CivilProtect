@@ -52,9 +52,7 @@ function LoggedIn(req,res,next){
 	}
 }
 //
-app.get('/route/',LoggedIn,(req,res)=>{
-	console.log('Testing...');
-});
+
 //
 app.get(['/','/login'],(req,res)=>{
 
@@ -178,19 +176,18 @@ app.post('/signup/',(req,res)=>{
 	
 		if(error) throw error;
 		if(result.affectedRows>0){
-		res.send('Successfully registered!');//boro na to kano res.json kai meta alert
-		//res.json({msg:'Successfully Registered!'});
+		//
+		res.json({msg:'Successfully Registered!'});
 		}
 		else{
-		res.send('User already in database');
-		//res.json({msg:'Username not available!'});
+		//
+		res.json({msg:'Username not available!'});
 		}
 		
 		});
 	
 	});
-	//Hashing
-	
+	//
 	
 	});
 //
@@ -786,6 +783,7 @@ let quantity = req.body.quantity;
 //logika kapoio type(request,offer)
 let type = req.body.type;
 //an type einai request meiose fortio diasosti alios an einai offer ayksise to
+let category;
 let new_tasks;
 let new_requests;
 	try{
@@ -824,7 +822,11 @@ let new_requests;
 		
 		}
 		else if(type == 'Offer') {
-			[results] = await connection.promise().query('INSERT INTO Cargo(username,item,quantity) VALUES(?,?,?) ON DUPLICATE KEY UPDATE quantity=quantity + VALUES(quantity)',[req.session.username,item,quantity]);
+			//
+			[results] = await connection.promise().query('SELECT category from Item WHERE name=?',[item]);
+			category = results[0].category;
+			//
+			[results] = await connection.promise().query('INSERT INTO Cargo(username,item,quantity,category) VALUES(?,?,?,?) ON DUPLICATE KEY UPDATE quantity=quantity + VALUES(quantity)',[req.session.username,item,quantity,category]);
 			//idanika epeidh borei na mhn exei sto cargo tou to item epeidh milame gia prosfora kalytera 
 			if(results.affectedRows>0){//tha valo kai to category EDO THA TO FETCHARO MIA TIMH EINAI MONO ME 1 MONO APOTELESMA
 				console.log('Update Succesfull');
@@ -834,13 +836,13 @@ let new_requests;
 			}
 		
 		}
-		
-
+		//
+		//[results] = await connection.promise().query('SELECT item,quantity FROM Cargo WHERE username=? AND quantity>0',[req.session.username]);
 		//
 		console.log('New tasks: ',new_tasks);
 		console.log('New requests: ',new_requests);
 		res.send([new_tasks,new_requests]);
-		//thelo kai kodika gia update cargo/inventory
+		//thelo kai kodika gia update cargo
 	}
 	catch(error){
 		console.log('Error: ',error);
@@ -849,7 +851,10 @@ let new_requests;
 //
 //kodikas gia delete tou antistixou request
 });
-  //na alaxthei oste na gyrna ta mh olokliromena pou exei analavei AYTOS
+
+//
+
+//
 app.get('/get_tasks/',LoggedIn,(req,res)=>{
 connection.query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username,type FROM Task WHERE completed=false AND vehicle_username=?',[req.session.username],(error,results)=>{
 if(error) throw error;
