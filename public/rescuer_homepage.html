@@ -628,6 +628,9 @@ fetch('/complete_task/',{
 //
   let updated_requests = updated_tasks_requests[1];
   show_requests2(updated_requests);
+  //
+  let new_cargo = updated_tasks_requests[2];
+  update_cargo_table(new_cargo);
 })
 .catch(error=>{console.log('Error: ',error);})
 

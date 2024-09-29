@@ -182,7 +182,7 @@ if(isNaN(requested_quantity) || requested_quantity<=0 || !(Number.isInteger(Numb
 }
 console.log(requested_quantity);
 //
-return;
+
 fetch('/request/',{
   method:'POST',
   headers: { 'Content-Type':'application/json' },

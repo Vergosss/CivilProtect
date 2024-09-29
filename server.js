@@ -786,6 +786,7 @@ let type = req.body.type;
 let category;
 let new_tasks;
 let new_requests;
+let new_cargo;
 	try{
 
 		let [results] = await connection.promise().query('UPDATE Task SET completed = 1,complete_date=NOW() WHERE task_id=?',[tid]);
@@ -837,11 +838,15 @@ let new_requests;
 		
 		}
 		//
-		//[results] = await connection.promise().query('SELECT item,quantity FROM Cargo WHERE username=? AND quantity>0',[req.session.username]);
+		[results] = await connection.promise().query('SELECT item,quantity FROM Cargo WHERE username=? AND quantity>0',[req.session.username]);
 		//
+		new_cargo = results;
+		//
+		
 		console.log('New tasks: ',new_tasks);
 		console.log('New requests: ',new_requests);
-		res.send([new_tasks,new_requests]);
+		console.log(new_cargo);
+		res.send([new_tasks,new_requests,new_cargo]);
 		//thelo kai kodika gia update cargo
 	}
 	catch(error){
