@@ -101,6 +101,15 @@
         
         </select>
         </form>
+ <!------------------------------------------------------------------------------------> 
+      <h1>Update an item in the inventory or add a new one alongside its quantity</h1>
+      <form class="update_inventory_form">
+        <label for="adding_quantity">Enter Quantity here:</label>
+        <select id="inventory_items"></select>
+        <input type="text" id="adding_quantity" name="adding_quantity">
+        <button type="submit">Add/Update Item</button>
+      </form>
+ 
 <!--------Ousiastika edo tha boun oi anakoinoseis multiple dropdown ------------------->
       <h1>Create an Announcement</h1>
       <form class="submit_announcement"> 
@@ -293,6 +302,7 @@ fetch('/get_items/')
 
   //
   loadItems(items);
+  loadInventoryItems(items);
  
 })
 .catch(error=>{console.log('Error',error);})
@@ -603,6 +613,8 @@ for(let body of bodies){
 function filter_Categories(categories){
 const filter_categories_table = document.querySelector("#filter_categories");
 //
+filter_categories_table.innerHTML = "";//katharizo ton pinaka gia epanaxrisimopoihsh
+//
 let th = document.createElement('th');
 th.setAttribute('colspan',categories.length);
 th.innerHTML = 'Filter Inventory/Cargos by Category' ;
@@ -712,6 +724,25 @@ function loadItems(items){
 
   }
 }
+/******************************************************************************/
+
+function loadInventoryItems(items){
+
+let inventory_items = document.querySelector("#inventory_items");
+for(let item of items){
+let option = document.createElement('option');
+//
+const value_data = `{"name":"${item['name']}","category":"${item['category']}"}`;
+    //
+option.value = value_data;
+//
+option.innerHTML = item['name'];
+inventory_items.appendChild(option);
+
+}
+//
+}
+
 /***************Otan klikaroume to neo 'select' tote emfanizontai oi epiloges*************/
 
 const item_select = document.querySelector(".item_select");

@@ -845,7 +845,7 @@ let new_cargo;
 		
 		console.log('New tasks: ',new_tasks);
 		console.log('New requests: ',new_requests);
-		console.log(new_cargo);
+		console.log('New cargo: ',new_cargo);
 		res.send([new_tasks,new_requests,new_cargo]);
 		//thelo kai kodika gia update cargo
 	}

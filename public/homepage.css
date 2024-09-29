@@ -400,3 +400,39 @@ textarea{
     margin-left: auto;
     margin-right: auto;
 }
+
+.update_inventory_form{
+    display:flex;
+    flex-direction:column;
+}
+.update_inventory_form > label{
+    padding:5px;
+    font-size:18px;
+    text-align: center;
+ }
+ .update_inventory_form > select{
+    display: block;
+    margin-bottom: 20px;
+    margin-left:auto;
+    margin-right: auto;
+ }
+ .update_inventory_form > input[type='text']{
+    width: 100px;
+    height: 50px;
+    border: 1px solid #dee0e4;
+    margin-bottom: 20px;
+    padding: 0 15px;
+    margin-left:auto;
+    margin-right:auto;
+ }
+ .update_inventory_form > button{
+    background-color: dodgerblue;
+    color:#dee0e4;
+    border-radius: 3px;
+    cursor: pointer;
+    padding: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left:auto;
+    margin-right:auto;
+}
