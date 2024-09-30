@@ -625,7 +625,7 @@ app.post('/update_inventory/',LoggedIn,async (req,res)=>{
 	let [results] = await connection.promise().query('SELECT * FROM Inventory WHERE quantity>0');
 	new_inventory = results;
 	//
-	[results] = await connection.promise().query('SELECT item,quantity,category FROM Cargo WHERE username=?',[req.session.username]);
+	[results] = await connection.promise().query('SELECT item,quantity,category FROM Cargo WHERE username=? AND quantity>0',[req.session.username]);
 	//na epistrepsei category
 	new_cargo = results;
 	console.log('New inventory:',new_inventory);
