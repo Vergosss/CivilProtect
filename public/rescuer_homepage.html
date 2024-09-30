@@ -336,11 +336,11 @@ function update_cargo_table(updated_cargo){
   for(let key in product){
     let td = document.createElement('td');
     td.innerHTML = product[key];
-    /*
+    //
     if(key == 'category'){
     td.style.display = "none";
     }
-    */
+    //
     tr.appendChild(td);//na ensomatonei kai category
   }
   tbody.appendChild(tr);//gia na mhn adeiazei olos o pinakas alla mono ta dedomena
@@ -359,20 +359,18 @@ for(let row of cargo_table.rows){
     if(!cell.nextSibling){
       //eimaste sto quantity
       let cargo_deload = {};
-      let item = cell.previousSibling.innerHTML;
-      let quantity = cell.innerHTML;
-      //let item = cell.previousSibling.previousSibling.innerHTML;
-      //let quantity = cell.previousSibling.innerHTML;
-      //let category = cell.innerHTML;
+      let item = cell.previousSibling.previousSibling.innerHTML;
+      let quantity = cell.previousSibling.innerHTML;
+      let category = cell.innerHTML;
       cargo_deload['item'] = item;
       cargo_deload['quantity'] = quantity;
-      //cargo_deload['category'] = category;
+      cargo_deload['category'] = category;
       deload_cargo.push(cargo_deload);
     }//na ensomatonei kai to category
   }
 }
 console.log(deload_cargo);
-//update_inventory(deload_cargo);
+update_inventory(deload_cargo);
 });
 /**************Update inventory*******/
 function update_inventory(deload_cargo){

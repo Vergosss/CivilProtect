@@ -599,7 +599,7 @@ app.post('/update_inventory/',LoggedIn,async (req,res)=>{
 	let new_cargo;
 	try{
 	for(let item of cargo_deload){
-	let [results] = await connection.promise().query('UPDATE Inventory SET quantity= quantity + ? WHERE item=?',[parseInt(item['quantity']),item['item']]);
+	let [results] = await connection.promise().query('INSERT INTO Inventory(item,quantity,category) VALUES(?,?,?) ON DUPLICATE KEY UPDATE quantity= quantity + VALUES(quantity)',[item['item'],parseInt(item['quantity']),item['category']]);
 	if(results.affectedRows>0){//INSERT ON DUPLICATE KAI EDO
 	console.log('OK');
 	}
@@ -625,7 +625,7 @@ app.post('/update_inventory/',LoggedIn,async (req,res)=>{
 	let [results] = await connection.promise().query('SELECT * FROM Inventory WHERE quantity>0');
 	new_inventory = results;
 	//
-	[results] = await connection.promise().query('SELECT item,quantity FROM Cargo WHERE username=?',[req.session.username]);
+	[results] = await connection.promise().query('SELECT item,quantity,category FROM Cargo WHERE username=?',[req.session.username]);
 	//na epistrepsei category
 	new_cargo = results;
 	console.log('New inventory:',new_inventory);
@@ -639,7 +639,7 @@ app.post('/update_inventory/',LoggedIn,async (req,res)=>{
 	});
 //
 app.get('/load_cargo/',LoggedIn,(req,res)=>{
-	connection.query('SELECT item,quantity FROM Cargo WHERE username=? AND quantity>0',[req.session.username],(error,results)=>{
+	connection.query('SELECT item,quantity,category FROM Cargo WHERE username=? AND quantity>0',[req.session.username],(error,results)=>{
 		//na epistrepsei category
 		if(error) throw error;
 		res.send(results);
@@ -682,7 +682,7 @@ app.post('/update_cargo/',LoggedIn,async (req,res)=>{
 		let [results] = await connection.promise().query('SELECT * FROM Inventory WHERE quantity>0');
 		new_inventory = results;
 		//new cargo
-		[results] = await connection.promise().query('SELECT item,quantity FROM Cargo WHERE username=? AND quantity>0',[req.session.username]);
+		[results] = await connection.promise().query('SELECT item,quantity,category FROM Cargo WHERE username=? AND quantity>0',[req.session.username]);
 		//kai edo na gyrna category
 		new_cargo = results;
 		console.log('New inventory:',new_inventory);
@@ -885,7 +885,7 @@ let new_cargo;
 		
 		}
 		//
-		[results] = await connection.promise().query('SELECT item,quantity FROM Cargo WHERE username=? AND quantity>0',[req.session.username]);
+		[results] = await connection.promise().query('SELECT item,quantity,category FROM Cargo WHERE username=? AND quantity>0',[req.session.username]);
 		//kai edo na gyrna kategory
 		new_cargo = results;
 		//
