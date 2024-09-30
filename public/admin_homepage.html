@@ -104,8 +104,8 @@
  <!------------------------------------------------------------------------------------> 
       <h1>Update an item in the inventory or add a new one alongside its quantity</h1>
       <form class="update_inventory_form">
-        <label for="adding_quantity">Enter Quantity here:</label>
         <select id="inventory_items"></select>
+        <label for="adding_quantity">Enter Quantity here:</label>
         <input type="text" id="adding_quantity" name="adding_quantity">
         <button type="submit">Add/Update Item</button>
       </form>
@@ -507,6 +507,7 @@ function show_Items(inventory_cargos){
   let inventory = inventory_cargos[0];
   let cargos = inventory_cargos[1];
   const inventory_body = document.querySelector("#inventory_body");
+  inventory_body.innerHTML = "";//clear
   //Add the inventory
   for(let product of inventory){
     let tr = document.createElement('tr');
@@ -742,6 +743,53 @@ inventory_items.appendChild(option);
 }
 //
 }
+/******************************************Modify Inventory*******************************/
+
+const update_inventory_form = document.querySelector(".update_inventory_form");
+update_inventory_form.addEventListener('submit',updateInventory);
+//
+function modifyInventory(event){
+event.preventDefault();
+//
+let adding_item = JSON.parse(document.querySelector("#inventory_items").value).name;
+let adding_category =  JSON.parse(document.querySelector("#inventory_items").value).category;
+//pare kai to category se periptosi pou den yparxei sto inventory
+let adding_quantity = document.querySelector("#adding_quantity").value;
+//elegxos gia egkyrothta ti edosa
+if(isNaN(adding_quantity) || adding_quantity<=0 || !(Number.isInteger(Number(adding_quantity)))) {
+  alert('Quantity must be a positive integer number!');
+  return;
+}
+//
+this.reset();
+
+
+//
+fetch('/modify_inventory/',{
+method: 'POST',
+headers:{
+	'Content-Type':'application/json'
+},
+body:JSON.stringify({
+//
+adding_item:adding_item,
+adding_quantity:adding_quantity,
+adding_category:adding_category
+})
+})
+.then(res=>res.json())
+.then(inventory_cargos_categories=>{
+
+//update inventory cargo table
+//show_Items(inventory_cargos);
+//update filter table
+//filter_Categories(updated_categories);
+})
+.catch(error=>{console.log('Error: ',error);})
+
+//
+}
+
 
 /***************Otan klikaroume to neo 'select' tote emfanizontai oi epiloges*************/
 
@@ -915,6 +963,11 @@ let second_date = document.querySelector("#second").value;
 console.log(first_date); 
 //
 console.log(second_date);
+if(!first_date && !second_date){
+  alert('Invalid Dates!');
+  return;
+}
+
 sendDates(first_date,second_date);
 }
 /*******************/

@@ -586,7 +586,7 @@ catch(error){
 });
 //
 app.get('/load_inventory/',LoggedIn,(req,res)=>{
-	connection.query('SELECT * FROM Inventory',(error,results)=>{
+	connection.query('SELECT * FROM Inventory WHERE quantity>0',(error,results)=>{
 		if(error) throw error;
 		res.send(results);
 	});
@@ -622,7 +622,7 @@ app.post('/update_inventory/',LoggedIn,async (req,res)=>{
 		}
 	
 	//
-	let [results] = await connection.promise().query('SELECT * FROM Inventory');
+	let [results] = await connection.promise().query('SELECT * FROM Inventory WHERE quantity>0');
 	new_inventory = results;
 	//
 	[results] = await connection.promise().query('SELECT item,quantity FROM Cargo WHERE username=?',[req.session.username]);
@@ -677,7 +677,7 @@ app.post('/update_cargo/',LoggedIn,async (req,res)=>{
 			}
 		}
 		//new inventory
-		let [results] = await connection.promise().query('SELECT * FROM Inventory');
+		let [results] = await connection.promise().query('SELECT * FROM Inventory WHERE quantity>0');
 		new_inventory = results;
 		//new cargo
 		[results] = await connection.promise().query('SELECT item,quantity FROM Cargo WHERE username=? AND quantity>0',[req.session.username]);
@@ -723,6 +723,50 @@ connection.query('select category,category_name from Cargo inner join Category o
 });
 //
 });
+//
+
+app.post('/modify_inventory/',LoggedIn,async (req,res)=>{
+
+	let adding_item = req.body.adding_item;
+	let adding_quantity = req.body.adding_quantity;
+	let adding_category = req.body.adding_category;
+	//
+	let inventory;
+	let cargos;
+	let current_categories;
+	//
+	try{
+	//
+	//edo isos to kano na yposthrizei enthesi,meiosi,ayksisi
+	let [results] = await connection.promise().query('INSERT INTO Inventory(item,quantity,category) VALUES(?,?,?) ON DUPLICATE KEY UPDATE ....',[adding_item,adding_quantity,adding_category]);
+	if(results.affectedRows>0){
+	console.log('Operation Successfull!');
+	}
+	else{
+	console.log('Operation failed!');
+	}
+	//meta kodikas gia epistrofi inventory_cargos-yparxei
+	[results] = await connection.promise().query('SELECT * from Inventory WHERE quantity>0');
+	inventory = results;
+	//
+	[results] = await connection.promise().query('SELECT * FROM Cargo WHERE quantity>0');//mono ta proionta me mh mhdenikh posotita emfanizontai.an alaksoun oi posotites sthn epomenh tha fetsaristoun
+	cargos = results;
+	
+	//kai kodikas gia current categories-yparxei
+	[results] = await connection.promise().query('select category,category_name from Cargo inner join Category on Cargo.category=Category.id WHERE quantity>0 UNION select category,category_name from Inventory inner join Category on Inventory.category=Category.id WHERE quantity>0');
+	current_categories = results;
+	//
+	res.send([inventory,cargos,current_categories]);
+	}
+	catch(error){
+		 console.log('Error: ',error);
+	}
+	//
+	});
+
+
+
+
 //
 app.post('/create_task/',LoggedIn,async (req,res)=>{
 let username = req.body.username;
@@ -926,6 +970,7 @@ app.get('/graph/',LoggedIn,(req,res)=>{
 //
 app.post('/get_dates/',LoggedIn,async (req,res)=>{
 	let start = req.body.start;
+	let end = req.body.end;
 	let new_requests;
 	let new_offers;
 	let completed_requests;
