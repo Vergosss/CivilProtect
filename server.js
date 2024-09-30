@@ -626,6 +626,7 @@ app.post('/update_inventory/',LoggedIn,async (req,res)=>{
 	new_inventory = results;
 	//
 	[results] = await connection.promise().query('SELECT item,quantity FROM Cargo WHERE username=?',[req.session.username]);
+	//na epistrepsei category
 	new_cargo = results;
 	console.log('New inventory:',new_inventory);
 	console.log('New cargo:',new_cargo);
@@ -639,6 +640,7 @@ app.post('/update_inventory/',LoggedIn,async (req,res)=>{
 //
 app.get('/load_cargo/',LoggedIn,(req,res)=>{
 	connection.query('SELECT item,quantity FROM Cargo WHERE username=? AND quantity>0',[req.session.username],(error,results)=>{
+		//na epistrepsei category
 		if(error) throw error;
 		res.send(results);
 	});
@@ -681,6 +683,7 @@ app.post('/update_cargo/',LoggedIn,async (req,res)=>{
 		new_inventory = results;
 		//new cargo
 		[results] = await connection.promise().query('SELECT item,quantity FROM Cargo WHERE username=? AND quantity>0',[req.session.username]);
+		//kai edo na gyrna category
 		new_cargo = results;
 		console.log('New inventory:',new_inventory);
 		console.log('New cargo:',new_cargo);
@@ -883,7 +886,7 @@ let new_cargo;
 		}
 		//
 		[results] = await connection.promise().query('SELECT item,quantity FROM Cargo WHERE username=? AND quantity>0',[req.session.username]);
-		//
+		//kai edo na gyrna kategory
 		new_cargo = results;
 		//
 		
