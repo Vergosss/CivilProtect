@@ -271,9 +271,10 @@ app.get('/get_categories/',LoggedIn,(req,res)=>{
 });
 //
 app.post('/add_category/',LoggedIn,(req,res)=>{
+	let id = req.body.id;
 	let category = req.body.category;
 
-	connection.query('INSERT IGNORE INTO Category(category_name) VALUES(?)',[category],(error,results)=>{
+	connection.query('INSERT IGNORE INTO Category(id,category_name) VALUES(?,?)',[id,category],(error,results)=>{
 		if(error) throw error;
 		if(results.affectedRows>0){
 			console.log('Insertion Successful');

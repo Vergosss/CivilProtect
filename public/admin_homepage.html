@@ -86,7 +86,9 @@
     <form class="category">
 
       <label for="category_name">Category Name:</label>
-      <input id="category_name"  type="text"/>
+      <input id="category_name" type="text"/>
+      <label for="category_id">Enter an Id:</label>
+      <input id="category_id" type="text"/>
       <button type="submit" value="">Add Category</button>
       
       </form>
@@ -650,8 +652,16 @@ addCategoryForm.addEventListener('submit',addCategory);
 //
 function addCategory(event){
 event.preventDefault();//akyrono to event gia na mh kanei refresh th selida
-let category = this.children[1].value;
+//
+let category = document.querySelector("#category_name").value;
+let id = document.querySelector("#category_id").value;
 console.log(category);
+
+if(isNaN(id) || 0 || !(Number.isInteger(Number(id)))){
+
+  alert('Id must be a integer number!');
+  return;
+}
 //
 this.reset();
 //
@@ -662,6 +672,7 @@ fetch('/add_category/',{
     },
   body:JSON.stringify({
     //isos id oxi akoma
+    id:id,
     category:category //onoma kathgorias
   })
 })
