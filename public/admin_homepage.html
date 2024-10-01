@@ -97,7 +97,9 @@
       <form class="items">
 
         <label for="item_name">Item Name:</label>
-        <input id="item_name" type="text">
+        <input id="item_name" type="text"/>
+        <label for="item_id">Item Id:</label>
+        <input id="item_id" type="text"/>
         <label for="category_name">Category:</label>
         <select id="category_name"> 
         
@@ -686,9 +688,24 @@ fetch('/add_category/',{
 }
 
 /*******************Add Item***********/
+const addItemForm = document.querySelector(".items");
+addItemForm.addEventListener('submit',addItem);
+///
 function addItem(event){
 event.preventDefault();
+//
+let item = document.querySelector("#item_name").value;
+let id = document.querySelector("#item_id").value;
+let category = document.querySelector("#category_name").value;
+//
+if(isNaN(id) || !(Number.isInteger(Number(id))) || 0){
 
+  alert('Id must be an integer number!');
+  return;
+}
+//
+this.reset();
+//
 fetch('/add_item/',{
   method: 'POST',
   headers: {
@@ -696,8 +713,9 @@ fetch('/add_item/',{
     },
   body:JSON.stringify({
     //isos id oxi akoma
-    item: this.children[0].value,
-    category:this.children[1].value
+    id:id,
+    item:item,
+    category:category
     //meta ta details
   })
 })
