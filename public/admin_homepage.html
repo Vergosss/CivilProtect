@@ -1011,8 +1011,8 @@ res = await fetch('/update_products/',{
   data
   )
 });
-data = await res.json();
-
+let results = await res.json();
+alert(results['msg']);
 }
 catch(error){
   console.log('Error: ',error);

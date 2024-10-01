@@ -399,7 +399,7 @@ fs.readFile(__dirname + '\\' + path,'utf-8',async (error,data)=>{
 });
 
 //
-app.post('/update_products/',async (req,res)=>{
+app.post('/update_products/',LoggedIn,async (req,res)=>{
 	//
 	let data = req.body;
 	let {code,message,categories,...items} = data;
@@ -409,50 +409,56 @@ app.post('/update_products/',async (req,res)=>{
 	const products = items.map(item=>{return {id:item.id,name: item.name,category:item.category};});
 	//
 	try{
-		let [results] = await connection.promise().query('TRUNCATE TABLE Category');
-		[results] = await connection.promise().query('TRUNCATE TABLE Item');
-		[results] = await connection.promise().query('TRUNCATE TABLE item_details');
-		//clear the tables and wait till completion
-		/**Insert Categories */
+		let [trunc] = await connection.promise().query('TRUNCATE TABLE item_details');
+		//
 		for(let category of categories){
-		connection.query('INSERT INTO Category VALUES(?,?)',[category['id'],category['category_name']],(error,results)=>{
-			if(error) throw error;
+			let [results] = await connection.promise().query('INSERT IGNORE INTO Category VALUES(?,?)',[category['id'],category['category_name']]);
 			if(results.affectedRows>0){
-				console.log('Success!');
-	
+			console.log('Category inserted!');
 			}
 			else{
-				console.log('Failure!');
+			console.log('Error or most propably Category already exists!');
 			}
-		});
-		}
-		/***Insert item details***** */
-		for(let item of items){
+			//
+			}
+
+
+
+
+		//
+		for(let product of products){
+
+			let [results] = await connection.promise().query('INSERT IGNORE INTO Item VALUES(?,?,?)',[product['id'],product['name'],product['category']]);
+			if(results.affectedRows>0){
+			console.log('Item inserted!');
+			}
+			else{
+			console.log('Error or most propably item already exists!');
+			}
+			//
+			}
+			
+			//
+			for(let item of items){
+			
 			let id = item.id;
 			for(let detail of item.details){
-				connection.query('INSERT INTO item_details VALUES(?,?,?)',[id,detail['detail_name'],detail['detail_value']],(error,results)=>{
-					if(error) throw error;
-					if(results.affectedRows>0){
-						console.log('Successfull');
-					}
-					else{
-						console.log('Unsuccessfull');
-					}
-				});
+			//
+			let [results] = await connection.promise().query('INSERT INTO item_details VALUES(?,?,?)',[id,detail['detail_name'],detail['detail_value']]);
+			if(results.affectedRows>0){
+			console.log('Successfull');
 			}
-		}
-		/****Insert Items */
-		for(let product of products){
-			connection.query('INSERT INTO Item VALUES(?,?,?)',[product['id'],product['name'],product['category']],(error,results)=>{
-				if(error) throw error;
-				if(results.affectedRows>0){
-					console.log('OK');
-				}
-				else{
-					console.log('Fail');
-				}
-			});
-		}
+			else{
+			console.log('Unsuccessfull');
+			}
+			//
+			}
+			
+			//
+			}
+			//
+			
+			res.json({msg:"Done Fetching"});
 		}
 		catch(error){
 			console.log('Error: ',error);
