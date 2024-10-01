@@ -287,6 +287,29 @@ app.post('/add_category/',LoggedIn,(req,res)=>{
 	});
 });
 //
+
+app.post('/add_item/',LoggedIn,(req,res)=>{
+
+	let id = req.body.id;
+	let item = req.body.item;
+	let category = req.body.category;
+	//
+		connection.query('INSERT IGNORE INTO Item(id,name,category) VALUES(?,?,?)',[id,item,category],(error,results)=>{
+			if(error) throw error;
+			if(results.affectedRows>0){
+				console.log('Insertion Successful');
+				res.json({msg:'Success'});
+			}
+			else{
+				console.log('Already in Database!');
+				res.json({msg:'Already in DB!'});
+			}
+		});
+	
+	
+	});
+	
+//
 app.get('/coordinates/', (req,res)=>{
 
 	 connection.query('SELECT ST_X(cords),ST_Y(cords) FROM User WHERE role="Citizen"',(error,results,fields)=>{

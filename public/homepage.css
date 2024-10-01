@@ -317,6 +317,17 @@ button{
     margin-left:auto;
     margin-right: auto;
  }
+ .items > button{
+    color:white;
+    background-color: dodgerblue;
+    width:100px;
+    border: none;/*an de valo border none tote einai me to perigrama to koubi, eno etsi apeleytheronetai ginetai pio xontro*/
+    font-size: 18px;/*megethos tou keimenou tou koubiou*/
+    text-align: center;
+    cursor: pointer;
+    margin-left:auto;
+    margin-right:auto;
+ }
  /**********************Announcement Items*******/
  .announcement_items{
     display:none;/*arxika den exo epileksei kapoio item*/

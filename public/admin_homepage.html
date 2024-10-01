@@ -101,9 +101,8 @@
         <label for="item_id">Item Id:</label>
         <input id="item_id" type="text"/>
         <label for="category_name">Category:</label>
-        <select id="category_name"> 
-        
-        </select>
+        <select id="item_category_name"></select>
+        <button type="submit" value="">Add Item</button>
         </form>
  <!------------------------------------------------------------------------------------> 
       <h1>Update an item in the inventory or add a new one alongside its quantity</h1>
@@ -659,9 +658,9 @@ let category = document.querySelector("#category_name").value;
 let id = document.querySelector("#category_id").value;
 console.log(category);
 
-if(isNaN(id) || 0 || !(Number.isInteger(Number(id)))){
-
-  alert('Id must be a integer number!');
+if(isNaN(id) || id>=0 || !(Number.isInteger(Number(id)))){
+//boro na valo px arnitika ta id pou vazo ego gia na mhn exo sygkrousi me ta thetika ids pou kano import
+  alert('Id must be a negative integer number!');
   return;
 }
 //
@@ -696,11 +695,11 @@ event.preventDefault();
 //
 let item = document.querySelector("#item_name").value;
 let id = document.querySelector("#item_id").value;
-let category = document.querySelector("#category_name").value;
+let category = document.querySelector("#item_category_name").value;
 //
-if(isNaN(id) || !(Number.isInteger(Number(id))) || 0){
-
-  alert('Id must be an integer number!');
+if(isNaN(id) || !(Number.isInteger(Number(id))) || id>=0){
+//boro na valo px arnitika ta id pou vazo ego gia na mhn exo sygkrousi me ta thetika ids pou kano import
+  alert('Id must be a negative integer number!');
   return;
 }
 //
@@ -720,14 +719,17 @@ fetch('/add_item/',{
   })
 })
 .then(res=>res.json())
-.then(results=>{})
+.then(results=>{
+
+  alert(results['msg']);
+})
 .catch(error=>{console.log('Error: ',error);})
 
 }
 /*****************Fortose tis katigories gia to dropdown sthn eisagogi item********************/
 function loadCategories(categories){
 
-  const category_name = document.querySelector(".items  #category_name");//perno to select
+  const category_name = document.querySelector(".items  #item_category_name");//perno to select
   for(let category of categories){
     let option = document.createElement('option');
     option.value = category['id'];
@@ -808,11 +810,12 @@ adding_category:adding_category
 })
 .then(res=>res.json())
 .then(inventory_cargos_categories=>{
-
+let inventory_cargos = [inventory_cargos_categories[0],inventory_cargos_categories[1]];
 //update inventory cargo table
-//show_Items(inventory_cargos);
+show_Items(inventory_cargos);
 //update filter table
-//filter_Categories(updated_categories);
+let updated_categories = inventory_cargos_categories[2];
+filter_Categories(updated_categories);
 })
 .catch(error=>{console.log('Error: ',error);})
 
