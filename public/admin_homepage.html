@@ -20,9 +20,9 @@
   </div>
 
  <div class="itemupload">
-  <form action="/upload_products/" method="post" enctype="multipart/form-data">
+  <form id="upload_form">
     <label for="upload">Upload products:</label>
-    <input type="file" id="upload" name="upload"/>
+    <input type="file" id="upload" name="file"/>
     <input type="submit" id="submit" value="Upload products"/>
   </form> 
  </div>
@@ -1034,6 +1034,32 @@ fetch('/get_dates/',{
 
 //
 }
+/****************Upload arxeio ton eidon***********/
+let uploadForm = document.querySelector("#upload_form");
+uploadForm.addEventListener('submit',uploadProducts);
+//
+function uploadProducts(event){
+event.preventDefault();
+let products = document.querySelector("#upload").files[0];
+console.log(products);
+//
+const ProductData = new FormData();//dimiourgo ena formdata object me key=file kai value to arxeio(kleidi-timh)
+ProductData.append('file',products);
+//
+this.reset();
+//
+fetch('/upload_products/',{
+method:'POST',
+body:ProductData
+})
+.then(res=>res.json())
+.then(results=>{
+  alert(results['msg']);
+})
+.catch(error=>{console.log('Error: ',error);})
+//
+}
+
 /*******************/
 //an patithei to koubi kano fetch ta proionta me amesh klhsh sto url 
 const itemsbutton = document.querySelector("#itemsbutton");

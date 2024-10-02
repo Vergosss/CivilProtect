@@ -356,8 +356,10 @@ var storage = multer.diskStorage({
   const fs = require('fs');
 
 //backend work for uploading-reading-inserting items/categories in DB
-app.post('/upload_products/',upload.single('upload'),(req,res)=>{
-console.log(req.file);
+app.post('/upload_products/',upload.single('file'),(req,res)=>{//to orisma tou upload single prepei na einai IDIO me to key sto formdata antikeimeno
+//AYTO ISXYEI OTAN KANO UPLOAD  EDO POU EINAI ASYCHRONA . AN KANO SYNCHRONO UPLOAD ME FORM ACTION TOTE PREPEI TO NAME TOU INPUT FILE NA EINAI 
+//IDIO ME TO ORISMA TOU SINGLE
+console.log(req.file);//alios peta error
 const path = req.file.path;
 
 //epistrefei ena object me plirofories sxetikes me to ypovlithen arxeio
@@ -375,50 +377,58 @@ fs.readFile(__dirname + '\\' + path,'utf-8',async (error,data)=>{
 	console.log(products);
 	//
 	try{
-	let [results] = await connection.promise().query('TRUNCATE TABLE Category');
-	[results] = await connection.promise().query('TRUNCATE TABLE Item');
-	[results] = await connection.promise().query('TRUNCATE TABLE item_details');
-	//clear the tables and wait till completion
-	/**Insert Categories */
-	for(let category of categories){
-	connection.query('INSERT INTO Category VALUES(?,?)',[category['id'],category['category_name']],(error,results)=>{
-		if(error) throw error;
-		if(results.affectedRows>0){
-			console.log('Success!');
-
-		}
-		else{
-			console.log('Failure!');
-		}
-	});
-	}
-	/***Insert item details***** */
-	for(let item of items){
-		let id = item.id;
-		for(let detail of item.details){
-			connection.query('INSERT INTO item_details VALUES(?,?,?)',[id,detail['detail_name'],detail['detail_value']],(error,results)=>{
-				if(error) throw error;
-				if(results.affectedRows>0){
-					console.log('Successful');
-				}
-				else{
-					console.log('Unsuccessful');
-				}
-			});
-		}
-	}
-	/****Insert Items */
-	for(let product of products){
-		connection.query('INSERT INTO Item VALUES(?,?,?)',[product['id'],product['name'],product['category']],(error,results)=>{
-			if(error) throw error;
+	//
+	let [trunc] = await connection.promise().query('TRUNCATE TABLE item_details');
+		//
+		for(let category of categories){
+			let [results] = await connection.promise().query('INSERT IGNORE INTO Category VALUES(?,?)',[category['id'],category['category_name']]);
 			if(results.affectedRows>0){
-				console.log('OK');
+			console.log('Category inserted!');
 			}
 			else{
-				console.log('Fail');
+			console.log('Error or most propably Category already exists!');
 			}
-		});
-	}
+			//
+			}
+
+
+
+
+		//
+		for(let product of products){
+
+			let [results] = await connection.promise().query('INSERT IGNORE INTO Item VALUES(?,?,?)',[product['id'],product['name'],product['category']]);
+			if(results.affectedRows>0){
+			console.log('Item inserted!');
+			}
+			else{
+			console.log('Error or most propably item already exists!');
+			}
+			//
+			}
+			
+			//
+			for(let item of items){
+			
+			let id = item.id;
+			for(let detail of item.details){
+			//
+			let [results] = await connection.promise().query('INSERT INTO item_details VALUES(?,?,?)',[id,detail['detail_name'],detail['detail_value']]);
+			if(results.affectedRows>0){
+			console.log('Successfull');
+			}
+			else{
+			console.log('Unsuccessfull');
+			}
+			//
+			}
+			
+			//
+			}
+			//
+			
+			res.json({msg:"Done Uploading!"});	
+	//
 	}
 	catch(error){
 		console.log('Error',error);

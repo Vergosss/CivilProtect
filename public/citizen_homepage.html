@@ -312,7 +312,7 @@ const offers_body = document.querySelector('#offers_body');
 offers_body.innerHTML = "";
 //free offers
 for(let offr of untaken_offers){
-
+//if(!(untaken_offers.length)) break;
 let tr = document.createElement('tr');
 for(let key in offr){
   let td = document.createElement('td');
@@ -333,7 +333,9 @@ offers_body.appendChild(tr);
 //lifted but not completed offers(in progress)
 
 for(let offr of taken_offers){
-
+  //
+//if(!(taken_offers.length)) break;
+//
 let tr = document.createElement('tr');
 for(let key in offr){
   let td = document.createElement('td');
@@ -344,19 +346,22 @@ for(let key in offr){
     else{
       td.innerHTML = offr[key];
     }
+    tr.appendChild(td);
 }
 //
   let complete_date = document.createElement('td');
   //
   complete_date.innerHTML = '-';
-  tr.appendChild(withdrawal_date);
+  tr.appendChild(complete_date);
   
 offers_body.appendChild(tr);
 }
 
 //completed offers
 for(let offr of completed_offers){
+//
 
+//
 let tr = document.createElement('tr');
 for(let key in offr){
   let td = document.createElement('td');
