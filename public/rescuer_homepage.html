@@ -440,7 +440,7 @@ function show_requests2(requests){
 const grouped_requests = Object.groupBy(requests,function({username}){
   return username;
 });
-//console.log(res);
+//
 lines.clearLayers();//katharise ta layergroups
 map.removeLayer(lines);//afairese to group layer apo to map
 map.eachLayer(layer=>{if(layer instanceof L.Marker){map.removeLayer(layer)}});//vgale olous tous markers apo to map
@@ -475,7 +475,7 @@ undertake_button.appendChild(button);
 request_div.appendChild(undertake_button);
 request_div.appendChild(document.createElement('br'));
 //
-if(request['lifted'] == 1){
+if(request['lifted'] && request['type'] == 'Request'){
   button.disabled = true;
   request_marker.setIcon(yellowIcon);
   let cords = [[request_marker.getLatLng().lat,request_marker.getLatLng().lng],[vehicle.getLatLng().lat,vehicle.getLatLng().lng]];
@@ -483,15 +483,29 @@ if(request['lifted'] == 1){
   //line.addTo(map);
   lines.addLayer(line);
 }
+else if(request['lifted'] && request['type'] == 'Offer'){
+  button.disabled = true;
+  request_marker.setIcon(liftedOfferIcon);
+  let cords = [[request_marker.getLatLng().lat,request_marker.getLatLng().lng],[vehicle.getLatLng().lat,vehicle.getLatLng().lng]];
+  let line = L.polyline(cords,{color:'green'});
+  //line.addTo(map);
+  lines.addLayer(line);
+
+}
+else if(!request['lifted'] && request['type'] == 'Offer'){
+
+  request_marker.setIcon(unliftedOfferIcon);
+
+}
 //
 popup.appendChild(request_div);
 //
 button.addEventListener('click',function(){
-  this.disabled = true;
-  request_marker.setIcon(yellowIcon);
-  let cords = [[request_marker.getLatLng().lat,request_marker.getLatLng().lng],[vehicle.getLatLng().lat,vehicle.getLatLng().lng]];
-  let line = L.polyline(cords,{color:'green'});
-  lines.addLayer(line);
+  //this.disabled = true;
+  //request_marker.setIcon(yellowIcon);
+  //let cords = [[request_marker.getLatLng().lat,request_marker.getLatLng().lng],[vehicle.getLatLng().lat,vehicle.getLatLng().lng]];
+  //let line = L.polyline(cords,{color:'green'});
+  //lines.addLayer(line);
 
   create_task(request['username'],request['request_id'],request['citizen_first_name'],request['citizen_last_name'],request['citizen_telephone'],[request['item'],request['quantity']],request['type']);
   
@@ -532,8 +546,12 @@ fetch('/create_task/',{
     })
 })
 .then(res=>res.json())
-.then(updated_tasks=>{
-//ananeono me AJAX ton pinaka ton task tou diasosti
+.then(updated_requests_tasks=>{
+//ananeono me AJAX ton pinaka ton task tou diasosti kai to map
+let updated_requests = updated_requests_tasks[0];
+show_requests2(updated_requests);
+//
+let updated_tasks = updated_requests_tasks[1];
 update_tasks_table(updated_tasks);
 //
 

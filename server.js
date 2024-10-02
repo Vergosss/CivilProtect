@@ -812,31 +812,40 @@ let telephone = req.body.telephone;
 let item = req.body.item;
 let quantity = req.body.quantity;
 let type = req.body.type;
-connection.query('UPDATE Request SET lifted=true,vehicle_username=?,withdrawal_date=NOW() WHERE username=? AND request_id=?',[req.session.username,username,task_id],(error,results)=>{
-if(error) throw error;
-if(results.affectedRows>0){
-	console.log('Success!');
-}
-else{
-	console.log('Error!');
-}
-});
+
+//
+let new_requests;
+let new_tasks;
 //
 try{
+//
+let [results] = await connection.promise().query('UPDATE Request SET lifted=true,vehicle_username=?,withdrawal_date=NOW() WHERE username=? AND request_id=?',[req.session.username,username,task_id]);
 
-let [results] = await connection.promise().query('INSERT INTO Task(task_id,username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,type,vehicle_username) VALUES (?,?,?,?,?,NOW(),?,?,?,?) ',[task_id,username,first_name,last_name,telephone,item,quantity,type,req.session.username]);
+if(results.affectedRows>0){
+console.log('Success!');
+}
+else{
+console.log('Error!');
+}
+
+	//
+ [results] = await connection.promise().query('INSERT INTO Task(task_id,username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,type,vehicle_username) VALUES (?,?,?,?,?,NOW(),?,?,?,?) ',[task_id,username,first_name,last_name,telephone,item,quantity,type,req.session.username]);
 if(results.affectedRows>0){
 	console.log('Success!');
 }
 else{
 	console.log('Failure!');
 }
+//
+[results] = await connection.promise().query('SELECT request_id,username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,ST_X(cords),ST_Y(cords),lifted,type FROM Request WHERE lifted=false OR vehicle_username=?',[req.session.username]);
+new_requests = results;
+//
+[results] = await connection.promise().query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username,type FROM Task WHERE completed=false AND vehicle_username=?',[req.session.username]);
+new_tasks = results;
 
-connection.query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username,type FROM Task WHERE completed=false AND vehicle_username=?',[req.session.username],(error,results)=>{
-	if(error) throw error;
-	res.send(results);	
-});
 
+//
+res.send([new_requests,new_tasks]);
 //
 }
 catch(error){

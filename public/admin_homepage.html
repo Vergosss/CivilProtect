@@ -256,9 +256,12 @@ let base = L.marker([38.24,21.73],{draggable:true,icon:greenIcon});
 base.bindPopup('This is a popup');// 'syndeo' ton marker me to popup
 base.addTo(map);//prostheto ton marker ston xarth
 //
+/**********Arxikopoio ta filtra/layergroups************/
 var lifted_requests = L.layerGroup();
 var unlifted_requests = L.layerGroup();
 var offers = L.layerGroup();
+var lifted_offers = L.layerGroup();
+var unlifted_offers = L.layerGroup();
 var lines = L.layerGroup();
 var busy_vehicles = L.layerGroup();
 var free_vehicles = L.layerGroup();
