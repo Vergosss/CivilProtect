@@ -272,41 +272,44 @@ app.get('/get_categories/',LoggedIn,(req,res)=>{
 	});
 });
 //
-app.post('/add_category/',LoggedIn,(req,res)=>{
+app.post('/add_category/',LoggedIn,async (req,res)=>{
 	let id = req.body.id;
 	let category = req.body.category;
-
-	connection.query('INSERT IGNORE INTO Category(id,category_name) VALUES(?,?)',[id,category],(error,results)=>{
-		if(error) throw error;
-		if(results.affectedRows>0){
-			console.log('Insertion Successful');
-			res.json({msg:'Success'});
-		}
-		else{
-			console.log('Already in Database!');
-			res.json({msg:'Already in DB!'});
-		}
-	});
+	let categories;
+	try{
+	let [results] = await connection.promise().query('INSERT IGNORE INTO Category(id,category_name) VALUES(?,?)',[id,category]);
+	//
+	[results] = await connection.promise().query('SELECT * FROM Category');
+	categories = results;
+	//
+	res.send(categories);
+	}
+	catch(error){
+		console.log('Error: ',error);
+	}
 });
 //
 
-app.post('/add_item/',LoggedIn,(req,res)=>{
+app.post('/add_item/',LoggedIn,async (req,res)=>{
 
 	let id = req.body.id;
 	let item = req.body.item;
 	let category = req.body.category;
 	//
-		connection.query('INSERT IGNORE INTO Item(id,name,category) VALUES(?,?,?)',[id,item,category],(error,results)=>{
-			if(error) throw error;
-			if(results.affectedRows>0){
-				console.log('Insertion Successful');
-				res.json({msg:'Success'});
-			}
-			else{
-				console.log('Already in Database!');
-				res.json({msg:'Already in DB!'});
-			}
-		});
+	let items;
+	//
+	try
+	{
+
+	let [results] = await connection.promise().query('INSERT IGNORE INTO Item(id,name,category) VALUES(?,?,?)',[id,item,category]);
+	[results] = await connection.promise().query('SELECT * FROM Item');
+	items = results;
+	res.send(items);
+	}
+	catch(error){
+		console.log('Error: ',error);
+	}	
+			
 	
 	
 	});
@@ -773,7 +776,7 @@ app.post('/modify_inventory/',LoggedIn,async (req,res)=>{
 	try{
 	//
 	//edo isos to kano na yposthrizei enthesi,meiosi,ayksisi
-	let [results] = await connection.promise().query('INSERT INTO Inventory(item,quantity,category) VALUES(?,?,?) ON DUPLICATE KEY UPDATE ....',[adding_item,adding_quantity,adding_category]);
+	let [results] = await connection.promise().query('INSERT INTO Inventory(item,quantity,category) VALUES(?,?,?) ON DUPLICATE KEY UPDATE quantity=VALUES(quantity)',[adding_item,adding_quantity,adding_category]);
 	if(results.affectedRows>0){
 	console.log('Operation Successfull!');
 	}

@@ -681,8 +681,9 @@ fetch('/add_category/',{
   })
 })
 .then(res=>res.json())
-.then(results=>{
-  alert(results['msg']);
+.then(categories=>{
+  loadCategories(categories);
+  alert('Done!');
 })
 .catch(error=>{console.log('Error: ',error);})
 
@@ -722,9 +723,11 @@ fetch('/add_item/',{
   })
 })
 .then(res=>res.json())
-.then(results=>{
-
-  alert(results['msg']);
+.then(items=>{
+  //
+  loadItems(items);
+  loadInventoryItems(items);
+  alert('Done!');
 })
 .catch(error=>{console.log('Error: ',error);})
 
@@ -733,6 +736,7 @@ fetch('/add_item/',{
 function loadCategories(categories){
 
   const category_name = document.querySelector(".items  #item_category_name");//perno to select
+  category_name.innerHTML = "";
   for(let category of categories){
     let option = document.createElement('option');
     option.value = category['id'];
@@ -746,8 +750,8 @@ function loadCategories(categories){
 
 function loadItems(items){
 
-  const announcement_items= document.querySelector(".announcement_items");
-
+  const announcement_items = document.querySelector(".announcement_items");
+  announcement_items.innerHTML = "";
   for(let item of items){
     let label = document.createElement('label');
     //
@@ -764,6 +768,7 @@ function loadItems(items){
 function loadInventoryItems(items){
 
 let inventory_items = document.querySelector("#inventory_items");
+inventory_items.innerHTML = "";
 for(let item of items){
 let option = document.createElement('option');
 //
