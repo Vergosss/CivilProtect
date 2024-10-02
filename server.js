@@ -66,7 +66,7 @@ app.post('/login',(req,res)=>{
 
 let username = req.body.username;//perno ta dedomena pou esteila meso post apo to request mou
 let password = req.body.password;
-//res.send(`Username: ${username} Password: ${password}`);
+
 //kai ta typono meso tou response ths send
 
 	connection.query('SELECT * FROM User WHERE username=?',[username],(error,results,fields)=>{
@@ -83,21 +83,26 @@ let password = req.body.password;
 		//+
 		
 		role = results[0].role;
-		res.redirect('/home');//afou syndethikame epityxos anakateythine stin homepage
+		//res.redirect('/home');//afou syndethikame epityxos anakateythine stin homepage
+		//
+		res.json({msg:"Success"});
 		}
 		else{// an apotyxei to compare
 		console.log('Wrong username and or password');
+		res.json({msg:"Failure"});
 		}
 
 		});
 		
 		//emfanise ti selida
-		//res.redirect('/'); // to url tis selidas pou tha kanoume redirect
+		//
 		}
 		else{
-		res.send('Wrong username and/or password');
+		console.log('Wrong username and or password');
+		res.json({msg:"Failure"});
+		//res.send('Wrong username and/or password');
 		}
-		//res.end(); an exo th grammh epeidh stelno dyo fores tin apantisi petaei to http header sent
+		//
 		
 		});
 
@@ -133,19 +138,16 @@ app.get('/home',(req,res)=>{
 
 
 //
-app.get('/logout/',(req,res)=>{
-if(req.session.username){
+app.get('/logout/',LoggedIn,(req,res)=>{
+
 	console.log('Goodbye!');
 	req.session.destroy(error=>{
 	if(error) throw error;
 	role = null;//afou kaname logout den yparxei rolos
 	res.redirect('/');
 	});
-}
-else{
-	console.log('Not logged in!');
-	res.end();
-}
+
+//
 
 });
 //

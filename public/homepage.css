@@ -261,7 +261,7 @@ button{
  .category{
     display: flex;
     flex-direction: column;
-    color:white;
+    border: 10px solid #435165 ;
    
     
  }
@@ -286,6 +286,7 @@ button{
     background-color: dodgerblue;
     width:100px;
     border: none;/*an de valo border none tote einai me to perigrama to koubi, eno etsi apeleytheronetai ginetai pio xontro*/
+    border-radius: 3px;
     font-size: 18px;/*megethos tou keimenou tou koubiou*/
     text-align: center;
     cursor: pointer;
@@ -296,6 +297,7 @@ button{
  .items{
     display:flex;
     flex-direction:column;
+    border: 10px solid #435165;
  }
  .items > input[type='text']{
     width: 100px;
@@ -322,6 +324,7 @@ button{
     background-color: dodgerblue;
     width:100px;
     border: none;/*an de valo border none tote einai me to perigrama to koubi, eno etsi apeleytheronetai ginetai pio xontro*/
+    border-radius: 3px;
     font-size: 18px;/*megethos tou keimenou tou koubiou*/
     text-align: center;
     cursor: pointer;
