@@ -105,28 +105,6 @@ base.addTo(map);
 /*****os admin vlepo th vash****/
 
 
-/************
- * 
- * 
- * fetch('/citizens/')
-.then (res=>{return res.json();})
-.then(json=>{//omoio se logikh me to apo pano
-citizens = json;
-//douleia me tous polites
-showCitizens();
-})
-.catch(error=>{console.log('Error: ' + error);});
-
-**************/
-
-//
-
-
-//const input = document.querySelector("#search");
-//const div = document.querySelector("#citizens"); //me thn querySelector epilego to searchbar kai thn
-//perioxh(div) pou tha xoresoun oi citizens(to apotelesma tou autocomplete)
-
-
 /********fetch tis katigories ton proionton gia na fortothoun se ena dropdown menu***/
 fetch('/get_categories/')
 .then(res=>res.json())

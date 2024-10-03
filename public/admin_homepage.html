@@ -514,6 +514,11 @@ function show_Items(inventory_cargos){
   let cargos = inventory_cargos[1];
   const inventory_body = document.querySelector("#inventory_body");
   inventory_body.innerHTML = "";//clear
+  let allBodies = document.querySelectorAll("#items tbody");
+//EDO
+  for(let x of allBodies){
+    x.innerHTML = "";
+  }
   //Add the inventory
   for(let product of inventory){
     let tr = document.createElement('tr');
