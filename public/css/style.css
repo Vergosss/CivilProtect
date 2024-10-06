@@ -1,0 +1,51 @@
+body {
+    background-color: #435165;
+}
+
+
+.login {
+    width: 400px;
+    background-color: #ffffff;
+    box-shadow: 0 0 9px 0 rgba(0, 0, 0, 0.3);
+    margin: 100px auto;
+}
+/* stylaro tin forma mono, kano align ta periexomena tis formas sto kentro, an valo px left ta periexomena
+tis formas pane pio aristera px to username:
+*/
+#map{
+    margin-left:auto;
+    margin-right:auto;
+}
+.login form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;/* to div pernei olh th selida kata platos alla me to justify content pernoume to form kai to vazoume sth mesh tou div de metakinoume to idio to div*/
+    padding-top: 20px;
+
+}
+/* style gia to form tis perioxhs(div)-login kai sygkekrimena gia ta inputs*/
+.login form input[type="password"], .login form input[type="text"], .login form input[type="tel"] {
+    width: 310px;
+    height: 50px;
+    border: 1px solid #dee0e4;
+    margin-bottom: 20px;
+    padding: 0 15px;
+}
+/* style gia to form tis perioxhs(div)-login kai sygkekrimena gia to koubi*/
+.login form input[type="submit"] {
+    width: 100%;
+    padding: 15px;
+   margin-top: 20px;
+    background-color: #3274d6;
+    border: 0;
+    cursor: pointer;
+    font-weight: bold;
+    color: #ffffff;
+    transition: background-color 0.2s;
+}
+.map{
+
+    margin: auto;
+    width: 50%;
+
+}

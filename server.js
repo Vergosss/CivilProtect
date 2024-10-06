@@ -1,25 +1,25 @@
 
-console.log(__dirname);//pou vriskomai
+console.log(__dirname);//pou vriskomai-Current working directory
 const express = require("express");//import express module
-const mysql = require("mysql2");
+const mysql = require("mysql2");//module for connecting to Database
 const session = require('express-session');//module gia ta sessions
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcrypt");//module for hashing passwords
 //
 
-console.log(process.version);
+console.log(process.version);//NodeJS version
 //
-const multer = require("multer");
+const multer = require("multer");//module for file uploading
 const connection = mysql.createConnection({
 	host     : 'localhost',
 	user     : 'web',
 	password : 'web',
 	database : 'web'
 });
-//
+//session object to connect to the database
 
 const app = express();//express object app
 app.use('/public',express.static('C:\\Users\\Vergosss\\Web-Programming-and-Systems\\public'));
-
+//server all files in the directory /public
 //
 //arxikopoio to session-!!an de to valo to session einai undefined kai peta errors sthn post
 app.use(session({
