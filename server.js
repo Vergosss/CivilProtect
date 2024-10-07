@@ -48,7 +48,7 @@ function LoggedIn(req,res,next){
 		return next(); // to return termatizei ton kodika ayths synarthshs-middlewarre-exyphreth
 	}
 	else{
-		res.redirect('/');
+		res.redirect('/');//if the user is not logged in trying to access any endpoint redirects to the login page
 	}
 }
 //
@@ -108,7 +108,7 @@ let password = req.body.password;
 
 });
 //
-
+/******Display the correct homepage depending on the logged-in user's role******* */
 app.get('/home',(req,res)=>{
 	//
 	console.log(req.session);
@@ -138,6 +138,7 @@ app.get('/home',(req,res)=>{
 
 
 //
+/******Logout of the system***** */
 app.get('/logout/',LoggedIn,(req,res)=>{
 
 	console.log('Goodbye!');
@@ -152,12 +153,13 @@ app.get('/logout/',LoggedIn,(req,res)=>{
 });
 //
 
-//
+//GET request at the /signup/ endpoint loads the signup page
 app.get('/signup/',(req,res)=>{
 	res.sendFile(__dirname + '\\public\\signup.html');  
 	});
 
 //
+/*********Create a new citizen account******* */
 app.post('/signup/',(req,res)=>{
 
 	let reg_username = req.body.username;
@@ -193,6 +195,7 @@ app.post('/signup/',(req,res)=>{
 	
 	});
 //
+/*******Add a new rescuer to the database as an admin******* */
 app.post('/register_rescuer/',LoggedIn,(req,res)=>{
 
 	let reg_username = req.body.username;
@@ -223,7 +226,7 @@ app.post('/register_rescuer/',LoggedIn,(req,res)=>{
 		});
 
 });
-
+/**************Get information about the availiable Items******* */
 app.get('/get_items/',LoggedIn,(req,res)=>{
 
 	connection.query('SELECT * FROM Item',(error,results)=>{
@@ -233,6 +236,7 @@ app.get('/get_items/',LoggedIn,(req,res)=>{
 	})
 });
 //
+/**********Submitting a request to be picked up by a rescuer* */
 app.post('/request/',LoggedIn,(req,res)=>{
 	let item = req.body.item;
 	let quantity = req.body.quantity;
@@ -265,6 +269,7 @@ app.post('/request/',LoggedIn,(req,res)=>{
 	
 });
 //
+/*********Get information about the availiable item Categories*** */
 app.get('/get_categories/',LoggedIn,(req,res)=>{
 	connection.query('SELECT * FROM Category',(error,results)=>{
 		if(error) throw error;
@@ -272,6 +277,7 @@ app.get('/get_categories/',LoggedIn,(req,res)=>{
 	});
 });
 //
+/************Add a new category******* */
 app.post('/add_category/',LoggedIn,async (req,res)=>{
 	let id = req.body.id;
 	let category = req.body.category;
@@ -289,7 +295,7 @@ app.post('/add_category/',LoggedIn,async (req,res)=>{
 	}
 });
 //
-
+/**********Add a new item***** */
 app.post('/add_item/',LoggedIn,async (req,res)=>{
 
 	let id = req.body.id;
@@ -325,6 +331,7 @@ app.get('/coordinates/', (req,res)=>{
 });
 
 //
+/********Get citizen's coordinates****** */
 app.get('/get_coordinates/',LoggedIn,(req,res)=>{
 
 connection.query('SELECT ST_X(cords),ST_Y(cords) FROM User WHERE username=?',[req.session.username],(error,results)=>{
@@ -344,6 +351,7 @@ app.get('/citizens/',(req,res)=>{
 
 });
 //
+/************ */
 var storage = multer.diskStorage({
 	destination: function (req, file, callback) {
 	  callback(null, './uploads/');
@@ -438,6 +446,7 @@ fs.readFile(__dirname + '\\' + path,'utf-8',async (error,data)=>{
 });
 
 //
+/********Update availiable items/categories and details through direct call to the json's URL**** */
 app.post('/update_products/',LoggedIn,async (req,res)=>{
 	//
 	let data = req.body;
@@ -509,6 +518,7 @@ app.post('/update_products/',LoggedIn,async (req,res)=>{
 });
 
 //
+/*******Get Base's coordinates*** */
 app.get('/get_base/',LoggedIn,(req,res)=>{
 
 connection.query('SELECT ST_X(cords),ST_Y(cords) FROM Base',(error,results)=>{
@@ -519,6 +529,7 @@ res.send(results);
 });
 });
 //
+/*****Update Base's coordinates**** */
 app.post('/change_base/',LoggedIn,(req,res)=>{
 
 let latitude = req.body.latitude;
@@ -538,6 +549,7 @@ console.log('Base cords didnt change');
 
 });
 //
+/********Get the coordinates of the rescuer***** */
 app.get('/get_vehicle/',LoggedIn,(req,res)=>{
 
 connection.query('SELECT ST_X(cords),ST_Y(cords) FROM User WHERE role="Rescuer" AND username=?',[req.session.username],(error,results)=>{
@@ -548,6 +560,7 @@ res.send(results);
 
 });
 //
+/*******Get the coordinates of all rescuers**** */
 app.get('/get_vehicles/',LoggedIn,async(req,res)=>{
 //
 
@@ -566,6 +579,7 @@ res.send([task_free_vehicles,task_busy_vehicles]);
 
 });
 //
+/*********Update coordinates of the rescuer***** */
 app.post('/update_vehicle/',LoggedIn,(req,res)=>{
 let latitude = req.body.latitude;
 let longitude = req.body.longitude;
@@ -586,6 +600,7 @@ else{
 
 });
 //
+/****Fetch all the free requests/offers and the the requests/offers that the respective rescuer has undertaken********* */
 app.get('/get_requests/',LoggedIn,(req,res)=>{
 
 	connection.query('SELECT request_id,username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,ST_X(cords),ST_Y(cords),lifted,type FROM Request WHERE lifted=false OR vehicle_username=?',[req.session.username],(error,results)=>{
@@ -594,6 +609,7 @@ app.get('/get_requests/',LoggedIn,(req,res)=>{
  	});
 });
 //
+/*******As an admin get all the requests/offers including free ones and undertaken ones****** */
 app.get('/fetch_requests/',LoggedIn,(req,res)=>{
 //o admin vlepei ola ta requests opote to query ta gyrizei ola
 	connection.query('SELECT username,citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,withdrawal_date,vehicle_username,ST_X(cords),ST_Y(cords),lifted,type FROM Request',(error,results)=>{
@@ -603,6 +619,7 @@ app.get('/fetch_requests/',LoggedIn,(req,res)=>{
 });
 //
 //
+/*****Get the citizen's request history****** */
 app.get('/receive_requests/',LoggedIn,async (req,res)=>{
 //
 //
@@ -630,6 +647,7 @@ catch(error){
 
 });
 //
+/************Load the inventory's items***** */
 app.get('/load_inventory/',LoggedIn,(req,res)=>{
 	connection.query('SELECT * FROM Inventory WHERE quantity>0',(error,results)=>{
 		if(error) throw error;
@@ -637,6 +655,7 @@ app.get('/load_inventory/',LoggedIn,(req,res)=>{
 	});
 });
 //
+/********Unload all rescuer's cargo into Base's inventory****** */
 app.post('/update_inventory/',LoggedIn,async (req,res)=>{
 
 	let cargo_deload = req.body.deload_cargo;
@@ -683,6 +702,7 @@ app.post('/update_inventory/',LoggedIn,async (req,res)=>{
 	
 	});
 //
+/********Load rescuer's Cargo**** */
 app.get('/load_cargo/',LoggedIn,(req,res)=>{
 	connection.query('SELECT item,quantity,category FROM Cargo WHERE username=? AND quantity>0',[req.session.username],(error,results)=>{
 		//na epistrepsei category
@@ -691,7 +711,7 @@ app.get('/load_cargo/',LoggedIn,(req,res)=>{
 	});
 });
 
-//
+/*******Load selected inventory items and their respective quantities into the rescuer's cargo**** */
 app.post('/update_cargo/',LoggedIn,async (req,res)=>{
 //enimerosi tou fortiou tou diasosti
 //sto inventory key = username,item alios kanei ksana px iasonasmakris-water
@@ -740,6 +760,7 @@ app.post('/update_cargo/',LoggedIn,async (req,res)=>{
 
 });
 //
+/**********Get all the inventory and cargo items*** */
 app.get('/get_inventory_cargos/',LoggedIn,async (req,res)=>{
 let inventory;
 let cargos;
@@ -761,6 +782,7 @@ console.log('Error: ',error);
 //
 });
 //
+/****Get the categories of all the items that exist in the base's inventory or in a rescuer's cargo that have positive quantities* */
 app.get('/get_current_categories/',LoggedIn,(req,res)=>{
 //
 connection.query('select category,category_name from Cargo inner join Category on Cargo.category=Category.id WHERE quantity>0 UNION select category,category_name from Inventory inner join Category on Inventory.category=Category.id WHERE quantity>0',(error,results)=>{
@@ -772,7 +794,7 @@ connection.query('select category,category_name from Cargo inner join Category o
 //
 });
 //
-
+/************Modify the quantity of an item in the inventory*********** */
 app.post('/modify_inventory/',LoggedIn,async (req,res)=>{
 
 	let adding_item = req.body.adding_item;
@@ -816,6 +838,7 @@ app.post('/modify_inventory/',LoggedIn,async (req,res)=>{
 
 
 //
+/*******Create an active task****** */
 app.post('/create_task/',LoggedIn,async (req,res)=>{
 let username = req.body.username;
 let task_id = req.body.request_id;
@@ -876,7 +899,7 @@ catch(error){
 
 
 //
-
+/************Complete the selected task and update the rescuer's cargo depending on the task type********** */
 app.post('/complete_task/',LoggedIn,async (req,res)=>{
 let tid = req.body.tid;
 let item = req.body.item;
@@ -961,6 +984,7 @@ let new_cargo;
 //
 
 //
+/********Load all the rescuer's currently active tasks ******* */
 app.get('/get_tasks/',LoggedIn,(req,res)=>{
 connection.query('SELECT citizen_first_name,citizen_last_name,citizen_telephone,entry_date,item,quantity,task_id,username,type FROM Task WHERE completed=false AND vehicle_username=?',[req.session.username],(error,results)=>{
 if(error) throw error;
@@ -970,6 +994,7 @@ res.send(results);
 });
 
 //
+/**********Cancelling a rescuer's task******* */
 app.post('/cancel_task/',LoggedIn,async (req,res)=>{
 	let tid = req.body.tid;
 	let new_tasks;
@@ -1025,6 +1050,7 @@ app.get('/graph/',LoggedIn,(req,res)=>{
 //
 
 //
+/********Generate the statistics of Requests and offers in a given time period****** */
 app.post('/get_dates/',LoggedIn,async (req,res)=>{
 	let start = req.body.start;
 	let end = req.body.end;
@@ -1098,6 +1124,7 @@ app.post('/get_dates/',LoggedIn,async (req,res)=>{
 });
 
 //
+/*******Create Base's announcements to be displayed on the citizen's homepage******** */
 app.post('/create_announcement/',LoggedIn,(req,res)=>{
 
 	let text = req.body.text;
@@ -1116,6 +1143,7 @@ app.post('/create_announcement/',LoggedIn,(req,res)=>{
 	});
 });
 //
+/*******Load all the Base's announcements onto the citizen's homepage******* */
 app.get('/get_announcements/',LoggedIn,(req,res)=>{
 
 	connection.query('SELECT * FROM Announcement',(error,results)=>{
@@ -1128,7 +1156,7 @@ app.get('/get_announcements/',LoggedIn,(req,res)=>{
 	
 	});
 //
-
+/***********Submit an Offer as a citizen*********** */
 app.post('/offer/',LoggedIn,(req,res)=>{
 	let item = req.body.item;
 	let quantity = req.body.quantity;
@@ -1174,6 +1202,7 @@ app.post('/cancel_offer/',(req,res)=>{
 });
 
 //
+/********Fetch all offers(new,pending,completed) of a citizen******** */
 app.get('/receive_offers/',LoggedIn,async (req,res)=>{
 	//
 	let untaken_offers;
@@ -1202,6 +1231,7 @@ app.get('/receive_offers/',LoggedIn,async (req,res)=>{
 
 //
 module.exports = app;//an thelo na kano import se allo JS arxeio ton parapano kodika
+/*****Listen for requests on the port 3000* */
 app.listen(port,() => {
     console.log(`Listening on port ${port}!`);
   });

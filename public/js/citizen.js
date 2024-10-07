@@ -11,7 +11,7 @@ map.setView([38.24,21.73],16);//orizo tis syntetagmenes tou shmeiou sto opoio th
 
 /*************************************/
 let base = L.marker([38.24,21.73],{draggable:false});
-/*********************/
+/*********Load the Base into the map************/
 fetch('/get_base/')
 .then(res=>{return res.json();})
 .then(data=>{
@@ -21,8 +21,6 @@ base.addTo(map);
 })
 .catch(error=>{console.log('Error: ',error);})
 /****************/
-/*****os admin vlepo th vash****/
-
 
 /********fetch tis katigories ton proionton gia na fortothoun se ena dropdown menu***/
 fetch('/get_categories/')
@@ -61,7 +59,7 @@ fetch('/get_coordinates/')
 
  /*****/
 /******Dimiourgia aithmatos apo ton polith******/
-//var requested_item;
+
 let popup = document.createElement('div');
 
 const request_button = document.querySelector("#request");
@@ -338,7 +336,7 @@ const citizen_announcements = document.querySelector(".citizen_announcements");
       }
 
 }
-/**********************Offer function********************************/
+/**********************Submit an Offer function********************************/
 
 function Offer(){
 if(this.returnValue == 'cancel' || isNaN(this.returnValue) || this.returnValue <=0 || !(Number.isInteger(Number(this.returnValue))))//edo epeidh den einai .value to returnvalue einai string kai h isinteger('1') epistrefei false
@@ -398,7 +396,7 @@ categories_menu.appendChild(option);//prosthese kathe option sto select menu
 categories_menu.addEventListener('input',filterItems);//isos kai oninput
 //
 }
-/***********************************/
+/****************Filtering availiable items based on the selected category*******************/
 function filterItems(){
   //pare thn kathgoria pou epelekses apo to select
   let category = document.querySelector("#categories").value;

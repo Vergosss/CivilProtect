@@ -86,7 +86,7 @@ update_inventory_table(inventory);
 
 })
 .catch(error=>{console.log('Error: ',error);})
-/**********************************/
+/***************Load rescuer's Cargo*******************/
 fetch('/load_cargo/')
 .then(res=>res.json())
 .then(cargo=>{
@@ -121,7 +121,7 @@ return fetch('/get_requests/');
 })
 .catch(error=>{console.log('Error: ',error);})
 //
-/*******Allagh ton cords tou (oximatos) diasosti me click kai drag*****/
+/*************Initially disable the buttons of loading/unloading from/to the inventory for security********** */
 document.querySelector("#fortosi").disabled = true;
 document.querySelector("#ekfortosi").disabled = true;
 //
@@ -145,7 +145,7 @@ fetch('/update_vehicle/',{
 .then(res=>{return res.json();})
 .then(data=>{console.log(data);})
 .catch(error=>{console.log('Error: ',error);})
-//
+//If the vehicle is within 100 meters from Base then enable the loading/unloading buttons
 if(Distance(vehicle,base) < 100){
 //energopoio thn fortosi/ekfortosi
 fortosi.disabled = false;
@@ -158,7 +158,7 @@ else{
 
 Activate_Complete_Button(vehicle);
 });
-/********************************/
+/*************Update the status of each task's button depending on its distance from the Rescuer*******************/
 function Activate_Complete_Button(vehicle){
 const tbody = document.querySelector("#tasks_body");
 map.eachLayer(marker=>{
@@ -180,7 +180,7 @@ map.eachLayer(marker=>{
    
 });
 }
-/*******************************/
+/**********Code that loads the selected items from the inventory alongside the desired quantity into the rescuer's cargo*********************/
 const load = document.querySelector("#fortosi");
 const unload = document.querySelector("#ekfortosi");
 //Event listeners
@@ -442,7 +442,7 @@ filter.addTo(map);
 /********Insert a record on the table****/
 
 
-/*****Creating a task after clicking on the request/offer button******/
+/*****Creating an active task after clicking on the request/offer button******/
 function create_task(username,request_id,first_name,last_name,telephone,item_quantity,type){
 
 fetch('/create_task/',{
@@ -520,7 +520,7 @@ tbody.appendChild(tr);
 //After finishing iterating tasks object...
 
 }
-/**************************/
+/*********Complete and Cancel a task functions*****************/
 function Complete(event){
 console.log('Clicked!');
 let item = this.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.innerHTML ;
@@ -597,7 +597,7 @@ fetch('/cancel_task/',{
 .catch(error=>{console.log('Error: ',error);})
 
 }
-/********************/
+/*********Calculate the distance between 2 markers***********/
 function Distance(vehicle,marker){
   return map.distance([vehicle.getLatLng().lat,vehicle.getLatLng().lng],[marker.getLatLng().lat,marker.getLatLng().lng]);
 }

@@ -2,7 +2,7 @@ let map = L.map('map'); //ftaxno mono ton xarti. Den exo ta tiles, prostithentai
 //
 let tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-   });//vazo ta tiles tou OSM
+   });//vazo ta tiles tou OSM ston xarth
 tiles.addTo(map);//prostheto ta tiles tou OSM ston xarti
 map.setView([38.24,21.73],16);//orizo tis syntetagmenes tou shmeiou sto opoio tha kentrarei o xarths kai to zoom level
 //filtra ston xarti
@@ -127,7 +127,7 @@ base.bindPopup('Base');
 base.addTo(map);
 })
 .catch(error=>{console.log('Error: ',error);})
-/******************************************/
+/****************Fetching the categories of the inventory's/cargos' items to display them on a table**************************/
 
 fetch('/get_current_categories/')
 .then(res=>res.json())
@@ -137,7 +137,7 @@ fetch('/get_current_categories/')
 })
 .catch(error=>{console.log('Error: ',error);})
 
-/******************************************/
+/***************Fetch inventory's and Cargos's Items***************************/
 fetch('/get_inventory_cargos/')
 .then(res=>res.json())
 .then(inventory_cargos=>{
@@ -221,7 +221,7 @@ else{
 
 });
 //
-/**Get initial cords and store them in case i cancel the cords change**/
+/**Get initial cords and store them in case of cancelation **/
 base.addEventListener('dragstart',event=>{
 // otan KSEKINAO na travao ton marker pare tis syntetagmenes tou(tis arxikes tou diladi)
 starting_lat = base.getLatLng().lat;
@@ -350,7 +350,7 @@ filter.addOverlay(lines,'Connections');
 }
 /********/
 
-/**********/
+/*****For each task get the coordinates of its respective vehicle*****/
 function get_vehicle(vehicle_username){
   //pairno ta cords tou oximatos me aytes tis syntetagmenes
 let cords;
@@ -361,7 +361,7 @@ if(marker.options.name == vehicle_username){
 });
 return cords;
 }
-/*************************/
+/********Display inventory/cargo items*****************/
 function show_Items(inventory_cargos){
   let inventory = inventory_cargos[0];
   let cargos = inventory_cargos[1];
@@ -437,7 +437,7 @@ for(let username in grouped_cargos){
 function filter_Items(){
 
 const checkboxes = document.querySelectorAll(".filter");
-let current_values = [];
+let current_values = [];//get the currently clicked categories/gets updates on each checkbox click
 for(let box of checkboxes){
   if(box.checked){
     current_values.push(box.value);//poies times exoun klikaristei?
@@ -475,6 +475,7 @@ for(let body of bodies){
 }
 
 //
+/***************Constructing the filtering table****************** */
 function filter_Categories(categories){
 const filter_categories_table = document.querySelector("#filter_categories");
 //
@@ -621,7 +622,7 @@ function loadItems(items){
 
   }
 }
-/******************************************************************************/
+/**********************Create a dropdown menu to gather all items that exist in the Base's Inventory**************/
 
 function loadInventoryItems(items){
 
@@ -868,7 +869,7 @@ if(!first_date && !second_date){
 
 sendDates(first_date,second_date);
 }
-/*******************/
+/********Get the dates given by the user and send them to the database to fetch the wanted statistics***********/
 function sendDates(start,end){
 //
 fetch('/get_dates/',{
@@ -918,7 +919,7 @@ body:ProductData
 //
 }
 
-/*******************/
+/*********Fetch items by clicking on a button**********/
 //an patithei to koubi kano fetch ta proionta me amesh klhsh sto url 
 const itemsbutton = document.querySelector("#itemsbutton");
 itemsbutton.addEventListener('click',async ()=>{
