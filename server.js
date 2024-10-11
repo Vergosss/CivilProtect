@@ -375,12 +375,14 @@ const path = req.file.path;
 //diavazo to arxeio enonontas to trexon directory + '\\' + to path
 fs.readFile(__dirname + '\\' + path,'utf-8',async (error,data)=>{
 	if(error) throw error;
+	let new_items;
+	let new_categories;
 	data = JSON.parse(data);//diavase ta dedomena os JSON
-	//console.log(data);
+	//
 	let {code,message,categories,...items} = data;//afairo apo to arxeio to code,message,categories gia na xeiristo mono ta proionta
 	items = items.items;//afairo to {} sta akra-ara einai array objects tora
 	const arr = items.map(item=>item.details);
-	//console.log(arr);//details
+	//
 	const products = items.map(item=>{return {id:item.id,name: item.name,category:item.category};});
 	console.log(products);
 	//
@@ -435,7 +437,15 @@ fs.readFile(__dirname + '\\' + path,'utf-8',async (error,data)=>{
 			}
 			//
 			
-			res.json({msg:"Done Uploading!"});	
+			//res.json({msg:"Done Uploading!"});
+			//
+			let [results] = await connection.promise().query('SELECT * FROM Category');	
+			new_categories = results;
+			//
+			[results] = await connection.promise().query('SELECT * FROM Item');
+			new_items = results;
+			//
+			res.send([new_categories,new_items]);//send to the frontend the updated categories/Items
 	//
 	}
 	catch(error){
@@ -448,6 +458,9 @@ fs.readFile(__dirname + '\\' + path,'utf-8',async (error,data)=>{
 //
 /********Update availiable items/categories and details through direct call to the json's URL**** */
 app.post('/update_products/',LoggedIn,async (req,res)=>{
+	//
+	let new_categories;
+	let new_items;
 	//
 	let data = req.body;
 	let {code,message,categories,...items} = data;
@@ -506,7 +519,15 @@ app.post('/update_products/',LoggedIn,async (req,res)=>{
 			}
 			//
 			
-			res.json({msg:"Done Fetching"});
+			//res.json({msg:"Done Fetching"});
+			let [results] = await connection.promise().query('SELECT * FROM Category');	
+			new_categories = results;
+			//
+			[results] = await connection.promise().query('SELECT * FROM Item');
+			new_items = results;
+			//
+			res.send([new_categories,new_items]);//send to the frontend the updated categories/Items
+	//
 		}
 		catch(error){
 			console.log('Error: ',error);

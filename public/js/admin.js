@@ -913,7 +913,13 @@ body:ProductData
 })
 .then(res=>res.json())
 .then(results=>{
-  alert(results['msg']);
+  //tha borousa ajax update ton products
+  let categories = results[0];
+  loadCategories(categories);
+  let items = results[1];
+  loadItems(items);
+  //
+  alert('Done uploading Items and Categories');
 })
 .catch(error=>{console.log('Error: ',error);})
 //
@@ -937,7 +943,11 @@ res = await fetch('/update_products/',{
   )
 });
 let results = await res.json();
-alert(results['msg']);
+let categories = results[0];
+let items = results[1];
+//ajax update of Items/Categories
+loadCategories(categories);
+loadItems(items);
 }
 catch(error){
   console.log('Error: ',error);
