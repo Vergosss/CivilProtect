@@ -918,6 +918,7 @@ body:ProductData
   loadCategories(categories);
   let items = results[1];
   loadItems(items);
+  loadInventoryItems(items);
   //
   alert('Done uploading Items and Categories');
 })
@@ -948,6 +949,7 @@ let items = results[1];
 //ajax update of Items/Categories
 loadCategories(categories);
 loadItems(items);
+loadInventoryItems(items);
 }
 catch(error){
   console.log('Error: ',error);
