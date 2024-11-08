@@ -18,7 +18,7 @@ const connection = mysql.createConnection({
 //session object to connect to the database
 
 const app = express();//express object app
-app.use('/public',express.static('C:\\Users\\Vergosss\\Web-Programming-and-Systems\\public'));
+app.use('/public',express.static('public'));
 //server all files in the directory /public
 //
 //arxikopoio to session-!!an de to valo to session einai undefined kai peta errors sthn post
@@ -56,7 +56,7 @@ function LoggedIn(req,res,next){
 //
 app.get(['/','/login'],(req,res)=>{
 
-res.sendFile(__dirname + '\\public\\login.html');
+res.sendFile(__dirname + '\\public\\html\\login.html');
 
 });
 
@@ -116,17 +116,17 @@ app.get('/home',(req,res)=>{
 	console.log('Role: ',role);
 	if(req.session.username && role == 'Admin')
 	{
-	res.sendFile(__dirname + '\\public\\admin_homepage.html');
+	res.sendFile(__dirname + '\\public\\html\\admin_homepage.html');
 	}
 	else if(req.session.username && role == 'Rescuer')
 	{
 	
-	res.sendFile(__dirname + '\\public\\rescuer_homepage.html');
+	res.sendFile(__dirname + '\\public\\html\\rescuer_homepage.html');
 	}
 	else if(req.session.username && role == 'Citizen')
 	{
 	console.log('Role:',role);
-	res.sendFile(__dirname + '\\public\\citizen_homepage.html');//
+	res.sendFile(__dirname + '\\public\\html\\citizen_homepage.html');//
 	}
 
 	else{
@@ -155,7 +155,7 @@ app.get('/logout/',LoggedIn,(req,res)=>{
 
 //GET request at the /signup/ endpoint loads the signup page
 app.get('/signup/',(req,res)=>{
-	res.sendFile(__dirname + '\\public\\signup.html');  
+	res.sendFile(__dirname + '\\public\\html\\signup.html');  
 	});
 
 //
