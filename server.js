@@ -60,7 +60,7 @@ res.sendFile(__dirname + '\\public\\html\\login.html');
 
 });
 
-var role = null;
+ 
 //route gia to post ton dedomenon tis formas
 app.post('/login',(req,res)=>{
 
@@ -82,7 +82,7 @@ let password = req.body.password;
 		console.log('Successfully logged in');
 		//+
 		
-		role = results[0].role;
+		req.session.role = results[0].role;
 		//res.redirect('/home');//afou syndethikame epityxos anakateythine stin homepage
 		//
 		res.json({msg:"Success"});
@@ -113,19 +113,19 @@ app.get('/home',(req,res)=>{
 	//
 	console.log(req.session);
 	//
-	console.log('Role: ',role);
-	if(req.session.username && role == 'Admin')
+	//console.log('Role: ',role);
+	if(req.session.username && req.session.role == 'Admin')
 	{
 	res.sendFile(__dirname + '\\public\\html\\admin_homepage.html');
 	}
-	else if(req.session.username && role == 'Rescuer')
+	else if(req.session.username && req.session.role == 'Rescuer')
 	{
 	
 	res.sendFile(__dirname + '\\public\\html\\rescuer_homepage.html');
 	}
-	else if(req.session.username && role == 'Citizen')
+	else if(req.session.username && req.session.role == 'Citizen')
 	{
-	console.log('Role:',role);
+	//
 	res.sendFile(__dirname + '\\public\\html\\citizen_homepage.html');//
 	}
 
@@ -144,7 +144,7 @@ app.get('/logout/',LoggedIn,(req,res)=>{
 	console.log('Goodbye!');
 	req.session.destroy(error=>{
 	if(error) throw error;
-	role = null;//afou kaname logout den yparxei rolos
+	//role = null;//afou kaname logout den yparxei rolos
 	res.redirect('/');
 	});
 
