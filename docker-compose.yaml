@@ -7,7 +7,7 @@ services:
       - ./database:/docker-entrypoint-initdb.d:ro
     env_file: ".env"
     healthcheck:
-      test: mysql --user=root --password=waynejones --execute="SHOW DATABASES";
+      test: mysql --user=root --password=${MARIADB_ROOT_PASSWORD} --execute="SHOW DATABASES";
       interval: 5s
       timeout: 10s
       retries: 3
