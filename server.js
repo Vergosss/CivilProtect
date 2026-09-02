@@ -4,16 +4,16 @@ const express = require("express");//import express module
 const mysql = require("mysql2");//module for connecting to Database
 const session = require('express-session');//module gia ta sessions
 const bcrypt = require("bcrypt");//module for hashing passwords
-const dotenv = require("dotenv");//module to load environment variables
+const multer = require("multer");//module for file uploading
+
 //Environment variables
-dotenv.config();
 const USER = process.env.MARIADB_USER;
 const PASSWORD = process.env.MARIADB_PASSWORD;
 const DATABASE = process.env.MARIADB_DATABASE;
 const HOST = process.env.MARIADB_HOSTNAME;
 console.log(process.version);//NodeJS version
+
 //
-const multer = require("multer");//module for file uploading
 const connection = mysql.createConnection({
 	host     : HOST,
 	user     : USER,
