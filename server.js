@@ -10,7 +10,7 @@ console.log(process.version);//NodeJS version
 //
 const multer = require("multer");//module for file uploading
 const connection = mysql.createConnection({
-	host     : 'localhost',
+	host     : 'db',
 	user     : 'web',
 	password : 'web',
 	database : 'web'
@@ -19,7 +19,7 @@ const connection = mysql.createConnection({
 
 const app = express();//express object app
 app.use('/public',express.static('public'));
-//server all files in the directory /public
+//serve all files in the directory /public
 //
 //arxikopoio to session-!!an de to valo to session einai undefined kai peta errors sthn post
 app.use(session({
@@ -56,7 +56,9 @@ function LoggedIn(req,res,next){
 //
 app.get(['/','/login'],(req,res)=>{
 
-res.sendFile(__dirname + '\\public\\html\\login.html');
+//res.sendFile(__dirname + '\\public\\html\\login.html');
+res.sendFile(__dirname + '/public/html/login.html');
+
 
 });
 
@@ -116,17 +118,23 @@ app.get('/home',(req,res)=>{
 	//console.log('Role: ',role);
 	if(req.session.username && req.session.role == 'Admin')
 	{
-	res.sendFile(__dirname + '\\public\\html\\admin_homepage.html');
+	//res.sendFile(__dirname + '\\public\\html\\admin_homepage.html');
+	res.sendFile(__dirname + '/public/html/admin_homepage.html');
+
 	}
 	else if(req.session.username && req.session.role == 'Rescuer')
 	{
 	
-	res.sendFile(__dirname + '\\public\\html\\rescuer_homepage.html');
+	//res.sendFile(__dirname + '\\public\\html\\rescuer_homepage.html');
+	res.sendFile(__dirname + '/public/html/rescuer_homepage.html');
+
 	}
 	else if(req.session.username && req.session.role == 'Citizen')
 	{
 	//
-	res.sendFile(__dirname + '\\public\\html\\citizen_homepage.html');//
+	//res.sendFile(__dirname + '\\public\\html\\citizen_homepage.html');//
+	res.sendFile(__dirname + '/public/html/citizen_homepage.html');//
+
 	}
 
 	else{
@@ -155,7 +163,9 @@ app.get('/logout/',LoggedIn,(req,res)=>{
 
 //GET request at the /signup/ endpoint loads the signup page
 app.get('/signup/',(req,res)=>{
-	res.sendFile(__dirname + '\\public\\html\\signup.html');  
+	//res.sendFile(__dirname + '\\public\\html\\signup.html');  
+	res.sendFile(__dirname + '/public/html/signup.html');  
+
 	});
 
 //
