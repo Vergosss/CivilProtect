@@ -1,4 +1,4 @@
-# Web-Programming-and-Systems
+# CivilProtect
 Web Programming and Systems 2023-2024 Fall Semester CEID course project.
 # Aim of the Project
 The aim of this project is to develop a collaborative system for registration of
