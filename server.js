@@ -388,7 +388,7 @@ const path = req.file.path;
 //epistrefei ena object me plirofories sxetikes me to ypovlithen arxeio
 //perno to path property pou einai to monopati pou vrisketai to arxeio
 //diavazo to arxeio enonontas to trexon directory + '\\' + to path
-fs.readFile(__dirname + '\\' + path,'utf-8',async (error,data)=>{
+fs.readFile(__dirname + '/' + path,'utf-8',async (error,data)=>{
 	if(error) throw error;
 	let new_items;
 	let new_categories;
