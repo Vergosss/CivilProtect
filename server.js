@@ -336,7 +336,7 @@ app.post('/add_item/',LoggedIn,async (req,res)=>{
 	});
 	
 //
-app.get('/coordinates/', (req,res)=>{
+app.get('/coordinates/',LoggedIn,(req,res)=>{
 
 	 connection.query('SELECT ST_X(cords),ST_Y(cords) FROM User WHERE role="Citizen"',(error,results,fields)=>{
 		if(error) throw error;
@@ -357,7 +357,7 @@ res.send(results);
 
 });
 //
-app.get('/citizens/',(req,res)=>{
+app.get('/citizens/',LoggedIn,(req,res)=>{
 	connection.query('SELECT username FROM User WHERE role="Citizen"',(error,results)=>{
 	if(error) throw error;
 	res.send(results);
@@ -379,7 +379,7 @@ var storage = multer.diskStorage({
   const fs = require('fs');
 
 //backend work for uploading-reading-inserting items/categories in DB
-app.post('/upload_products/',upload.single('file'),(req,res)=>{//to orisma tou upload single prepei na einai IDIO me to key sto formdata antikeimeno
+app.post('/upload_products/',LoggedIn,upload.single('file'),(req,res)=>{//to orisma tou upload single prepei na einai IDIO me to key sto formdata antikeimeno
 //AYTO ISXYEI OTAN KANO UPLOAD  EDO POU EINAI ASYCHRONA . AN KANO SYNCHRONO UPLOAD ME FORM ACTION TOTE PREPEI TO NAME TOU INPUT FILE NA EINAI 
 //IDIO ME TO ORISMA TOU SINGLE
 console.log(req.file);//alios peta error
